@@ -14,11 +14,12 @@ class DatabaseService {
   // update userdata
   Future updateUserData(String fullName, String email, String password) async {
     return await userCollection.doc(uid).set({
-      'fullName': fullName,
+      'name': fullName,
       'email': email,
       'password': password,
       'groups': [],
-      'profilePic': ''
+      'profilePic': '',
+      'account' : ''
     });
   }
 
@@ -42,7 +43,7 @@ class DatabaseService {
     });
 
     DocumentReference userDocRef = userCollection.doc(uid);
-    return await userDocRef.updateData({
+    return await userDocRef.update({
       'groups': FieldValue.arrayUnion([groupDocRef.id + '_' + groupName])
     });
   }

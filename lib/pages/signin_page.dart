@@ -49,7 +49,7 @@ class _SignInPageState extends State<SignInPage> {
           await HelperFunctions.saveUserLoggedInSharedPreference(true);
           await HelperFunctions.saveUserEmailSharedPreference(email);
           await HelperFunctions.saveUserNameSharedPreference(
-            userInfoSnapshot.docs[0].data()['fullName']
+            userInfoSnapshot.docs[0].data()['name']
           );
 
           print("Signed In");

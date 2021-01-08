@@ -60,25 +60,30 @@ class _HomePageState extends State<HomePage> {
   Widget groupsList() {
     return StreamBuilder(
       stream: _groups,
-      builder: (context, snapshot) {
+        builder: (context, snapshot) {
         if(snapshot.hasData) {
           if(snapshot.data['groups'] != null) {
             // print(snapshot.data['groups'].length);
             if(snapshot.data['groups'].length != 0) {
+              print('hasGroup');
               return ListView.builder(
                 itemCount: snapshot.data['groups'].length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   int reqIndex = snapshot.data['groups'].length - index - 1;
-                  return GroupTile(userName: snapshot.data['fullName'], groupId: _destructureId(snapshot.data['groups'][reqIndex]), groupName: _destructureName(snapshot.data['groups'][reqIndex]));
+                  return GroupTile(userName: snapshot.data['name'], groupId: _destructureId(snapshot.data['groups'][reqIndex]), groupName: _destructureName(snapshot.data['groups'][reqIndex]));
                 }
               );
             }
             else {
+              print('noGroup1');
+
               return noGroupWidget();
             }
           }
           else {
+            print('noGroup2');
+
             return noGroupWidget();
           }
         }

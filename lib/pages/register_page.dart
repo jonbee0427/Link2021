@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -33,6 +34,8 @@ class _RegisterPageState extends State<RegisterPage> {
       print('FullName : ' + fullName + 'Email :' + email);
       await _auth.registerWithEmailAndPassword(fullName, email, password).then((result) async {
         if (result != null) {
+          //User user = FirebaseAuth.instance.currentUser;
+         // await user.sendEmailVerification();
           await HelperFunctions.saveUserLoggedInSharedPreference(true);
           await HelperFunctions.saveUserEmailSharedPreference(email);
           await HelperFunctions.saveUserNameSharedPreference(fullName);
