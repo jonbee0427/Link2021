@@ -1,16 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class MessageTile extends StatelessWidget {
 
   final String message;
   final String sender;
   final bool sentByMe;
+  final Timestamp now;
 
-  MessageTile({this.message, this.sender, this.sentByMe});
+  MessageTile({this.message, this.sender, this.sentByMe, this.now});
 
 
   @override
   Widget build(BuildContext context) {
+    final form = new DateFormat('yyyy-MM-dd hh:mm');
     return Container(
       padding: EdgeInsets.only(
         top: 4,
@@ -33,14 +37,17 @@ class MessageTile extends StatelessWidget {
             topRight: Radius.circular(23),
             bottomRight: Radius.circular(23)
           ),
-          color: sentByMe ? Colors.blueAccent : Colors.grey[700],
+          color: sentByMe ? Colors.white : Color.fromARGB(250, 247, 162, 144),
+            border: Border.all(color: Color.fromARGB(250, 247, 162, 144))
+
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(sender.toUpperCase(), textAlign: TextAlign.start, style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold, color: Colors.black, letterSpacing: -0.5)),
             SizedBox(height: 7.0),
-            Text(message, textAlign: TextAlign.start, style: TextStyle(fontSize: 15.0, color: Colors.white)),
+            Text(message, textAlign: TextAlign.start, style: TextStyle(fontSize: 15.0, color: sentByMe? Colors.black: Colors.white)),
+            Text(form.format(now.toDate())),
           ],
         ),
       ),

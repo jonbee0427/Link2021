@@ -36,6 +36,7 @@ class _ChatPageState extends State<ChatPage> {
               message: snapshot.data.documents[index].data()["message"],
               sender: snapshot.data.documents[index].data()["sender"],
               sentByMe: widget.userName == snapshot.data.documents[index].data()["sender"],
+              now: snapshot.data.documents[index].data()["time"],
             );
           }
         )
@@ -50,7 +51,7 @@ class _ChatPageState extends State<ChatPage> {
       Map<String, dynamic> chatMessageMap = {
         "message": messageEditingController.text,
         "sender": widget.userName,
-        'time': DateTime.now().millisecondsSinceEpoch,
+        'time': DateTime.now(),
       };
 
       DatabaseService().sendMessage(widget.groupId, chatMessageMap);
@@ -74,11 +75,12 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
+    Color basic = Color.fromARGB(250, 247, 162, 144);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.groupName, style: TextStyle(color: Colors.white)),
         centerTitle: true,
-        backgroundColor: Colors.black87,
+        backgroundColor: basic,
         elevation: 0.0,
       ),
       body: Container(
@@ -90,20 +92,27 @@ class _ChatPageState extends State<ChatPage> {
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
               child: Container(
+                decoration: BoxDecoration(
+                  border:Border.all(
+                      width: 1,
+                      color:basic
+                  ),
+                  color: Colors.white,
+                ),
                 padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0),
-                color: Colors.grey[700],
+               // color: Colors.white,
                 child: Row(
                   children: <Widget>[
                     Expanded(
                       child: TextField(
                         controller: messageEditingController,
                         style: TextStyle(
-                          color: Colors.white
+                          color: Colors.black
                         ),
                         decoration: InputDecoration(
                           hintText: "Send a message ...",
                           hintStyle: TextStyle(
-                            color: Colors.white38,
+                            color: Colors.grey,
                             fontSize: 16,
                           ),
                           border: InputBorder.none
@@ -121,7 +130,7 @@ class _ChatPageState extends State<ChatPage> {
                         height: 50.0,
                         width: 50.0,
                         decoration: BoxDecoration(
-                          color: Colors.blueAccent,
+                          color: basic,
                           borderRadius: BorderRadius.circular(50)
                         ),
                         child: Center(child: Icon(Icons.send, color: Colors.white)),
