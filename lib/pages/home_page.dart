@@ -226,12 +226,10 @@ class _HomePageState extends State<HomePage> {
         ],
         initialActiveIndex: 0, //optional, default as 0
         onTap: (int i) {
-          print('Current page : ' + i.toString());
           setState(() {
             selectedPage = i;
 
           });
-          print('SelectedPage : ' + selectedPage.toString());
         },
       ), // Th
       drawer: Drawer(
