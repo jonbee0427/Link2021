@@ -42,6 +42,10 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Group Chats',
+      theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            color: Color.fromARGB(250, 247, 162, 144),
+          )),
       debugShowCheckedModeBanner: false,
       //home: _isLoggedIn != null ? _isLoggedIn ? HomePage() : AuthenticatePage() : Center(child: CircularProgressIndicator()),
       home: _isLoggedIn ? HomePage() : AuthenticatePage(),

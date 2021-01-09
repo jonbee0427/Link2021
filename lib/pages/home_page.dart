@@ -9,8 +9,19 @@ import 'package:link_ver1/pages/search_page.dart';
 import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/group_tile.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'home.dart';
+import 'notification.dart';
+import 'profile.dart';
+import 'message.dart';
+import 'addpost.dart';
+import 'search.dart';
 
 class HomePage extends StatefulWidget {
+  HomePage({Key key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -159,7 +170,7 @@ class _HomePageState extends State<HomePage> {
         style: TextStyle(
           fontSize: 15.0,
           height: 2.0,
-          color: Colors.black             
+          color: Colors.black
         )
       ),
       actions: [
@@ -176,25 +187,53 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
+  int selectedPage = 0;
+  final _pageOptions = [Home(), Chat(), Post(), Alarm(), Profile()];
   // Building the HomePage widget
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Groups', style: TextStyle(color: Colors.white, fontSize: 27.0, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.black87,
-        elevation: 0.0,
+        title: Text("LINK"),
+        centerTitle: true,
+        //backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+        elevation: 10.0,
         actions: <Widget>[
           IconButton(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
-            icon: Icon(Icons.search, color: Colors.white, size: 25.0), 
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) => SearchPage()));
-            }
+              showSearch(context: context, delegate: Search());
+            },
           )
         ],
       ),
+
+      body:  _pageOptions[selectedPage],
+      bottomNavigationBar: ConvexAppBar(
+        backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+        items: [
+          TabItem(
+            icon: Icons.home,
+            title: '홈',
+          ),
+          TabItem(icon: Icons.textsms, title: '채팅'),
+          TabItem(icon: Icons.add, title: '추가'),
+          TabItem(icon: Icons.notifications, title: '알림'),
+          TabItem(icon: Icons.person, title: '프로필'),
+        ],
+        initialActiveIndex: 0, //optional, default as 0
+        onTap: (int i) {
+          print('Current page : ' + i.toString());
+          setState(() {
+            selectedPage = i;
+
+          });
+          print('SelectedPage : ' + selectedPage.toString());
+        },
+      ), // Th
       drawer: Drawer(
         child: ListView(
           padding: EdgeInsets.symmetric(vertical: 50.0),
@@ -230,15 +269,15 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: groupsList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _popupDialog(context);
-        },
-        child: Icon(Icons.add, color: Colors.white, size: 30.0),
-        backgroundColor: Colors.grey[700],
-        elevation: 0.0,
-      ),
+      // body: groupsList(),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _popupDialog(context);
+      //   },
+      //   child: Icon(Icons.add, color: Colors.white, size: 30.0),
+      //   backgroundColor: Colors.grey[700],
+      //   elevation: 0.0,
+      // ),
     );
   }
 }
