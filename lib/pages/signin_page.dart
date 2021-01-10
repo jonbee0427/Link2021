@@ -1,13 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:link_ver1/pages/home_page.dart';
+import 'package:link_ver1/pages/register_page.dart';
+import 'package:link_ver1/pages/verificationPage.dart';
 import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/shared/constants.dart';
 import 'package:link_ver1/shared/loading.dart';
+import 'package:toast/toast.dart';
 
 class SignInPage extends StatefulWidget {
   final Function toggleView;
@@ -16,14 +20,15 @@ class SignInPage extends StatefulWidget {
   @override
   _SignInPageState createState() {
     initializeFlutterFire();
-    return _SignInPageState();}
+    return _SignInPageState();
+  }
 }
-
 
 void initializeFlutterFire() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 }
+
 class _SignInPageState extends State<SignInPage> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
@@ -37,20 +42,23 @@ class _SignInPageState extends State<SignInPage> {
   _onSignIn() async {
     if (_formKey.currentState.validate()) {
       print('Validate!');
+
       setState(() {
         _isLoading = true;
       });
 
-      await _auth.signInWithEmailAndPassword(email, password).then((result) async {
+      await _auth
+          .signInWithEmailAndPassword(email, password)
+          .then((result) async {
         if (result != null) {
           print('in Result!');
-          QuerySnapshot userInfoSnapshot = await DatabaseService().getUserData(email);
+          QuerySnapshot userInfoSnapshot =
+              await DatabaseService().getUserData(email);
 
           await HelperFunctions.saveUserLoggedInSharedPreference(true);
           await HelperFunctions.saveUserEmailSharedPreference(email);
           await HelperFunctions.saveUserNameSharedPreference(
-            userInfoSnapshot.docs[0].data()['name']
-          );
+              userInfoSnapshot.docs[0].data()['name']);
 
           print("Signed In");
           await HelperFunctions.getUserLoggedInSharedPreference().then((value) {
@@ -62,10 +70,18 @@ class _SignInPageState extends State<SignInPage> {
           await HelperFunctions.getUserNameSharedPreference().then((value) {
             print("Full Name: $value");
           });
-
-          Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => HomePage()));
-        }
-        else {
+          User users = FirebaseAuth.instance.currentUser;
+          if (users.emailVerified) {
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => HomePage()));
+          } else {
+            Toast.show('이메일 인증이 아직 완료되지 않았습니다. 인증페이지로 넘어갑니다.', context,
+                duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+            users.sendEmailVerification();
+            Navigator.of(context).pushReplacement(
+                MaterialPageRoute(builder: (context) => SignInPage()));
+          }
+        } else {
           print('in ERROR!');
 
           setState(() {
@@ -79,101 +95,108 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading ? Loading() : Scaffold(
-      body: Form(
-        key: _formKey,
-        child: Container(
-          color: Colors.black,
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 80.0),
-            children: <Widget>[
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
+    return _isLoading
+        ? Loading()
+        : Scaffold(
+            body: Form(
+            key: _formKey,
+            child: Container(
+              color: Color.fromARGB(250, 247, 162, 144),
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 80.0),
                 children: <Widget>[
-                  Text("Create or Join Groups", style: TextStyle(color: Colors.white, fontSize: 40.0, fontWeight: FontWeight.bold)),
-                
-                  SizedBox(height: 30.0),
-                
-                  Text("Sign In", style: TextStyle(color: Colors.white, fontSize: 25.0)),
-
-                  SizedBox(height: 20.0),
-                
-                  TextFormField(
-                    style: TextStyle(color: Colors.white),
-                    decoration: textInputDecoration.copyWith(labelText: 'Email'),
-                    // validator: (val) {
-                    //   return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val) ? null : "Please enter a valid email";
-                    // },
-                  
-                    onChanged: (val) {
-                      setState(() {
-                        email = val;
-                      });
-                    },
-                  ),
-                
-                  SizedBox(height: 15.0),
-                
-                  TextFormField(
-                    style: TextStyle(color: Colors.white),
-                    decoration: textInputDecoration.copyWith(labelText: 'Password'),
-                    validator: (val) => val.length < 6 ? 'Password not strong enough' : null,
-                    obscureText: true,
-                    onChanged: (val) {
-                      setState(() {
-                        password = val;
-                      });
-                    },
-                  ),
-                
-                  SizedBox(height: 20.0),
-                
-                  SizedBox(
-                    width: double.infinity,
-                    height: 50.0,
-                    child: RaisedButton(
-                      elevation: 0.0,
-                      color: Colors.blue,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
-                      child: Text('Sign In', style: TextStyle(color: Colors.white, fontSize: 16.0)),
-                      onPressed: () {
-                        print('Signin started!');
-                        _onSignIn();
-                      }
-                    ),
-                  ),
-                
-                  SizedBox(height: 10.0),
-                  
-                  Text.rich(
-                    TextSpan(
-                      text: "Don't have an account? ",
-                      style: TextStyle(color: Colors.white, fontSize: 14.0),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: 'Register here',
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text("H-links",
                           style: TextStyle(
-                            color: Colors.white,
-                            decoration: TextDecoration.underline
-                          ),
-                          recognizer: TapGestureRecognizer()..onTap = () {
-                            widget.toggleView();
-                          },
+                              color: Colors.white,
+                              fontSize: 40.0,
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(height: 30.0),
+                      Text("Sign In",
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 25.0)),
+                      SizedBox(height: 20.0),
+                      TextFormField(
+                        style: TextStyle(color: Colors.white),
+                        decoration: textInputDecoration.copyWith(
+                            labelText: 'Student ID'),
+                        // validator: (val) {
+                        //   return RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(val) ? null : "Please enter a valid email";
+                        // },
+
+                        onChanged: (val) {
+                          setState(() {
+                            email = val + '@handong.edu';
+                          });
+                        },
+                      ),
+                      SizedBox(height: 15.0),
+                      TextFormField(
+                        style: TextStyle(color: Colors.white),
+                        decoration:
+                            textInputDecoration.copyWith(labelText: 'Password'),
+                        validator: (val) => val.length < 6
+                            ? 'Password not strong enough'
+                            : null,
+                        obscureText: true,
+                        onChanged: (val) {
+                          setState(() {
+                            password = val;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 20.0),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50.0,
+                        child: RaisedButton(
+                            elevation: 0.0,
+                            color: Colors.pink[300],//Color.fromARGB(300, 247, 162, 144),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            child: Text('Sign In',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0)),
+                            onPressed: () {
+                              print('Signin started!');
+                              _onSignIn();
+                            }),
+                      ),
+                      SizedBox(height: 10.0),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50.0,
+                        child: RaisedButton(
+                            elevation: 0.0,
+                            color: Colors.pink[300],
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            child: Text('register',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0)),
+                            onPressed: () {
+                              print('register started!');
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => RegisterPage()));
+                            }),
+                      ),
+                      SizedBox(height: 10.0),
+                      Text.rich(
+                        TextSpan(
+                          text: "Don't have an account? ",
+                          style: TextStyle(color: Colors.white, fontSize: 14.0),
                         ),
-                      ],
-                    ),
+                      ),
+                      Text(error,
+                          style: TextStyle(color: Colors.red, fontSize: 14.0)),
+                    ],
                   ),
-                
-                  SizedBox(height: 10.0),
-                
-                  Text(error, style: TextStyle(color: Colors.red, fontSize: 14.0)),
                 ],
               ),
-            ],
-          ),
-        ),
-      )
-    );
+            ),
+          ));
   }
 }

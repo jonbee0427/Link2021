@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/group_tile.dart';
+import 'package:async/async.dart';
 
 class Chat extends StatefulWidget {
   @override
@@ -19,13 +21,15 @@ class _ChatState extends State<Chat> {
   String _userName = '';
   String _email = '';
   Stream _groups;
-
+  Stream groups;
+  StreamZip bothStreams;
 
   // initState
   @override
   void initState() {
     super.initState();
     _getUserAuthAndJoinedGroups();
+    bothStreams = StreamZip([_groups, groups]);
   }
 
 
@@ -53,6 +57,7 @@ class _ChatState extends State<Chat> {
 
 
   Widget groupsList() {
+
     return StreamBuilder(
       stream: _groups,
       builder: (context, snapshot) {
@@ -65,7 +70,10 @@ class _ChatState extends State<Chat> {
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
-                    return GroupTile(userName: snapshot.data['name'], groupId: _destructureId(snapshot.data['groups'][reqIndex]), groupName: _destructureName(snapshot.data['groups'][reqIndex]));
+                    return GroupTile(userName: snapshot.data['name'],
+                      groupId: _destructureId(snapshot.data['groups'][reqIndex]),
+                      groupName: _destructureName(snapshot.data['groups'][reqIndex] ),
+                      );
                   }
               );
             }
@@ -87,9 +95,12 @@ class _ChatState extends State<Chat> {
   }
 
 
+
   // functions
   _getUserAuthAndJoinedGroups() async {
     _user = await FirebaseAuth.instance.currentUser;
+    groups = await FirebaseFirestore.instance.collection('groups').snapshots();
+
     await HelperFunctions.getUserNameSharedPreference().then((value) {
       setState(() {
         _userName = value;
