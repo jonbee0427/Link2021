@@ -41,6 +41,7 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   convex_bottom_bar: ^2.6.0
   toast: ^0.1.5
+  lite_rolling_switch: ^0.1.1 #added
 
 
 
@@ -64,9 +65,15 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+  assets:
+    - assets/user.png
+    - assets/camera.png
+    - assets/account.png
+    - assets/exit.png
+    - assets/notification.png
+    - assets/settings.png
+    - assets/question.png
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
