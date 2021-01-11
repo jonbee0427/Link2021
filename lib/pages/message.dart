@@ -21,15 +21,12 @@ class _ChatState extends State<Chat> {
   String _userName = '';
   String _email = '';
   Stream _groups;
-  Stream groups;
-  StreamZip bothStreams;
 
   // initState
   @override
   void initState() {
     super.initState();
     _getUserAuthAndJoinedGroups();
-    bothStreams = StreamZip([_groups, groups]);
   }
 
 
@@ -99,7 +96,6 @@ class _ChatState extends State<Chat> {
   // functions
   _getUserAuthAndJoinedGroups() async {
     _user = await FirebaseAuth.instance.currentUser;
-    groups = await FirebaseFirestore.instance.collection('groups').snapshots();
 
     await HelperFunctions.getUserNameSharedPreference().then((value) {
       setState(() {

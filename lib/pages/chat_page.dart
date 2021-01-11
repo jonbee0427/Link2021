@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/message_tile.dart';
@@ -29,9 +30,11 @@ class _ChatPageState extends State<ChatPage> {
       stream: _chats,
       builder: (context, snapshot){
         return snapshot.hasData ?  ListView.builder(
+          dragStartBehavior: DragStartBehavior.down,
           padding: EdgeInsets.only(bottom: 80),
           itemCount: snapshot.data.documents.length,
           itemBuilder: (context, index){
+            print(index);
             return MessageTile(
               message: snapshot.data.documents[index].data()["message"],
               sender: snapshot.data.documents[index].data()["sender"],
