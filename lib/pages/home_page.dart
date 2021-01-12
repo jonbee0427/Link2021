@@ -81,7 +81,11 @@ class _HomePageState extends State<HomePage> {
                     return GroupTile(
                         userName: snapshot.data['name'],
                         groupId:
+<<<<<<< HEAD
                         _destructureId(snapshot.data['groups'][reqIndex]),
+=======
+                            _destructureId(snapshot.data['groups'][reqIndex]),
+>>>>>>> JH
                         groupName: _destructureName(
                             snapshot.data['groups'][reqIndex]));
                   });
@@ -231,7 +235,11 @@ class _HomePageState extends State<HomePage> {
               onTap: () {},
               selected: true,
               contentPadding:
+<<<<<<< HEAD
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+=======
+                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+>>>>>>> JH
               leading: Icon(Icons.group),
               title: Text('Groups'),
             ),
@@ -242,7 +250,11 @@ class _HomePageState extends State<HomePage> {
                         ProfilePage(userName: _userName, email: _email)));
               },
               contentPadding:
+<<<<<<< HEAD
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+=======
+                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+>>>>>>> JH
               leading: Icon(Icons.account_circle),
               title: Text('Profile'),
             ),
@@ -251,10 +263,17 @@ class _HomePageState extends State<HomePage> {
                 await _auth.signOut();
                 Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => AuthenticatePage()),
+<<<<<<< HEAD
                         (Route<dynamic> route) => false);
               },
               contentPadding:
               EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+=======
+                    (Route<dynamic> route) => false);
+              },
+              contentPadding:
+                  EdgeInsets.symmetric(horizontal: 20.0, vertical: 5.0),
+>>>>>>> JH
               leading: Icon(Icons.exit_to_app, color: Colors.red),
               title: Text('Log Out', style: TextStyle(color: Colors.red)),
             ),
