@@ -109,7 +109,7 @@ class _SignInPageState extends State<SignInPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
-                      Text("H-links",
+                      Text("H-Link",
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 40.0,
@@ -154,7 +154,8 @@ class _SignInPageState extends State<SignInPage> {
                         height: 50.0,
                         child: RaisedButton(
                             elevation: 0.0,
-                            color: Colors.pink[300],//Color.fromARGB(300, 247, 162, 144),
+                            color: Colors.pink[300],
+                            // Color.fromARGB(300, 247, 162, 144),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(30.0)),
                             child: Text('Sign In',

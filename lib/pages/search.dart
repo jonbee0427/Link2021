@@ -44,17 +44,17 @@ class Search extends SearchDelegate<String> {
         });
   }
 
+  //검색 결과 출력 화면 (Enter 입력 후) [게시물 CRUD 구현이 끝나면 상세 페이지로 넘기기]
   @override
   Widget buildResults(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(250, 247, 162, 144),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Center(
               child: Text(
             query,
-            style: TextStyle(fontSize: 20),
+            style: TextStyle(fontSize: 50),
           ))
         ],
       ),
@@ -65,16 +65,65 @@ class Search extends SearchDelegate<String> {
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('cities').snapshots(),
-      builder: (context, snapshot) {
-        if (!snapshot.hasData) return new Text('Searching...');
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (!snapshot.hasData) return new Text('검색중...');
+
+        //검색 초기 화면
+        if (query.isEmpty) return defaultScreen();
 
         final results =
             snapshot.data.docs.where((a) => a['city'].contains(query));
 
-        return ListView(
-          children: results.map<Widget>((a) => Text(a['city'])).toList(),
-        );
+        return results.isEmpty
+            ? defaultScreen()
+            : ListTile(
+                onTap: () {
+                  showResults(context);
+                },
+                title: Column(
+                  children: results
+                      .map<Widget>((a) => Text(
+                            a['city'],
+                            style: TextStyle(fontSize: 20),
+                            textAlign: TextAlign.center,
+                          ))
+                      .toList(),
+                ));
+
+        // return InkWell(
+        //     child: ListView(
+        //       children: ,
+        //     ),
+        //     onTap: () {
+        //       Navigator.of(context).push(MaterialPageRoute<Null>(
+        //           fullscreenDialog: true,
+        //           builder: (BuildContext context) {
+        //             return DetailScreen(results);
+        //           }));
+        //     });
       },
+    );
+  }
+
+  Container defaultScreen() {
+    return Container(
+      alignment: Alignment.center,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.search,
+            size: 100,
+            color: const Color.fromARGB(110, 247, 162, 144),
+          ),
+          Text(
+            "게시글을 검색해보세요",
+            style: TextStyle(
+                fontSize: 20, color: const Color.fromARGB(75, 0, 0, 0)),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
