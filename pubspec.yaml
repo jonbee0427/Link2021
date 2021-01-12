@@ -26,14 +26,14 @@ dependencies:
   firebase_auth: ^0.18.4+1
   google_sign_in: ^4.5.6
   flutter_signin_button: ^1.1.0
-  firebase_core: ^0.5.3
+  firebase_core: ^0.5.3 #upload pic
   cloud_firestore: ^0.14.4
   logger: ^0.9.4
   provider: ^4.3.2+3
-  firebase_storage: ^5.2.0
+  firebase_storage: ^5.2.0 #upload pic
   shared_preferences: ^0.5.12+4
   fluttertoast: ^7.1.6
-  image_picker: ^0.6.7+17
+  image_picker: ^0.6.7+17 #uplaod pic
   firebase_picture_uploader: ^1.2.0
   firebase_messaging: ^7.0.3
   photo_view: ^0.10.3
@@ -41,7 +41,8 @@ dependencies:
   flutter_spinkit: ^4.1.2+1
   convex_bottom_bar: ^2.6.0
   toast: ^0.1.5
-  lite_rolling_switch: ^0.1.1 #added
+  permission_handler: ^5.0.1+1 #upload pic
+  
 
 
 

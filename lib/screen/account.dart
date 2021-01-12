@@ -8,7 +8,6 @@ class AccountScreen extends StatefulWidget {
   String email;
   String bank;
   String account;
-  AccountScreen();
 
   @override
   _AccountScreenState createState() => _AccountScreenState();
@@ -63,6 +62,7 @@ class _AccountScreenState extends State<AccountScreen> {
     });
   }
 
+  /*
   Widget _buildName() {
     String textName;
     if (widget.name == null) {
@@ -85,22 +85,13 @@ class _AccountScreenState extends State<AccountScreen> {
         ),
       ),
       maxLength: 10,
-      /*
-      validator: (String value) {
-        if (value.isEmpty) {
-          return '아이디를 입력하세요';
-        }
-
-        return null;
-      },
-      */
       onSaved: (String value) {
         widget.name = value;
         data['name'] = widget.name;
       },
     );
   }
-
+  */
   Widget _buildPassword() {
     String labelText;
     if (widget.password == null) {
@@ -123,7 +114,6 @@ class _AccountScreenState extends State<AccountScreen> {
       ),
       keyboardType: TextInputType.visiblePassword,
       maxLength: 16,
-      /*
       validator: (String value) {
         if (value.isEmpty) {
           return '비밀번호를 입력하세요';
@@ -131,7 +121,6 @@ class _AccountScreenState extends State<AccountScreen> {
 
         return null;
       },
-      */
       onSaved: (String value) {
         widget.password = value;
         data['password'] = widget.password;
@@ -139,16 +128,16 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Widget _buildEmail() {
-    String textEmail;
-    if (widget.email == null) {
-      textEmail = '이메일';
+  Widget _buildPassword2() {
+    String textPassword;
+    if (widget.password == null) {
+      textPassword = '비밀번호 확인';
     } else {
-      textEmail = '이메일 : ' + widget.email;
+      textPassword = '비밀번호 확인 : ' + widget.password;
     }
     return TextFormField(
       decoration: InputDecoration(
-        labelText: textEmail,
+        labelText: textPassword,
         labelStyle: TextStyle(color: Colors.black),
         enabledBorder: UnderlineInputBorder(
           borderSide: BorderSide(color: Color.fromARGB(250, 247, 162, 144)),
@@ -159,29 +148,57 @@ class _AccountScreenState extends State<AccountScreen> {
           //borderRadius: BorderRadius.all(Radius.circular(30)),
         ),
       ),
-      maxLength: 20,
-      /*
+      keyboardType: TextInputType.visiblePassword,
+      maxLength: 16,
       validator: (String value) {
         if (value.isEmpty) {
-          return '이메일을 입력하세요';
-        }
-
-        if (!RegExp(
-                r"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")
-            .hasMatch(value)) {
-          return '정확한 이메일 주소를 입력해주세요';
+          return '비밀번호를 다시 한번 입력해주세요';
         }
 
         return null;
       },
-      */
       onSaved: (String value) {
-        widget.email = value;
-        data['email'] = widget.email;
+        widget.password = value;
+        data['password'] = widget.password;
       },
     );
   }
 
+  Widget _checkPassword() {
+    String textPassword;
+    if (widget.password == null) {
+      textPassword = '새로운 비밀번호';
+    } else {
+      textPassword = '새로운 비밀번호 : ' + widget.password;
+    }
+    return TextFormField(
+      decoration: InputDecoration(
+        labelText: textPassword,
+        labelStyle: TextStyle(color: Colors.black),
+        enabledBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Color.fromARGB(250, 247, 162, 144)),
+          //borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+        focusedBorder: UnderlineInputBorder(
+          borderSide: BorderSide(color: Colors.red),
+          //borderRadius: BorderRadius.all(Radius.circular(30)),
+        ),
+      ),
+      maxLength: 16,
+      validator: (String value) {
+        if (value.isEmpty) {
+          return '새로운 비밀번호를 입력하세요';
+        }
+
+        return null;
+      },
+      onSaved: (String value) {
+        widget.password = value;
+        data['password'] = widget.password;
+      },
+    );
+  }
+  /*
   Widget _buildBank() {
     String textBank;
     if (widget.bank == null) {
@@ -253,6 +270,7 @@ class _AccountScreenState extends State<AccountScreen> {
       },
     );
   }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -271,16 +289,19 @@ class _AccountScreenState extends State<AccountScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                _buildName(),
+                //_buildName(),
                 _buildPassword(),
-                _buildEmail(),
-                _buildBank(),
-                _buildAccount(),
+                _buildPassword2(),
+                _checkPassword(),
+                //_buildEmail(),
+                // _buildBank(),
+                //_buildAccount(),
                 SizedBox(height: 80),
+                /*
                 MaterialButton(
                   child: Container(
                     child: Text(
-                      'Fetch',
+                      '취소',
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     decoration: BoxDecoration(
@@ -291,21 +312,22 @@ class _AccountScreenState extends State<AccountScreen> {
                   onPressed: () {
                     fetchData();
                   },
-                  /*
+                  */
+                /*
                     _formKey.currentState.save();
                     print(widget.user.id);
                     print(widget.user.password);
                     print(widget.user.email);
                     print(widget.user.account);
                      }   //Send to API
-                     */
-                ),
+                     
+                ),*/
                 //Text(data.toString()),
-                SizedBox(height: 30),
+                //SizedBox(height: 30),
                 MaterialButton(
                   child: Container(
                     child: Text(
-                      'Update',
+                      '확인',
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     decoration: BoxDecoration(
