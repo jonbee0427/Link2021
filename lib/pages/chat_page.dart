@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -19,18 +21,21 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   Stream<QuerySnapshot> _chats;
   TextEditingController messageEditingController = new TextEditingController();
-
+  ScrollController scrollController = new ScrollController();
   Widget _chatMessages() {
     return StreamBuilder(
       stream: _chats,
       builder: (context, snapshot) {
+        Timer(
+            Duration(milliseconds: 100),
+                () => scrollController
+                .jumpTo(scrollController.position.maxScrollExtent));
         return snapshot.hasData
             ? ListView.builder(
-                dragStartBehavior: DragStartBehavior.down,
+                controller: scrollController,
                 padding: EdgeInsets.only(bottom: 80),
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
-                  print(index);
                   return MessageTile(
                     message: snapshot.data.documents[index].data()["message"],
                     sender: snapshot.data.documents[index].data()["sender"],
@@ -38,10 +43,15 @@ class _ChatPageState extends State<ChatPage> {
                         snapshot.data.documents[index].data()["sender"],
                     now: snapshot.data.documents[index].data()["time"],
                   );
-                })
+                }
+                ,
+                )
             : Container();
       },
+
     );
+
+
   }
 
   _sendMessage() {
@@ -58,6 +68,8 @@ class _ChatPageState extends State<ChatPage> {
         messageEditingController.text = "";
       });
     }
+
+    scrollController.jumpTo(scrollController.position.maxScrollExtent);
   }
 
   @override
@@ -69,6 +81,7 @@ class _ChatPageState extends State<ChatPage> {
         _chats = val;
       });
     });
+
   }
 
   @override
@@ -84,8 +97,7 @@ class _ChatPageState extends State<ChatPage> {
       body: Container(
         child: Stack(
           children: <Widget>[
-            _chatMessages(),
-            // Container(),
+          _chatMessages(),
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
@@ -115,6 +127,10 @@ class _ChatPageState extends State<ChatPage> {
                     GestureDetector(
                       onTap: () {
                         _sendMessage();
+                        Timer(
+                            Duration(milliseconds: 100),
+                                () => scrollController
+                                .jumpTo(scrollController.position.maxScrollExtent));
                       },
                       child: Container(
                         height: 50.0,

@@ -21,6 +21,7 @@ class _ChatState extends State<Chat> {
   String _userName = '';
   String _email = '';
   Stream _groups;
+  Stream forRecent;
 
   // initState
   @override
@@ -28,7 +29,6 @@ class _ChatState extends State<Chat> {
     super.initState();
     _getUserAuthAndJoinedGroups();
   }
-
 
   // widgets
   Widget noGroupWidget() {
@@ -42,56 +42,69 @@ class _ChatState extends State<Chat> {
                 onTap: () {
                   _popupDialog(context);
                 },
-                child: Icon(Icons.add_circle, color: Colors.grey[700], size: 75.0)
-            ),
+                child: Icon(Icons.add_circle,
+                    color: Colors.grey[700], size: 75.0)),
             SizedBox(height: 20.0),
-            Text("You've not joined any group, tap on the 'add' icon to create a group or search for groups by tapping on the search button below."),
+            Text(
+                "You've not joined any group, tap on the 'add' icon to create a group or search for groups by tapping on the search button below."),
           ],
-        )
+        ));
+  }
+
+  _getRecentStream(String groupId) async {
+    forRecent =
+        await DatabaseService().groupCollection.doc(groupId).snapshots();
+  }
+
+  Widget getRecent(String groupId) {
+    print(groupId);
+    _getRecentStream(groupId);
+    return StreamBuilder(
+      stream: forRecent,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Text(snapshot.data['recentMessage']);
+        }
+        return Text('nothing');
+      },
     );
   }
 
-
-
   Widget groupsList() {
-
     return StreamBuilder(
       stream: _groups,
       builder: (context, snapshot) {
-        if(snapshot.hasData) {
-          if(snapshot.data['groups'] != null) {
+        if (snapshot.hasData) {
+          if (snapshot.data['groups'] != null) {
             // print(snapshot.data['groups'].length);
-            if(snapshot.data['groups'].length != 0) {
+            if (snapshot.data['groups'].length != 0) {
               return ListView.builder(
                   itemCount: snapshot.data['groups'].length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
-                    return GroupTile(userName: snapshot.data['name'],
-                      groupId: _destructureId(snapshot.data['groups'][reqIndex]),
-                      groupName: _destructureName(snapshot.data['groups'][reqIndex] ),
-                      );
-                  }
-              );
-            }
-            else {
+                    return GroupTile(
+                      userName: snapshot.data['name'],
+                      groupId:
+                          _destructureId(snapshot.data['groups'][reqIndex]),
+                      groupName:
+                          _destructureName(snapshot.data['groups'][reqIndex]),
+                      recentMsg: getRecent(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                    );
+                  });
+            } else {
               return noGroupWidget();
             }
-          }
-          else {
+          } else {
             return noGroupWidget();
           }
-        }
-        else {
-          return Center(
-              child: CircularProgressIndicator()
-          );
+        } else {
+          return Center(child: CircularProgressIndicator());
         }
       },
     );
   }
-
-
 
   // functions
   _getUserAuthAndJoinedGroups() async {
@@ -115,30 +128,27 @@ class _ChatState extends State<Chat> {
     });
   }
 
-
   String _destructureId(String res) {
     // print(res.substring(0, res.indexOf('_')));
     return res.substring(0, res.indexOf('_'));
   }
-
 
   String _destructureName(String res) {
     // print(res.substring(res.indexOf('_') + 1));
     return res.substring(res.indexOf('_') + 1);
   }
 
-
   void _popupDialog(BuildContext context) {
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
-      onPressed:  () {
+      onPressed: () {
         Navigator.of(context).pop();
       },
     );
     Widget createButton = FlatButton(
       child: Text("Create"),
-      onPressed:  () async {
-        if(_groupName != null) {
+      onPressed: () async {
+        if (_groupName != null) {
           await HelperFunctions.getUserNameSharedPreference().then((val) {
             DatabaseService(uid: _user.uid).createGroup(val, _groupName);
           });
@@ -153,12 +163,7 @@ class _ChatState extends State<Chat> {
           onChanged: (val) {
             _groupName = val;
           },
-          style: TextStyle(
-              fontSize: 15.0,
-              height: 2.0,
-              color: Colors.black
-          )
-      ),
+          style: TextStyle(fontSize: 15.0, height: 2.0, color: Colors.black)),
       actions: [
         cancelButton,
         createButton,
@@ -172,6 +177,7 @@ class _ChatState extends State<Chat> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -187,4 +193,3 @@ class _ChatState extends State<Chat> {
     );
   }
 }
-
