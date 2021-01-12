@@ -12,6 +12,7 @@ class ChatPage extends StatefulWidget {
   final String userName;
   final String groupName;
 
+
   ChatPage({this.groupId, this.userName, this.groupName});
 
   @override
@@ -20,9 +21,11 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
   Stream<QuerySnapshot> _chats;
+  DocumentSnapshot _groupInfo;
   TextEditingController messageEditingController = new TextEditingController();
   ScrollController scrollController = new ScrollController();
   Widget _chatMessages() {
+
     return StreamBuilder(
       stream: _chats,
       builder: (context, snapshot) {
@@ -50,9 +53,24 @@ class _ChatPageState extends State<ChatPage> {
       },
 
     );
-
-
   }
+
+  // Widget _groupUsers(){
+  //
+  //
+  //       return ListView.builder(
+  //         padding: EdgeInsets.only(bottom: 80),
+  //         itemCount: _groupInfo.
+  //         itemBuilder: (context,index){
+  //           return ListTile(
+  //             title: Text(snapshot.data['members']),
+  //           );
+  //         },
+  //       ) :
+  //           Text('Nothing');
+  //     },
+
+
 
   _sendMessage() {
     if (messageEditingController.text.isNotEmpty) {
@@ -81,7 +99,11 @@ class _ChatPageState extends State<ChatPage> {
         _chats = val;
       });
     });
-
+    DatabaseService().getGroup(widget.groupId).then((val) {
+      setState(() {
+        _groupInfo = val;
+      });
+    });
   }
 
   @override
@@ -93,6 +115,27 @@ class _ChatPageState extends State<ChatPage> {
         centerTitle: true,
         backgroundColor: basic,
         elevation: 0.0,
+      ),
+      endDrawer: Drawer(
+        child: Column(
+          children: [
+            ListTile(
+              title: Text('User1'),
+            ),
+            ListTile(
+              title: Text('User2'),
+            ),
+            ListTile(
+              title: Text('User3'),
+            ),
+            RaisedButton(
+                onPressed: (){
+
+                },
+                child: Text('나가기'),
+            )
+          ],
+        ),
       ),
       body: Container(
         child: Stack(

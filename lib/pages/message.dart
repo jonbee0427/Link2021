@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,13 +23,14 @@ class _ChatState extends State<Chat> {
   String _userName = '';
   String _email = '';
   Stream _groups;
-  Stream forRecent;
+  Stream chats;
 
   // initState
   @override
   void initState() {
     super.initState();
     _getUserAuthAndJoinedGroups();
+
   }
 
   // widgets
@@ -51,27 +54,27 @@ class _ChatState extends State<Chat> {
         ));
   }
 
-  _getRecentStream(String groupId) async {
-    forRecent =
-        await DatabaseService().groupCollection.doc(groupId).snapshots();
-  }
 
   Widget getRecent(String groupId) {
-    print(groupId);
     _getRecentStream(groupId);
     return StreamBuilder(
-      stream: forRecent,
+      stream: chats,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Text(snapshot.data['recentMessage']);
+        return  Text(snapshot.data['recentMessage']);
         }
         return Text('nothing');
       },
     );
   }
+  _getRecentStream(String groupId) async {
+   chats = await DatabaseService().getChats(groupId);
+   print(chats.isEmpty);
+  }
 
   Widget groupsList() {
     return StreamBuilder(
+
       stream: _groups,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
@@ -82,6 +85,7 @@ class _ChatState extends State<Chat> {
                   itemCount: snapshot.data['groups'].length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
+                    print(index);
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
                       userName: snapshot.data['name'],
@@ -89,8 +93,6 @@ class _ChatState extends State<Chat> {
                           _destructureId(snapshot.data['groups'][reqIndex]),
                       groupName:
                           _destructureName(snapshot.data['groups'][reqIndex]),
-                      recentMsg: getRecent(
-                          _destructureId(snapshot.data['groups'][reqIndex])),
                     );
                   });
             } else {
