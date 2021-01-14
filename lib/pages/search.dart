@@ -6,6 +6,7 @@ class Search extends SearchDelegate<String> {
   @override
   String get searchFieldLabel => "검색";
 
+  //검색 창의 상단 appBar 디자인
   @override
   ThemeData appBarTheme(BuildContext context) {
     final ThemeData theme = ThemeData(
@@ -19,6 +20,7 @@ class Search extends SearchDelegate<String> {
     return theme;
   }
 
+  //검색 창에 있는 상단 오른쪽 appBar에 위치한 검색 단어 삭제 기능
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -32,6 +34,7 @@ class Search extends SearchDelegate<String> {
     ];
   }
 
+  //검색 창에 있는 상단 왼쪽 appBar에 위치한 뒤로 가기 기능
   @override
   Widget buildLeading(BuildContext context) {
     return IconButton(
@@ -66,45 +69,41 @@ class Search extends SearchDelegate<String> {
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance.collection('cities').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        //파이어베이스에 데이터가 없을 경우
         if (!snapshot.hasData) return new Text('검색중...');
 
-        //검색 초기 화면
+        //검색어 입력하기 전
         if (query.isEmpty) return defaultScreen();
 
+        //검색어를 토대로 파이어베이스에서 검색어가 포함되는 데이터들을 확인하여 저장
         final results =
             snapshot.data.docs.where((a) => a['city'].contains(query));
 
+        //검색어와 일치하는 데이터가 없다면 초기 화면, 있다면 상세 페이지로 이동
         return results.isEmpty
             ? defaultScreen()
-            : ListTile(
-                onTap: () {
-                  showResults(context);
-                },
-                title: Column(
-                  children: results
-                      .map<Widget>((a) => Text(
-                            a['city'],
-                            style: TextStyle(fontSize: 20),
-                            textAlign: TextAlign.center,
-                          ))
-                      .toList(),
-                ));
-
-        // return InkWell(
-        //     child: ListView(
-        //       children: ,
-        //     ),
-        //     onTap: () {
-        //       Navigator.of(context).push(MaterialPageRoute<Null>(
-        //           fullscreenDialog: true,
-        //           builder: (BuildContext context) {
-        //             return DetailScreen(results);
-        //           }));
-        //     });
+            : ListView(
+                children: results
+                    .map((a) => ListTile(
+                          leading: Icon(Icons.location_city),
+                          title: Text(a['city']),
+                          contentPadding: EdgeInsets.fromLTRB(15, 5, 5, 0),
+                          onTap: () {
+                            //print(a['city']);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
+                                        getResult(a['city'])));
+                          },
+                        ))
+                    .toList());
       },
     );
   }
 
+  //검색 초기 화면
   Container defaultScreen() {
     return Container(
       alignment: Alignment.center,
@@ -123,6 +122,25 @@ class Search extends SearchDelegate<String> {
             textAlign: TextAlign.center,
           ),
         ],
+      ),
+    );
+  }
+
+  //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
+  Container getResult(a) {
+    return Container(
+      child: Scaffold(
+        appBar: AppBar(title: Text("LINK"), centerTitle: true, elevation: 10.0),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Center(
+                child: Text(
+              a,
+              style: TextStyle(fontSize: 50),
+            ))
+          ],
+        ),
       ),
     );
   }
