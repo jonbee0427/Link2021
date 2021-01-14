@@ -1,5 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'body.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:link_ver1/helper/helper_functions.dart';
+import 'package:link_ver1/services/auth_service.dart';
+
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 //profile screen
 class ProfileScreen extends StatefulWidget {
@@ -8,10 +16,31 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final AuthService _auth = AuthService();
+  User _user;
+  String _userName = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserAuthAndJoinedGroups();
+  }
+
+  _getUserAuthAndJoinedGroups() async {
+    _user = await FirebaseAuth.instance.currentUser;
+    await HelperFunctions.getUserNameSharedPreference().then((value) {
+      setState(() {
+        _userName = value;
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Body(),
+      body: Body(
+        userName: _userName,
+      ),
     );
   }
 }
@@ -61,10 +90,24 @@ class ProfileMenu extends StatelessWidget {
 //profile menu
 
 //profile pic
-class ProfilePic extends StatelessWidget {
+
+class ProfilePic extends StatefulWidget {
+  @override
+  _ProfilePicState createState() => _ProfilePicState();
   const ProfilePic({
     Key key,
   }) : super(key: key);
+}
+
+class _ProfilePicState extends State<ProfilePic> {
+  File _imageFile;
+
+  Future getImage() async {
+    final image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      _imageFile = image;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +134,9 @@ class ProfilePic extends StatelessWidget {
                   side: BorderSide(color: Colors.white),
                 ),
                 color: Color(0xFFF5F6F9),
-                onPressed: () {},
+                onPressed: () {
+                  getImage();
+                },
                 child: Image.asset("assets/camera.png"),
               ),
             ),

@@ -68,6 +68,8 @@ class DatabaseService {
       await groupDocRef.update({
         'members': FieldValue.arrayRemove([uid + '_' + userName])
       });
+
+      groupDocRef.delete();
     }
     else {
       //print('nay');
@@ -134,6 +136,16 @@ class DatabaseService {
     return FirebaseFirestore.instance.collection('groups').doc(groupId).collection('messages').orderBy('time').snapshots();
   }
 
+  getGroup(String groupId) async{
+     return FirebaseFirestore.instance.collection('groups').doc(groupId).get().then((DocumentSnapshot documentSnapshot) {
+       if (documentSnapshot.exists) {
+         print('Document data: ${documentSnapshot.data()}');
+         return documentSnapshot.data();
+       } else {
+         print('Document does not exist on the database');
+       }
+     });
+  }
 
   // search groups
   searchByName(String groupName) {
