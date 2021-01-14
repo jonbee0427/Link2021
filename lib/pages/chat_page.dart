@@ -171,6 +171,25 @@ class _ChatPageState extends State<ChatPage> {
             ),
             RaisedButton(
                 onPressed: (){
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context){
+                      return AlertDialog(
+                        title: Text('나가시겠습니까?'),
+                        actions: [
+                          FlatButton(
+                            child: const Text('취소'),
+                            onPressed: (){
+
+                            },
+                          ),
+                          FlatButton(
+                              onPressed: (){},
+                              child: const Text('확인'))
+                        ],
+                      );
+                    }
+                      );
 
                 },
                 child: Text('나가기'),
