@@ -30,7 +30,6 @@ class _ChatState extends State<Chat> {
   void initState() {
     super.initState();
     _getUserAuthAndJoinedGroups();
-
   }
 
   // widgets
@@ -54,27 +53,26 @@ class _ChatState extends State<Chat> {
         ));
   }
 
-
   Widget getRecent(String groupId) {
     _getRecentStream(groupId);
     return StreamBuilder(
       stream: chats,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-        return  Text(snapshot.data['recentMessage']);
+          return Text(snapshot.data['recentMessage']);
         }
         return Text('nothing');
       },
     );
   }
+
   _getRecentStream(String groupId) async {
-   chats = await DatabaseService().getChats(groupId);
-   print(chats.isEmpty);
+    chats = await DatabaseService().getChats(groupId);
+    print(chats.isEmpty);
   }
 
   Widget groupsList() {
     return StreamBuilder(
-
       stream: _groups,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
