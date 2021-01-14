@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/message_tile.dart';
 
@@ -40,6 +44,7 @@ class _ChatPageState extends State<ChatPage> {
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   return MessageTile(
+                    type: snapshot.data.documents[index].data()["type"],
                     message: snapshot.data.documents[index].data()["message"],
                     sender: snapshot.data.documents[index].data()["sender"],
                     sentByMe: widget.userName ==
@@ -72,23 +77,59 @@ class _ChatPageState extends State<ChatPage> {
 
 
 
-  _sendMessage() {
-    if (messageEditingController.text.isNotEmpty) {
+  _sendMessage(String type, {path}) {
+    if (type == 'image') {
       Map<String, dynamic> chatMessageMap = {
-        "message": messageEditingController.text,
+        "message": path,
+        "type": type,
         "sender": widget.userName,
         'time': DateTime.now(),
       };
-
       DatabaseService().sendMessage(widget.groupId, chatMessageMap);
-
-      setState(() {
-        messageEditingController.text = "";
-      });
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
     }
+    else {
+      if (messageEditingController.text.isNotEmpty) {
+        Map<String, dynamic> chatMessageMap = {
+          "message": messageEditingController.text,
+          "type": type,
+          "sender": widget.userName,
+          'time': DateTime.now(),
+        };
 
-    scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        DatabaseService().sendMessage(widget.groupId, chatMessageMap);
+
+        setState(() {
+          messageEditingController.text = "";
+        });
+      }
+
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    }
   }
+  Future getImage() async {
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile image = await imagePicker.getImage(source: ImageSource.gallery);
+    if(image != null){
+      String path = image.path;
+      uploadFile(path);
+    }
+  }
+
+  Future uploadFile(String path) async{
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = FirebaseStorage.instance.ref().child(fileName);
+    UploadTask uploadTask = reference.putFile(File(path));
+    TaskSnapshot taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then((downloadURL){
+      setState(() {
+        _sendMessage('image',path: downloadURL);
+      });
+    }, onError: (err){
+      Fluttertoast.showToast(msg: 'This File is not an image');
+    });
+  }
+
 
   @override
   void initState() {
@@ -99,11 +140,11 @@ class _ChatPageState extends State<ChatPage> {
         _chats = val;
       });
     });
-    DatabaseService().getGroup(widget.groupId).then((val) {
-      setState(() {
-        _groupInfo = val;
-      });
-    });
+    // DatabaseService().getGroup(widget.groupId).then((val) {
+    //   setState(() {
+    //     _groupInfo = val;
+    //   });
+    // });
   }
 
   @override
@@ -153,6 +194,11 @@ class _ChatPageState extends State<ChatPage> {
                 // color: Colors.white,
                 child: Row(
                   children: <Widget>[
+                    IconButton(
+                        icon:Icon(Icons.image),
+                        onPressed: (){
+                          getImage();
+                        }),
                     Expanded(
                       child: TextField(
                         controller: messageEditingController,
@@ -169,7 +215,7 @@ class _ChatPageState extends State<ChatPage> {
                     SizedBox(width: 12.0),
                     GestureDetector(
                       onTap: () {
-                        _sendMessage();
+                        _sendMessage('text');
                         Timer(
                             Duration(milliseconds: 100),
                                 () => scrollController

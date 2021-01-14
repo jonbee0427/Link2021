@@ -8,8 +8,9 @@ class MessageTile extends StatelessWidget {
   final String sender;
   final bool sentByMe;
   final Timestamp now;
+  final String type;
 
-  MessageTile({this.message, this.sender, this.sentByMe, this.now});
+  MessageTile({this.message, this.sender, this.sentByMe, this.now, this.type});
 
 
   @override
@@ -46,11 +47,22 @@ class MessageTile extends StatelessWidget {
           children: <Widget>[
             Text(sender.toUpperCase(), textAlign: TextAlign.start, style: TextStyle(fontSize: 13.0, fontWeight: FontWeight.bold, color: Colors.black, letterSpacing: -0.5)),
             SizedBox(height: 7.0),
-            Text(message, textAlign: TextAlign.start, style: TextStyle(fontSize: 15.0, color: sentByMe? Colors.black: Colors.white)),
+            _buildContent(),
             Text(form.format(now.toDate())),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildContent(){
+    print(type);
+    if(type == 'image'){
+      return Image.network(message);
+    }
+    else{
+      return Text(message,textAlign: TextAlign.start, style: TextStyle(fontSize: 15.0, color: sentByMe? Colors.black: Colors.white));
+    }
+  }
+
 }
