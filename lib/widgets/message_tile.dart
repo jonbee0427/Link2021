@@ -56,7 +56,6 @@ class MessageTile extends StatelessWidget {
   }
 
   Widget _buildContent(){
-    print(type);
     if(type == 'image'){
       return Image.network(message);
     }
