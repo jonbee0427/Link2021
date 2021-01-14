@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/message_tile.dart';
 
@@ -24,10 +26,14 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+  User _user;
+  String _userName;
+  bool _isJoined;
   Stream<QuerySnapshot> _chats;
   DocumentSnapshot _groupInfo;
   TextEditingController messageEditingController = new TextEditingController();
   ScrollController scrollController = new ScrollController();
+
   Widget _chatMessages() {
 
     return StreamBuilder(
@@ -140,11 +146,27 @@ class _ChatPageState extends State<ChatPage> {
         _chats = val;
       });
     });
+    _getCurrentUserNameAndUid();
+
     // DatabaseService().getGroup(widget.groupId).then((val) {
     //   setState(() {
     //     _groupInfo = val;
     //   });
     // });
+  }
+
+  _getCurrentUserNameAndUid() async {
+    await HelperFunctions.getUserNameSharedPreference().then((value) {
+      _userName = value;
+    });
+    _user = await FirebaseAuth.instance.currentUser;
+  }
+
+  _joinValueInGroup(String userName, String groupId, String groupName, String admin) async {
+    bool value = await DatabaseService(uid: _user.uid).isUserJoined(groupId, groupName, userName);
+    setState(() {
+      _isJoined = value;
+    });
   }
 
   @override
@@ -190,6 +212,27 @@ class _ChatPageState extends State<ChatPage> {
                       );
                     }
                       );
+
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context){
+                      return AlertDialog(
+                        title: Text('나가시겠습니까?'),
+                        actions: [
+                          FlatButton(onPressed: ()async{
+                            Navigator.pop(context);
+                          }, child: Text('취소')),
+                          FlatButton(onPressed: ()async{
+                            await DatabaseService(uid: _user.uid).togglingGroupJoin(widget.groupId, widget.groupName, widget.userName);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+
+                          }, child: Text('확인')),
+                        ],
+                      );
+                    }
+                  );
 
                 },
                 child: Text('나가기'),

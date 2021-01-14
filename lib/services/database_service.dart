@@ -68,6 +68,8 @@ class DatabaseService {
       await groupDocRef.update({
         'members': FieldValue.arrayRemove([uid + '_' + userName])
       });
+
+      groupDocRef.delete();
     }
     else {
       //print('nay');
