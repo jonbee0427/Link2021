@@ -109,7 +109,6 @@ class _ChatState extends State<Chat> {
   // functions
   _getUserAuthAndJoinedGroups() async {
     _user = await FirebaseAuth.instance.currentUser;
-
     await HelperFunctions.getUserNameSharedPreference().then((value) {
       setState(() {
         _userName = value;
