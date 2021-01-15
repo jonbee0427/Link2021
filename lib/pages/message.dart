@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -8,6 +9,7 @@ import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/group_tile.dart';
 import 'package:async/async.dart';
+import 'package:intl/intl.dart';
 
 class Chat extends StatefulWidget {
   @override
@@ -22,7 +24,8 @@ class _ChatState extends State<Chat> {
   String _userName = '';
   String _email = '';
   Stream _groups;
-  Stream chats;
+  CollectionReference chats;
+  Stream recent;
 
   // initState
   @override
@@ -54,20 +57,48 @@ class _ChatState extends State<Chat> {
 
   Widget getRecent(String groupId) {
     _getRecentStream(groupId);
+    final form = new DateFormat('Md').add_Hm();
     return StreamBuilder(
-      stream: chats,
+      stream: recent,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return Text(snapshot.data['recentMessage']);
+          Timestamp recentTime= snapshot.data['recentMessageTime'];
+          return
+            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children:[
+              Text(snapshot.data['recentMessage']),
+              Text(form.format(recentTime.toDate()))
+            ]);
         }
         return Text('nothing');
       },
     );
   }
 
+  Widget getGroupMembers(String groupId){
+    _getRecentStream(groupId);
+    return StreamBuilder(
+      stream: recent,
+      builder: (context, snapshot){
+        if(snapshot.hasData){
+          return ListView.builder(
+            itemCount: snapshot.data['members'].length,
+            itemBuilder: (context, index){
+              int reqIndex = snapshot.data['members'].length - index - 1;
+              return ListTile(
+                title: Text(snapshot.data['members'][reqIndex]),
+              );
+            },
+          );
+        }else{
+          return Text('noOne');
+        }
+      },
+    );
+  }
+
   _getRecentStream(String groupId) async {
-    chats = await DatabaseService().getChats(groupId);
-    print(chats.isEmpty);
+    recent = chats.doc(groupId).snapshots();
   }
 
   Widget groupsList() {
@@ -82,7 +113,6 @@ class _ChatState extends State<Chat> {
                   itemCount: snapshot.data['groups'].length,
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    print(index);
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
                       userName: snapshot.data['name'],
@@ -90,6 +120,8 @@ class _ChatState extends State<Chat> {
                           _destructureId(snapshot.data['groups'][reqIndex]),
                       groupName:
                           _destructureName(snapshot.data['groups'][reqIndex]),
+                      recentMsg: getRecent( _destructureId(snapshot.data['groups'][reqIndex])),
+                      groupMembers: getGroupMembers( _destructureId(snapshot.data['groups'][reqIndex])),
                     );
                   });
             } else {
@@ -124,6 +156,8 @@ class _ChatState extends State<Chat> {
         _email = value;
       });
     });
+
+    chats = await FirebaseFirestore.instance.collection('groups');
   }
 
   String _destructureId(String res) {

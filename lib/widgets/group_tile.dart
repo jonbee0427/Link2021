@@ -6,22 +6,23 @@ class GroupTile extends StatelessWidget {
   final String userName;
   final String groupId;
   final String groupName;
-  Widget recentMsg;
+  final Widget recentMsg;
+  final Widget groupMembers;
 
-  GroupTile({this.userName, this.groupId, this.groupName, this.recentMsg});
+  GroupTile({this.userName, this.groupId, this.groupName, this.recentMsg, this.groupMembers});
 
-  void getRecentMsg() async {
-    await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        recentMsg = documentSnapshot.get('recentMessage');
-        print(recentMsg);
-      }
-    });
-  }
+  // void getRecentMsg() async {
+  //   await FirebaseFirestore.instance
+  //       .collection('groups')
+  //       .doc(groupId)
+  //       .get()
+  //       .then((DocumentSnapshot documentSnapshot) {
+  //     if (documentSnapshot.exists) {
+  //       recentMsg = documentSnapshot.get('recentMessage');
+  //       print(recentMsg);
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +35,7 @@ class GroupTile extends StatelessWidget {
                   groupId: groupId,
                   userName: userName,
                   groupName: groupName,
+                  groupMembers: groupMembers,
                 )));
       },
       child: Container(
@@ -47,8 +49,9 @@ class GroupTile extends StatelessWidget {
                   style: TextStyle(color: Colors.white)),
             ),
             title: Text(groupName, style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text('Join the ' + groupName + ' as ' + userName,
-          style: TextStyle(fontSize: 13.0)),
+          //   subtitle: Text('Join the ' + groupName + ' as ' + userName,
+          // style: TextStyle(fontSize: 13.0)),
+          subtitle: recentMsg
         ),
       ),
     );

@@ -18,8 +18,9 @@ class ChatPage extends StatefulWidget {
   final String groupId;
   final String userName;
   final String groupName;
+  final Widget groupMembers;
 
-  ChatPage({this.groupId, this.userName, this.groupName});
+  ChatPage({this.groupId, this.userName, this.groupName,this.groupMembers});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -38,12 +39,13 @@ class _ChatPageState extends State<ChatPage> {
     return StreamBuilder(
       stream: _chats,
       builder: (context, snapshot) {
-        Timer(
-            Duration(milliseconds: 100),
-            () => scrollController
-                .jumpTo(scrollController.position.maxScrollExtent));
+        // Timer(
+        //     Duration(milliseconds: 100),
+        //     () => scrollController
+        //         .jumpTo(scrollController.position.maxScrollExtent));
         return snapshot.hasData
             ? ListView.builder(
+                  reverse: true,
                 controller: scrollController,
                 padding: EdgeInsets.only(bottom: 80),
                 itemCount: snapshot.data.documents.length,
@@ -87,7 +89,7 @@ class _ChatPageState extends State<ChatPage> {
         'time': DateTime.now(),
       };
       DatabaseService().sendMessage(widget.groupId, chatMessageMap);
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+
     } else {
       if (messageEditingController.text.isNotEmpty) {
         Map<String, dynamic> chatMessageMap = {
@@ -104,7 +106,7 @@ class _ChatPageState extends State<ChatPage> {
         });
       }
 
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      //scrollController.jumpTo(scrollController.position.maxScrollExtent);
     }
   }
 
@@ -179,15 +181,11 @@ class _ChatPageState extends State<ChatPage> {
       endDrawer: Drawer(
         child: Column(
           children: [
-            ListTile(
-              title: Text('User1'),
-            ),
-            ListTile(
-              title: Text('User2'),
-            ),
-            ListTile(
-              title: Text('User3'),
-            ),
+            Expanded(
+                child: SizedBox(
+                  height: 10.0,
+                  child: widget.groupMembers,
+                )),
             RaisedButton(
               onPressed: () {
                 showDialog(
