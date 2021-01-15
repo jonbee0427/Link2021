@@ -174,7 +174,7 @@ class _ChatPageState extends State<ChatPage> {
         title: Text(widget.groupName, style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: basic,
-        elevation: 0.0,
+        elevation: 10.0,
       ),
       endDrawer: Drawer(
         child: Column(
