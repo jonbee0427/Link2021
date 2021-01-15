@@ -12,22 +12,21 @@ import 'package:link_ver1/shared/constants.dart';
 import 'package:link_ver1/shared/loading.dart';
 import 'package:toast/toast.dart';
 
-class RegisterPage extends StatefulWidget {
-  final Function toggleView;
-  RegisterPage({this.toggleView});
-
+class ResetPasswordPage extends StatefulWidget {
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _ResetPasswordPage createState() => _ResetPasswordPage();
 }
 
 void initializeFlutterFire() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _ResetPasswordPage extends State<ResetPasswordPage> {
   final AuthService _auth = AuthService();
   final _formKey = GlobalKey<FormState>();
+  final FirebaseAuth fAuth = FirebaseAuth.instance;
   bool _isLoading = false;
 
   // text field state
@@ -103,7 +102,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   fontSize: 45.0,
                                   fontWeight: FontWeight.bold)),
                           SizedBox(height: 30.0),
-                          Text("Register",
+                          Text("비밀번호 재설정",
                               style: TextStyle(
                                   color: Colors.white, fontSize: 25.0)),
                           SizedBox(height: 50.0),
@@ -138,22 +137,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           SizedBox(
                             width: 10,
                           ),
-
-                          // SizedBox(height: 15.0),
-
-                          SizedBox(height: 15.0),
-                          TextFormField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: textInputDecoration.copyWith(
-                                labelText: 'Password'),
-                            //validator: (val) => val.length < 6 ? 'Password not strong enough' : null,
-                            obscureText: true,
-                            onChanged: (val) {
-                              setState(() {
-                                password = val;
-                              });
-                            },
-                          ),
                           SizedBox(height: 40.0),
                           SizedBox(
                             width: double.infinity,
@@ -163,11 +146,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 color: Colors.pink[300],
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30.0)),
-                                child: Text('Register',
+                                child: Text('비밀번호 재설정 이메일 보내기',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16.0)),
                                 onPressed: () async {
-                                  _onRegister();
+                                  fAuth.sendPasswordResetEmail(email: email);
+                                  Navigator.pop(context);
                                 }),
                           ),
                           SizedBox(height: 10.0),
