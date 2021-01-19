@@ -221,7 +221,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
 
-      //하단에 위치한 채팅 입력하는 칸
+      //화면에 채팅 내용 출력 & 하단에 위치한 채팅 입력하는 칸
       body: Container(
         child: Stack(
           children: <Widget>[
