@@ -19,8 +19,8 @@ import 'message.dart';
 import 'addpost.dart';
 import 'profile.dart';
 import 'search.dart';
-import 'package:link_ver1/screen/body.dart';
-import 'package:link_ver1/screen/profile.dart';
+import 'package:link_ver1/screen/profileMain.dart';
+import 'package:link_ver1/screen/profilePic.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
