@@ -1,4 +1,6 @@
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 class DatabaseService {
 
@@ -31,6 +33,7 @@ class DatabaseService {
       'groupIcon': '',
       'admin': userName,
       'members': [],
+      'membersNum' : 1,
       //'messages': ,
       'groupId': '',
       'recentMessage': '',
@@ -56,9 +59,11 @@ class DatabaseService {
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
     DocumentReference groupDocRef = groupCollection.doc(groupId);
+    DocumentSnapshot groupDocSnapshot = await groupDocRef.get();
+    FirebaseStorage desertRef =  FirebaseStorage.instance;
 
+    int membersNum = await groupDocSnapshot.data()['membersNum'];
     List<dynamic> groups = await userDocSnapshot.data()['groups'];
-
     if(groups.contains(groupId + '_' + groupName)) {
       //print('hey');
       await userDocRef.update({
@@ -66,10 +71,17 @@ class DatabaseService {
       });
 
       await groupDocRef.update({
-        'members': FieldValue.arrayRemove([uid + '_' + userName])
+        'members': FieldValue.arrayRemove([uid + '_' + userName]),
+        'membersNum' : FieldValue.increment(-1)
       });
-
-      groupDocRef.delete();
+      if(membersNum == 1){
+        desertRef.ref().child(groupId+'/').listAll().then((value){
+          value.items.forEach((element) {
+            element.delete();
+          });
+        });
+         groupDocRef.delete();
+      }
     }
     else {
       //print('nay');
@@ -78,7 +90,8 @@ class DatabaseService {
       });
 
       await groupDocRef.update({
-        'members': FieldValue.arrayUnion([uid + '_' + userName])
+        'members': FieldValue.arrayUnion([uid + '_' + userName]),
+        'membersNum' : FieldValue.increment(1)
       });
     }
   }
@@ -121,12 +134,13 @@ class DatabaseService {
 
 
   // send message
-  sendMessage(String groupId, chatMessageData) {
+  sendMessage(String groupId, chatMessageData, String type) {
     FirebaseFirestore.instance.collection('groups').doc(groupId).collection('messages').add(chatMessageData);
     FirebaseFirestore.instance.collection('groups').doc(groupId).update({
       'recentMessage': chatMessageData['message'],
       'recentMessageSender': chatMessageData['sender'],
       'recentMessageTime': chatMessageData['time'],
+      'recentMessageType' : chatMessageData['type']
     });
   }
 

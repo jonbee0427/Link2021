@@ -62,13 +62,36 @@ class _ChatState extends State<Chat> {
       stream: recent,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          Timestamp recentTime= snapshot.data['recentMessageTime'];
-          return
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:[
-              Text(snapshot.data['recentMessage']),
-              Text(form.format(recentTime.toDate()))
-            ]);
+          try{
+            Timestamp recentTime= snapshot.data['recentMessageTime'];
+            String type = snapshot.data['recentMessageType'];
+            if(type == 'text') {
+              return
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(snapshot.data['recentMessage']),
+                      Text(form.format(recentTime.toDate()))
+                    ]);
+            }
+            else{
+              return
+                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Row(
+                          children: [
+                            Icon(Icons.photo),
+                            Text('사진'),
+                          ],
+                        ),
+                      ),
+                      Text(form.format(recentTime.toDate()))
+                    ]);
+            }
+          }catch(e){
+            return Text('nothing');
+          }
+
         }
         return Text('nothing');
       },
@@ -82,11 +105,12 @@ class _ChatState extends State<Chat> {
       builder: (context, snapshot){
         if(snapshot.hasData){
           return ListView.builder(
+            shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index){
               int reqIndex = snapshot.data['members'].length - index - 1;
               return ListTile(
-                title: Text(snapshot.data['members'][reqIndex]),
+                title: Text(_destructureName(snapshot.data['members'][reqIndex])),
               );
             },
           );

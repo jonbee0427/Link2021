@@ -88,7 +88,7 @@ class _ChatPageState extends State<ChatPage> {
         "sender": widget.userName,
         'time': DateTime.now(),
       };
-      DatabaseService().sendMessage(widget.groupId, chatMessageMap);
+      DatabaseService().sendMessage(widget.groupId, chatMessageMap,  type);
     } else {
       if (messageEditingController.text.isNotEmpty) {
         Map<String, dynamic> chatMessageMap = {
@@ -98,7 +98,7 @@ class _ChatPageState extends State<ChatPage> {
           'time': DateTime.now(),
         };
 
-        DatabaseService().sendMessage(widget.groupId, chatMessageMap);
+        DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
 
         setState(() {
           messageEditingController.text = "";
@@ -120,7 +120,7 @@ class _ChatPageState extends State<ChatPage> {
 
   Future uploadFile(String path) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference reference = FirebaseStorage.instance.ref().child(fileName);
+    Reference reference = FirebaseStorage.instance.ref().child(widget.groupId+'/'+fileName);
     UploadTask uploadTask = reference.putFile(File(path));
     TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadURL) {
@@ -180,11 +180,15 @@ class _ChatPageState extends State<ChatPage> {
       endDrawer: Drawer(
         child: Column(
           children: [
-            Expanded(
-                child: SizedBox(
-              height: 10.0,
+            SizedBox(
               child: widget.groupMembers,
-            )),
+            ),
+            // Expanded(
+            //     child: SizedBox(
+            //   child: widget.groupMembers,
+            //       height: 600,
+            // ),
+            // ),
             RaisedButton(
               onPressed: () {
                 showDialog(
