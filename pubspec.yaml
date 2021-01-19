@@ -42,7 +42,13 @@ dependencies:
   convex_bottom_bar: ^2.6.0
   toast: ^0.1.5
   permission_handler: ^5.0.1+1 #upload pic
+<<<<<<< HEAD
   date_time_picker: ^1.1.1
+=======
+  path: ^1.7.0 #upload pic
+
+  
+>>>>>>> EJ
 
 
 

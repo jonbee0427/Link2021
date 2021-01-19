@@ -14,12 +14,13 @@ import 'package:link_ver1/widgets/message_tile.dart';
 
 //주석
 class ChatPage extends StatefulWidget {
+  //message.dart에서 데이터 읽어옴 (MyUsers collection used)
   final String groupId;
   final String userName;
   final String groupName;
+  final Widget groupMembers;
 
-
-  ChatPage({this.groupId, this.userName, this.groupName});
+  ChatPage({this.groupId, this.userName, this.groupName,this.groupMembers});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -35,16 +36,16 @@ class _ChatPageState extends State<ChatPage> {
   ScrollController scrollController = new ScrollController();
 
   Widget _chatMessages() {
-
     return StreamBuilder(
       stream: _chats,
       builder: (context, snapshot) {
-        Timer(
-            Duration(milliseconds: 100),
-                () => scrollController
-                .jumpTo(scrollController.position.maxScrollExtent));
+        // Timer(
+        //     Duration(milliseconds: 100),
+        //     () => scrollController
+        //         .jumpTo(scrollController.position.maxScrollExtent));
         return snapshot.hasData
             ? ListView.builder(
+                  reverse: true,
                 controller: scrollController,
                 padding: EdgeInsets.only(bottom: 80),
                 itemCount: snapshot.data.documents.length,
@@ -57,12 +58,10 @@ class _ChatPageState extends State<ChatPage> {
                         snapshot.data.documents[index].data()["sender"],
                     now: snapshot.data.documents[index].data()["time"],
                   );
-                }
-                ,
-                )
+                },
+              )
             : Container();
       },
-
     );
   }
 
@@ -81,8 +80,6 @@ class _ChatPageState extends State<ChatPage> {
   //           Text('Nothing');
   //     },
 
-
-
   _sendMessage(String type, {path}) {
     if (type == 'image') {
       Map<String, dynamic> chatMessageMap = {
@@ -92,9 +89,8 @@ class _ChatPageState extends State<ChatPage> {
         'time': DateTime.now(),
       };
       DatabaseService().sendMessage(widget.groupId, chatMessageMap);
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
-    }
-    else {
+
+    } else {
       if (messageEditingController.text.isNotEmpty) {
         Map<String, dynamic> chatMessageMap = {
           "message": messageEditingController.text,
@@ -110,32 +106,32 @@ class _ChatPageState extends State<ChatPage> {
         });
       }
 
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      //scrollController.jumpTo(scrollController.position.maxScrollExtent);
     }
   }
+
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
     PickedFile image = await imagePicker.getImage(source: ImageSource.gallery);
-    if(image != null){
+    if (image != null) {
       String path = image.path;
       uploadFile(path);
     }
   }
 
-  Future uploadFile(String path) async{
+  Future uploadFile(String path) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference reference = FirebaseStorage.instance.ref().child(fileName);
     UploadTask uploadTask = reference.putFile(File(path));
     TaskSnapshot taskSnapshot = await uploadTask;
-    taskSnapshot.ref.getDownloadURL().then((downloadURL){
+    taskSnapshot.ref.getDownloadURL().then((downloadURL) {
       setState(() {
-        _sendMessage('image',path: downloadURL);
+        _sendMessage('image', path: downloadURL);
       });
-    }, onError: (err){
+    }, onError: (err) {
       Fluttertoast.showToast(msg: 'This File is not an image');
     });
   }
-
 
   @override
   void initState() {
@@ -162,13 +158,16 @@ class _ChatPageState extends State<ChatPage> {
     _user = await FirebaseAuth.instance.currentUser;
   }
 
-  _joinValueInGroup(String userName, String groupId, String groupName, String admin) async {
-    bool value = await DatabaseService(uid: _user.uid).isUserJoined(groupId, groupName, userName);
+  _joinValueInGroup(
+      String userName, String groupId, String groupName, String admin) async {
+    bool value = await DatabaseService(uid: _user.uid)
+        .isUserJoined(groupId, groupName, userName);
     setState(() {
       _isJoined = value;
     });
   }
 
+  //채팅방 화면 빌드
   @override
   Widget build(BuildContext context) {
     Color basic = Color.fromARGB(250, 247, 162, 144);
@@ -182,49 +181,49 @@ class _ChatPageState extends State<ChatPage> {
       endDrawer: Drawer(
         child: Column(
           children: [
-            ListTile(
-              title: Text('User1'),
-            ),
-            ListTile(
-              title: Text('User2'),
-            ),
-            ListTile(
-              title: Text('User3'),
-            ),
+            Expanded(
+                child: SizedBox(
+                  height: 10.0,
+                  child: widget.groupMembers,
+                )),
             RaisedButton(
-                onPressed: (){
-
-                  showDialog(
+              onPressed: () {
+                showDialog(
                     context: context,
-                    builder: (BuildContext context){
+                    builder: (BuildContext context) {
                       return AlertDialog(
                         title: Text('나가시겠습니까?'),
                         actions: [
-                          FlatButton(onPressed: ()async{
-                            Navigator.pop(context);
-                          }, child: Text('취소')),
-                          FlatButton(onPressed: ()async{
-                            await DatabaseService(uid: _user.uid).togglingGroupJoin(widget.groupId, widget.groupName, widget.userName);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-                            Navigator.pop(context);
-
-                          }, child: Text('확인')),
+                          FlatButton(
+                              onPressed: () async {
+                                Navigator.pop(context);
+                              },
+                              child: Text('취소')),
+                          FlatButton(
+                              onPressed: () async {
+                                await DatabaseService(uid: _user.uid)
+                                    .togglingGroupJoin(widget.groupId,
+                                        widget.groupName, widget.userName);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                                Navigator.pop(context);
+                              },
+                              child: Text('확인')),
                         ],
                       );
-                    }
-                  );
-
-                },
-                child: Text('나가기'),
+                    });
+              },
+              child: Text('나가기'),
             )
           ],
         ),
       ),
+
+      //하단에 위치한 채팅 입력하는 칸
       body: Container(
         child: Stack(
           children: <Widget>[
-          _chatMessages(),
+            _chatMessages(),
             Container(
               alignment: Alignment.bottomCenter,
               width: MediaQuery.of(context).size.width,
@@ -238,8 +237,8 @@ class _ChatPageState extends State<ChatPage> {
                 child: Row(
                   children: <Widget>[
                     IconButton(
-                        icon:Icon(Icons.image),
-                        onPressed: (){
+                        icon: Icon(Icons.image),
+                        onPressed: () {
                           getImage();
                         }),
                     Expanded(
@@ -259,10 +258,10 @@ class _ChatPageState extends State<ChatPage> {
                     GestureDetector(
                       onTap: () {
                         _sendMessage('text');
-                        Timer(
-                            Duration(milliseconds: 100),
-                                () => scrollController
-                                .jumpTo(scrollController.position.maxScrollExtent));
+                        // Timer(
+                        //     Duration(milliseconds: 100),
+                        //         () => scrollController
+                        //         .jumpTo(scrollController.position.maxScrollExtent));
                       },
                       child: Container(
                         height: 50.0,
