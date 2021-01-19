@@ -126,14 +126,14 @@ class DatabaseService {
     FirebaseFirestore.instance.collection('groups').doc(groupId).update({
       'recentMessage': chatMessageData['message'],
       'recentMessageSender': chatMessageData['sender'],
-      'recentMessageTime': chatMessageData['time'].toString(),
+      'recentMessageTime': chatMessageData['time'],
     });
   }
 
 
   // get chats of a particular group
   getChats(String groupId) async {
-    return FirebaseFirestore.instance.collection('groups').doc(groupId).collection('messages').orderBy('time').snapshots();
+    return FirebaseFirestore.instance.collection('groups').doc(groupId).collection('messages').orderBy('time', descending: true).snapshots();
   }
 
   getGroup(String groupId) async{

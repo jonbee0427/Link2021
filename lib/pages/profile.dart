@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:link_ver1/screen/profile.dart';
+import 'package:link_ver1/screen/profilePic.dart';
 
 class Profile extends StatelessWidget {
   @override
