@@ -80,7 +80,7 @@ class DatabaseService {
             element.delete();
           });
         });
-         groupDocRef.delete();
+        await groupDocRef.delete();
       }
     }
     else {
@@ -153,7 +153,7 @@ class DatabaseService {
   getGroup(String groupId) async{
      return FirebaseFirestore.instance.collection('groups').doc(groupId).get().then((DocumentSnapshot documentSnapshot) {
        if (documentSnapshot.exists) {
-         print('Document data: ${documentSnapshot.data()}');
+         print('Document data: ${documentSnapshot.data()['recentMessageTime']}');
          return documentSnapshot.data();
        } else {
          print('Document does not exist on the database');
@@ -161,6 +161,9 @@ class DatabaseService {
      });
   }
 
+  getRecentTime(String groupId)async{
+     FirebaseFirestore.instance.collection('groups').doc(groupId).snapshots();
+  }
   // search groups
   searchByName(String groupName) {
     return FirebaseFirestore.instance.collection("groups").where('groupName', isEqualTo: groupName).get();

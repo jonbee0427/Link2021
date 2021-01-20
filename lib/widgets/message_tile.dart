@@ -14,6 +14,7 @@ class MessageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final form = new DateFormat('Hm');
+    if(type == 'text' || type == 'image'){
     return Container(
       padding: EdgeInsets.only(
           top: 4, bottom: 4, left: sentByMe ? 0 : 24, right: sentByMe ? 24 : 0),
@@ -50,7 +51,26 @@ class MessageTile extends StatelessWidget {
           ],
         ),
       ),
-    );
+    );}
+    else{
+      return Container(
+        margin: EdgeInsets.fromLTRB(100, 20, 100, 20),
+        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
+        alignment: Alignment.center,
+
+        decoration: BoxDecoration(
+          color: Colors.grey,
+          borderRadius: BorderRadius.circular(20)
+        ),
+        child: Text(
+          message,
+          style: TextStyle(
+            color: Colors.white,
+            backgroundColor: Colors.grey,
+          ),
+        ),
+      );
+    }
   }
 
   Widget _buildContent() {

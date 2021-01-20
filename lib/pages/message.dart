@@ -26,6 +26,7 @@ class _ChatState extends State<Chat> {
   Stream _groups;
   CollectionReference chats;
   Stream recent;
+  String recentTimeString;
 
   // initState
   @override
@@ -33,7 +34,10 @@ class _ChatState extends State<Chat> {
     super.initState();
     _getUserAuthAndJoinedGroups();
   }
+String getRecentTimeString(String result){
 
+    return result;
+}
   // widgets
   Widget noGroupWidget() {
     return Container(
@@ -57,7 +61,6 @@ class _ChatState extends State<Chat> {
 
   Widget getRecent(String groupId) {
     _getRecentStream(groupId);
-    final form = new DateFormat('Md').add_Hm();
     return StreamBuilder(
       stream: recent,
       builder: (context, snapshot) {
@@ -65,15 +68,7 @@ class _ChatState extends State<Chat> {
           try{
             Timestamp recentTime= snapshot.data['recentMessageTime'];
             String type = snapshot.data['recentMessageType'];
-            if(type == 'text') {
-              return
-                Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(snapshot.data['recentMessage']),
-                      Text(form.format(recentTime.toDate()))
-                    ]);
-            }
-            else{
+            if(type == 'image') {
               return
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -85,11 +80,67 @@ class _ChatState extends State<Chat> {
                           ],
                         ),
                       ),
-                      Text(form.format(recentTime.toDate()))
                     ]);
+            }
+            else{
+              return
+                Container(
+                  child: Row(
+                      children: [
+                        Expanded(
+                          flex: 85,
+                          child: Container(
+                            padding: EdgeInsets.only(right: 15),
+                            child: Text(
+                              snapshot.data['recentMessage'],
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          flex: 15,
+                          child: Container(
+                            alignment: Alignment.center,
+                            height: MediaQuery.of(context).size.height*0.04,
+                            decoration: BoxDecoration(
+                              color: Colors.pink,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text('10',
+                              style: TextStyle(
+                                  color: Colors.white
+                              ),
+                            ),
+                          ),
+
+                        )
+                      ]),
+                );
             }
           }catch(e){
             return Text('nothing');
+          }
+
+        }
+        return Text('nothing');
+      },
+    );
+  }
+
+
+   Widget getRecentTime(String groupId) {
+    _getRecentStream(groupId);
+    final form = new DateFormat('Md').add_Hm();
+    return StreamBuilder(
+      stream: recent,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          try{
+            Timestamp recentTime=  snapshot.data['recentMessageTime'];
+              return Text(form.format(recentTime.toDate()));
+
+          }catch(e){
+            return Text(' ');
           }
 
         }
@@ -146,6 +197,7 @@ class _ChatState extends State<Chat> {
                           _destructureName(snapshot.data['groups'][reqIndex]),
                       recentMsg: getRecent( _destructureId(snapshot.data['groups'][reqIndex])),
                       groupMembers: getGroupMembers( _destructureId(snapshot.data['groups'][reqIndex])),
+                      recentTime: getRecentTime( _destructureId(snapshot.data['groups'][reqIndex])),
                     );
                   });
             } else {
