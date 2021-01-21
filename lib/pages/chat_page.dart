@@ -174,7 +174,7 @@ class _ChatPageState extends State<ChatPage> {
         title: Text(widget.groupName, style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: basic,
-        elevation: 0.0,
+        elevation: 10.0,
       ),
       endDrawer: Drawer(
         child: Column(
@@ -221,7 +221,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
 
-      //하단에 위치한 채팅 입력하는 칸
+      //화면에 채팅 내용 출력 & 하단에 위치한 채팅 입력하는 칸
       body: Container(
         child: Stack(
           children: <Widget>[

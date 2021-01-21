@@ -31,26 +31,27 @@ class _ChatState extends State<Chat> {
     _getUserAuthAndJoinedGroups();
   }
 
+  //사라질 기능
   // widgets
-  Widget noGroupWidget() {
-    return Container(
-        padding: EdgeInsets.symmetric(horizontal: 25.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-                onTap: () {
-                  _popupDialog(context);
-                },
-                child: Icon(Icons.add_circle,
-                    color: Colors.grey[700], size: 75.0)),
-            SizedBox(height: 20.0),
-            Text(
-                "You've not joined any group, tap on the 'add' icon to create a group or search for groups by tapping on the search button below."),
-          ],
-        ));
-  }
+  // Widget noGroupWidget() {
+  //   return Container(
+  //       padding: EdgeInsets.symmetric(horizontal: 25.0),
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.center,
+  //         crossAxisAlignment: CrossAxisAlignment.center,
+  //         children: <Widget>[
+  //           GestureDetector(
+  //               onTap: () {
+  //                 _popupDialog(context);
+  //               },
+  //               child: Icon(Icons.add_circle,
+  //                   color: Colors.grey[700], size: 75.0)),
+  //           SizedBox(height: 20.0),
+  //           Text(
+  //               "You've not joined any group, tap on the 'add' icon to create a group or search for groups by tapping on the search button below."),
+  //         ],
+  //       ));
+  // }
 
   Widget getRecent(String groupId) {
     _getRecentStream(groupId);
@@ -72,37 +73,39 @@ class _ChatState extends State<Chat> {
 
   Widget groupsList() {
     return StreamBuilder(
-      stream: _groups,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          if (snapshot.data['groups'] != null) {
-            // print(snapshot.data['groups'].length);
-            if (snapshot.data['groups'].length != 0) {
-              return ListView.builder(
-                  itemCount: snapshot.data['groups'].length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    print(index);
-                    int reqIndex = snapshot.data['groups'].length - index - 1;
-                    return GroupTile(
-                      userName: snapshot.data['name'],
-                      groupId:
-                          _destructureId(snapshot.data['groups'][reqIndex]),
-                      groupName:
-                          _destructureName(snapshot.data['groups'][reqIndex]),
-                    );
-                  });
-            } else {
-              return noGroupWidget();
+        stream: _groups,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            if (snapshot.data['groups'] != null) {
+              // print(snapshot.data['groups'].length);
+              if (snapshot.data['groups'].length != 0) {
+                return ListView.builder(
+                    itemCount: snapshot.data['groups'].length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      print(index);
+                      int reqIndex = snapshot.data['groups'].length - index - 1;
+                      return GroupTile(
+                        userName: snapshot.data['name'],
+                        groupId:
+                            _destructureId(snapshot.data['groups'][reqIndex]),
+                        groupName:
+                            _destructureName(snapshot.data['groups'][reqIndex]),
+                      );
+                    });
+                //       } else {
+                //         //return noGroupWidget();
+                //       }
+                //     } else {
+                //       //return noGroupWidget();
+                //     }
+                //   } else {
+                //     //return Center(child: CircularProgressIndicator());
+                //   }
+              }
             }
-          } else {
-            return noGroupWidget();
           }
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
+        });
   }
 
   // functions
@@ -136,58 +139,59 @@ class _ChatState extends State<Chat> {
     return res.substring(res.indexOf('_') + 1);
   }
 
-  void _popupDialog(BuildContext context) {
-    Widget cancelButton = FlatButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.of(context).pop();
-      },
-    );
-    Widget createButton = FlatButton(
-      child: Text("Create"),
-      onPressed: () async {
-        if (_groupName != null) {
-          await HelperFunctions.getUserNameSharedPreference().then((val) {
-            DatabaseService(uid: _user.uid).createGroup(val, _groupName);
-          });
-          Navigator.of(context).pop();
-        }
-      },
-    );
+  //사라질 기능
+  // void _popupDialog(BuildContext context) {
+  //   Widget cancelButton = FlatButton(
+  //     child: Text("Cancel"),
+  //     onPressed: () {
+  //       Navigator.of(context).pop();
+  //     },
+  //   );
+  //   Widget createButton = FlatButton(
+  //     child: Text("Create"),
+  //     onPressed: () async {
+  //       if (_groupName != null) {
+  //         await HelperFunctions.getUserNameSharedPreference().then((val) {
+  //           DatabaseService(uid: _user.uid).createGroup(val, _groupName);
+  //         });
+  //         Navigator.of(context).pop();
+  //       }
+  //     },
+  //   );
 
-    AlertDialog alert = AlertDialog(
-      title: Text("Create a group"),
-      content: TextField(
-          onChanged: (val) {
-            _groupName = val;
-          },
-          style: TextStyle(fontSize: 15.0, height: 2.0, color: Colors.black)),
-      actions: [
-        cancelButton,
-        createButton,
-      ],
-    );
+  //   AlertDialog alert = AlertDialog(
+  //     title: Text("Create a group"),
+  //     content: TextField(
+  //         onChanged: (val) {
+  //           _groupName = val;
+  //         },
+  //         style: TextStyle(fontSize: 15.0, height: 2.0, color: Colors.black)),
+  //     actions: [
+  //       cancelButton,
+  //       createButton,
+  //     ],
+  //   );
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return alert;
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: groupsList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _popupDialog(context);
-        },
-        child: Icon(Icons.add, color: Colors.white, size: 30.0),
-        backgroundColor: Colors.grey[700],
-        elevation: 0.0,
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _popupDialog(context);
+      //   },
+      //   child: Icon(Icons.add, color: Colors.white, size: 30.0),
+      //   backgroundColor: Colors.grey[700],
+      //   elevation: 0.0,
+      // ),
     );
   }
 }
