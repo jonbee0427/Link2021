@@ -20,10 +20,6 @@ class ChatPage extends StatefulWidget {
   final String userName;
   final String groupName;
   final Widget groupMembers;
-<<<<<<< HEAD
-
-  ChatPage({this.groupId, this.userName, this.groupName, this.groupMembers});
-=======
   final String profilePic;
 
   ChatPage(
@@ -32,23 +28,17 @@ class ChatPage extends StatefulWidget {
       this.groupName,
       this.groupMembers,
       this.profilePic});
->>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
-<<<<<<< HEAD
-  final checkingFormat = new DateFormat('dd');
-  final printFormat = new DateFormat('yyyy년 MM월 dd일');
-=======
   User _user;
   String _userName;
   final checkingFormat = new DateFormat('dd');
   final printFormat = new DateFormat('yyyy년 MM월 dd일');
   bool _isJoined;
->>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
   Stream<QuerySnapshot> _chats;
   TextEditingController messageEditingController = new TextEditingController();
   ScrollController scrollController = new ScrollController();
@@ -106,7 +96,11 @@ class _ChatPageState extends State<ChatPage> {
 
       if (checkingFormat.format(recent.toDate()) !=
           checkingFormat.format(Timestamp.now().toDate())) {
-        print('sending Message');
+        print('Checking format : ' +
+            checkingFormat.format(recent.toDate()).toString() +
+            'Now : ' +
+            checkingFormat.format(Timestamp.now().toDate()));
+
         Map<String, dynamic> chatMessageMap = {
           "message": printFormat.format(Timestamp.now().toDate()),
           "type": 'DateChecker',
@@ -202,28 +196,29 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-
     DatabaseService().getChats(widget.groupId).then((val) {
       // print(val);
       setState(() {
         _chats = val;
       });
     });
-<<<<<<< HEAD
-    DatabaseService().getRecentTime(widget.groupId).then((val) {
-      setState(() {
-        _recentStream = val;
-      });
-    });
-
-    // DatabaseService().getGroup(widget.groupId).then((val) {
-    //   setState(() {
-    //     _groupInfo = val;
-    //   });
-    // });
-=======
     _getCurrentUserNameAndUid();
->>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
+  }
+
+  _getCurrentUserNameAndUid() async {
+    await HelperFunctions.getUserNameSharedPreference().then((value) {
+      _userName = value;
+    });
+    _user = await FirebaseAuth.instance.currentUser;
+  }
+
+  _joinValueInGroup(
+      String userName, String groupId, String groupName, String admin) async {
+    bool value = await DatabaseService(uid: _user.uid)
+        .isUserJoined(groupId, groupName, userName);
+    setState(() {
+      _isJoined = value;
+    });
   }
 
   //채팅방 화면 빌드
@@ -235,7 +230,7 @@ class _ChatPageState extends State<ChatPage> {
         title: Text(widget.groupName, style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: basic,
-        elevation: 0.0,
+        elevation: 10.0,
       ),
       endDrawer: Drawer(
         child: Column(
@@ -265,15 +260,9 @@ class _ChatPageState extends State<ChatPage> {
                           FlatButton(
                               onPressed: () async {
                                 _sendMessage('system_out');
-<<<<<<< HEAD
-                                // await DatabaseService(uid: _user.uid)
+                                // DatabaseService(uid: _user.uid)
                                 //     .togglingGroupJoin(widget.groupId,
                                 //         widget.groupName, widget.userName);
-=======
-                                 DatabaseService(uid: _user.uid)
-                                    .togglingGroupJoin(widget.groupId,
-                                        widget.groupName, widget.userName);
->>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                                 Navigator.pop(context);
@@ -289,7 +278,7 @@ class _ChatPageState extends State<ChatPage> {
         ),
       ),
 
-      //하단에 위치한 채팅 입력하는 칸
+      //화면에 채팅 내용 출력 & 하단에 위치한 채팅 입력하는 칸
       body: Container(
         child: Stack(
           children: <Widget>[
@@ -328,10 +317,10 @@ class _ChatPageState extends State<ChatPage> {
                     GestureDetector(
                       onTap: () {
                         _sendMessage('text');
-                        // Timer(
-                        //     Duration(milliseconds: 100),
-                        //         () => scrollController
-                        //         .jumpTo(scrollController.position.maxScrollExtent));
+                        Timer(
+                            Duration(milliseconds: 100),
+                            () => scrollController.jumpTo(
+                                scrollController.position.minScrollExtent));
                       },
                       child: Container(
                         height: 50.0,

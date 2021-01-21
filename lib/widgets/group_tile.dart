@@ -9,10 +9,7 @@ class GroupTile extends StatelessWidget {
   final Widget recentMsg;
   final Widget groupMembers;
   final Widget recentTime;
-<<<<<<< HEAD
-=======
   final String profilePic;
->>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
 
   GroupTile(
       {this.userName,
@@ -20,12 +17,8 @@ class GroupTile extends StatelessWidget {
       this.groupName,
       this.recentMsg,
       this.groupMembers,
-<<<<<<< HEAD
-      this.recentTime});
-=======
       this.recentTime,
       this.profilePic});
->>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
 
   // void getRecentMsg() async {
   //   await FirebaseFirestore.instance
@@ -52,10 +45,7 @@ class GroupTile extends StatelessWidget {
                       userName: userName,
                       groupName: groupName,
                       groupMembers: groupMembers,
-<<<<<<< HEAD
-=======
                       profilePic: profilePic,
->>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
                     )));
       },
       child: Container(
