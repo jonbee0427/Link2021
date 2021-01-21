@@ -257,9 +257,9 @@ class _ChatPageState extends State<ChatPage> {
                           FlatButton(
                               onPressed: () async {
                                 _sendMessage('system_out');
-                                 DatabaseService(uid: _user.uid)
-                                    .togglingGroupJoin(widget.groupId,
-                                        widget.groupName, widget.userName);
+                                // DatabaseService(uid: _user.uid)
+                                //     .togglingGroupJoin(widget.groupId,
+                                //         widget.groupName, widget.userName);
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                                 Navigator.pop(context);
@@ -316,8 +316,8 @@ class _ChatPageState extends State<ChatPage> {
                         _sendMessage('text');
                         Timer(
                             Duration(milliseconds: 100),
-                                () => scrollController
-                                .jumpTo(scrollController.position.minScrollExtent));
+                            () => scrollController.jumpTo(
+                                scrollController.position.minScrollExtent));
                       },
                       child: Container(
                         height: 50.0,
