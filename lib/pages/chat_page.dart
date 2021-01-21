@@ -20,16 +20,35 @@ class ChatPage extends StatefulWidget {
   final String userName;
   final String groupName;
   final Widget groupMembers;
+<<<<<<< HEAD
 
   ChatPage({this.groupId, this.userName, this.groupName, this.groupMembers});
+=======
+  final String profilePic;
+
+  ChatPage(
+      {this.groupId,
+      this.userName,
+      this.groupName,
+      this.groupMembers,
+      this.profilePic});
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
 
   @override
   _ChatPageState createState() => _ChatPageState();
 }
 
 class _ChatPageState extends State<ChatPage> {
+<<<<<<< HEAD
   final checkingFormat = new DateFormat('dd');
   final printFormat = new DateFormat('yyyy년 MM월 dd일');
+=======
+  User _user;
+  String _userName;
+  final checkingFormat = new DateFormat('dd');
+  final printFormat = new DateFormat('yyyy년 MM월 dd일');
+  bool _isJoined;
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
   Stream<QuerySnapshot> _chats;
   TextEditingController messageEditingController = new TextEditingController();
   ScrollController scrollController = new ScrollController();
@@ -51,13 +70,14 @@ class _ChatPageState extends State<ChatPage> {
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   return MessageTile(
-                    type: snapshot.data.documents[index].data()["type"],
-                    message: snapshot.data.documents[index].data()["message"],
-                    sender: snapshot.data.documents[index].data()["sender"],
-                    sentByMe: widget.userName ==
-                        snapshot.data.documents[index].data()["sender"],
-                    now: snapshot.data.documents[index].data()["time"],
-                  );
+                      type: snapshot.data.documents[index].data()["type"],
+                      message: snapshot.data.documents[index].data()["message"],
+                      sender: snapshot.data.documents[index].data()["sender"],
+                      sentByMe: widget.userName ==
+                          snapshot.data.documents[index].data()["sender"],
+                      now: snapshot.data.documents[index].data()["time"],
+                      profilePic:
+                          snapshot.data.documents[index].data()["profilePic"]);
                 },
               )
             : Container();
@@ -111,6 +131,7 @@ class _ChatPageState extends State<ChatPage> {
         "type": type,
         "sender": widget.userName,
         'time': DateTime.now(),
+        'profilePic': widget.profilePic
       };
       DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
     } else if (type == 'text') {
@@ -120,6 +141,7 @@ class _ChatPageState extends State<ChatPage> {
           "type": type,
           "sender": widget.userName,
           'time': DateTime.now(),
+          'profilePic': widget.profilePic
         };
 
         DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
@@ -187,6 +209,7 @@ class _ChatPageState extends State<ChatPage> {
         _chats = val;
       });
     });
+<<<<<<< HEAD
     DatabaseService().getRecentTime(widget.groupId).then((val) {
       setState(() {
         _recentStream = val;
@@ -198,6 +221,9 @@ class _ChatPageState extends State<ChatPage> {
     //     _groupInfo = val;
     //   });
     // });
+=======
+    _getCurrentUserNameAndUid();
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
   }
 
   //채팅방 화면 빌드
@@ -239,9 +265,15 @@ class _ChatPageState extends State<ChatPage> {
                           FlatButton(
                               onPressed: () async {
                                 _sendMessage('system_out');
+<<<<<<< HEAD
                                 // await DatabaseService(uid: _user.uid)
                                 //     .togglingGroupJoin(widget.groupId,
                                 //         widget.groupName, widget.userName);
+=======
+                                 DatabaseService(uid: _user.uid)
+                                    .togglingGroupJoin(widget.groupId,
+                                        widget.groupName, widget.userName);
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
                                 Navigator.pop(context);
                                 Navigator.pop(context);
                                 Navigator.pop(context);

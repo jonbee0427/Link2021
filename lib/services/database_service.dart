@@ -76,6 +76,14 @@ class DatabaseService {
             element.delete();
           });
         });
+<<<<<<< HEAD
+=======
+        await groupDocRef.collection('messages').get().then((snapshot) {
+          for (DocumentSnapshot ds in snapshot.docs){
+            ds.reference.delete();
+          }
+        });
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
         await groupDocRef.delete();
       }
     } else {

@@ -39,7 +39,10 @@ class _ChatState extends State<Chat> {
     return result;
   }
 
+<<<<<<< HEAD
   // widgets
+=======
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
   Widget noGroupWidget() {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 25.0),
@@ -64,6 +67,7 @@ class _ChatState extends State<Chat> {
     _getRecentStream(groupId);
     return StreamBuilder(
       stream: recent,
+<<<<<<< HEAD
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           try {
@@ -127,6 +131,79 @@ class _ChatState extends State<Chat> {
     final form = new DateFormat('Md').add_Hm();
     return StreamBuilder(
       stream: recent,
+=======
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          try {
+            Timestamp recentTime = snapshot.data['recentMessageTime'];
+<<<<<<< HEAD
+            return Text(form.format(recentTime.toDate()));
+          } catch (e) {
+            return Text(' ');
+=======
+            String type = snapshot.data['recentMessageType'];
+            if (type == 'image') {
+              return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Row(
+                        children: [
+                          Icon(Icons.photo),
+                          Text('사진'),
+                        ],
+                      ),
+                    ),
+                  ]);
+            } else {
+              return Container(
+                child: Row(children: [
+                  Expanded(
+                    flex: 85,
+                    child: Container(
+                      padding: EdgeInsets.only(right: 15),
+                      child: Text(
+                        snapshot.data['recentMessage'],
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 15,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.04,
+                      decoration: BoxDecoration(
+                        color: Colors.pink,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '10',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  )
+                ]),
+              );
+            }
+          } catch (e) {
+            return Text('nothing');
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
+          }
+        }
+        return Text('nothing');
+      },
+    );
+  }
+
+<<<<<<< HEAD
+=======
+  Widget getRecentTime(String groupId) {
+    _getRecentStream(groupId);
+    final form = new DateFormat('Md').add_Hm();
+    return StreamBuilder(
+      stream: recent,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           try {
@@ -141,6 +218,7 @@ class _ChatState extends State<Chat> {
     );
   }
 
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
   Widget getGroupMembers(String groupId) {
     _getRecentStream(groupId);
     return StreamBuilder(
@@ -185,6 +263,7 @@ class _ChatState extends State<Chat> {
                     return GroupTile(
                       userName: snapshot.data['name'],
                       groupId:
+<<<<<<< HEAD
                           _destructureId(snapshot.data['groups'][reqIndex]),
                       groupName:
                           _destructureName(snapshot.data['groups'][reqIndex]),
@@ -195,6 +274,15 @@ class _ChatState extends State<Chat> {
                       recentTime: getRecentTime(
                           _destructureId(snapshot.data['groups'][reqIndex])),
                     );
+=======
+                      _destructureId(snapshot.data['groups'][reqIndex]),
+                      groupName:
+                      _destructureName(snapshot.data['groups'][reqIndex]),
+                      recentMsg: getRecent( _destructureId(snapshot.data['groups'][reqIndex])),
+                      groupMembers: getGroupMembers( _destructureId(snapshot.data['groups'][reqIndex])),
+                        recentTime: getRecentTime(_destructureId(snapshot.data['groups'][reqIndex])),
+                        profilePic: snapshot.data['profilePic']);
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
                   });
             } else {
               return noGroupWidget();
@@ -208,6 +296,7 @@ class _ChatState extends State<Chat> {
       },
     );
   }
+
 
   // functions
   _getUserAuthAndJoinedGroups() async {
@@ -242,6 +331,10 @@ class _ChatState extends State<Chat> {
     return res.substring(res.indexOf('_') + 1);
   }
 
+<<<<<<< HEAD
+=======
+  //사라질 기능
+>>>>>>> abf7a74a236e346d5c807d9892e3e803dd171e39
   void _popupDialog(BuildContext context) {
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),
