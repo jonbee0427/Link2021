@@ -6,22 +6,32 @@ class GroupTile extends StatelessWidget {
   final String userName;
   final String groupId;
   final String groupName;
-  Widget recentMsg;
+  final Widget recentMsg;
+  final Widget groupMembers;
+  final Widget recentTime;
+  final String profilePic;
 
-  GroupTile({this.userName, this.groupId, this.groupName, this.recentMsg});
+  GroupTile(
+      {this.userName,
+      this.groupId,
+      this.groupName,
+      this.recentMsg,
+      this.groupMembers,
+      this.recentTime,
+      this.profilePic});
 
-  void getRecentMsg() async {
-    await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .get()
-        .then((DocumentSnapshot documentSnapshot) {
-      if (documentSnapshot.exists) {
-        recentMsg = documentSnapshot.get('recentMessage');
-        print(recentMsg);
-      }
-    });
-  }
+  // void getRecentMsg() async {
+  //   await FirebaseFirestore.instance
+  //       .collection('groups')
+  //       .doc(groupId)
+  //       .get()
+  //       .then((DocumentSnapshot documentSnapshot) {
+  //     if (documentSnapshot.exists) {
+  //       recentMsg = documentSnapshot.get('recentMessage');
+  //       print(recentMsg);
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -34,22 +44,30 @@ class GroupTile extends StatelessWidget {
                       groupId: groupId,
                       userName: userName,
                       groupName: groupName,
+                      groupMembers: groupMembers,
+                      profilePic: profilePic,
                     )));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
         child: ListTile(
-          leading: CircleAvatar(
-            radius: 30.0,
-            backgroundColor: Color.fromARGB(250, 247, 162, 144),
-            child: Text(groupName.substring(0, 1).toUpperCase(),
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.white)),
-          ),
-          title: Text(groupName, style: TextStyle(fontWeight: FontWeight.bold)),
-          subtitle: Text('Join the ' + groupName + ' as ' + userName,
-              style: TextStyle(fontSize: 13.0)),
-        ),
+            leading: CircleAvatar(
+              radius: 30.0,
+              backgroundColor: Color.fromARGB(250, 247, 162, 144),
+              child: Text(groupName.substring(0, 1).toUpperCase(),
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: Colors.white)),
+            ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(groupName, style: TextStyle(fontWeight: FontWeight.bold)),
+                recentTime
+              ],
+            ),
+            //   subtitle: Text('Join the ' + groupName + ' as ' + userName,
+            // style: TextStyle(fontSize: 13.0)),
+            subtitle: recentMsg),
       ),
     );
   }

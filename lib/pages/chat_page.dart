@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
@@ -18,8 +19,15 @@ class ChatPage extends StatefulWidget {
   final String groupId;
   final String userName;
   final String groupName;
+  final Widget groupMembers;
+  final String profilePic;
 
-  ChatPage({this.groupId, this.userName, this.groupName});
+  ChatPage(
+      {this.groupId,
+      this.userName,
+      this.groupName,
+      this.groupMembers,
+      this.profilePic});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -28,34 +36,37 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   User _user;
   String _userName;
+  final checkingFormat = new DateFormat('dd');
+  final printFormat = new DateFormat('yyyy년 MM월 dd일');
   bool _isJoined;
   Stream<QuerySnapshot> _chats;
-  DocumentSnapshot _groupInfo;
   TextEditingController messageEditingController = new TextEditingController();
   ScrollController scrollController = new ScrollController();
-
+  Timestamp recent;
+  Stream _recentStream;
   Widget _chatMessages() {
     return StreamBuilder(
       stream: _chats,
       builder: (context, snapshot) {
-        Timer(
-            Duration(milliseconds: 100),
-            () => scrollController
-                .jumpTo(scrollController.position.maxScrollExtent));
+        // Timer(
+        //     Duration(milliseconds: 100),
+        //     () => scrollController
+        //         .jumpTo(scrollController.position.maxScrollExtent));
         return snapshot.hasData
             ? ListView.builder(
+                reverse: true,
                 controller: scrollController,
                 padding: EdgeInsets.only(bottom: 80),
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   return MessageTile(
-                    type: snapshot.data.documents[index].data()["type"],
-                    message: snapshot.data.documents[index].data()["message"],
-                    sender: snapshot.data.documents[index].data()["sender"],
-                    sentByMe: widget.userName ==
-                        snapshot.data.documents[index].data()["sender"],
-                    now: snapshot.data.documents[index].data()["time"],
-                  );
+                      type: snapshot.data.documents[index].data()["type"],
+                      message: snapshot.data.documents[index].data()["message"],
+                      sender: snapshot.data.documents[index].data()["sender"],
+                      sentByMe: widget.userName ==
+                          snapshot.data.documents[index].data()["sender"],
+                      now: snapshot.data.documents[index].data()["time"],
+                      profilePic: snapshot.data.documents[index].data()["profilePic"]);
                 },
               )
             : Container();
@@ -78,33 +89,66 @@ class _ChatPageState extends State<ChatPage> {
   //           Text('Nothing');
   //     },
 
-  _sendMessage(String type, {path}) {
+  _sendMessage(String type, {path}) async {
+    try {
+      await getRecentTime();
+
+      if (checkingFormat.format(recent.toDate()) !=
+          checkingFormat.format(Timestamp.now().toDate())) {
+        print('sending Message');
+        Map<String, dynamic> chatMessageMap = {
+          "message": printFormat.format(Timestamp.now().toDate()),
+          "type": 'DateChecker',
+          "sender": 'system',
+          'time': DateTime.now(),
+        };
+        DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
+      }
+    } catch (e) {
+      Map<String, dynamic> chatMessageMap = {
+        "message": printFormat.format(Timestamp.now().toDate()),
+        "type": 'DateChecker',
+        "sender": 'system',
+        'time': DateTime.now(),
+      };
+      DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
+    }
+
     if (type == 'image') {
       Map<String, dynamic> chatMessageMap = {
         "message": path,
         "type": type,
         "sender": widget.userName,
         'time': DateTime.now(),
+        'profilePic': widget.profilePic
       };
-      DatabaseService().sendMessage(widget.groupId, chatMessageMap);
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
-    } else {
+      DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
+    } else if (type == 'text') {
       if (messageEditingController.text.isNotEmpty) {
         Map<String, dynamic> chatMessageMap = {
           "message": messageEditingController.text,
           "type": type,
           "sender": widget.userName,
           'time': DateTime.now(),
+          'profilePic': widget.profilePic
         };
 
-        DatabaseService().sendMessage(widget.groupId, chatMessageMap);
+        DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
 
         setState(() {
           messageEditingController.text = "";
         });
       }
 
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      //scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    } else if (type == 'system_out') {
+      Map<String, dynamic> chatMessageMap = {
+        "message": widget.userName + '님이 나가셨습니다',
+        "type": type,
+        "sender": widget.userName,
+        'time': DateTime.now(),
+      };
+      DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
     }
   }
 
@@ -119,7 +163,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Future uploadFile(String path) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference reference = FirebaseStorage.instance.ref().child(fileName);
+    Reference reference =
+        FirebaseStorage.instance.ref().child(widget.groupId + '/' + fileName);
     UploadTask uploadTask = reference.putFile(File(path));
     TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadURL) {
@@ -128,6 +173,18 @@ class _ChatPageState extends State<ChatPage> {
       });
     }, onError: (err) {
       Fluttertoast.showToast(msg: 'This File is not an image');
+    });
+  }
+
+  void getRecentTime() async {
+    await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(widget.groupId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        recent = documentSnapshot.get('recentMessageTime');
+      }
     });
   }
 
@@ -142,11 +199,6 @@ class _ChatPageState extends State<ChatPage> {
     });
     _getCurrentUserNameAndUid();
 
-    // DatabaseService().getGroup(widget.groupId).then((val) {
-    //   setState(() {
-    //     _groupInfo = val;
-    //   });
-    // });
   }
 
   _getCurrentUserNameAndUid() async {
@@ -179,15 +231,15 @@ class _ChatPageState extends State<ChatPage> {
       endDrawer: Drawer(
         child: Column(
           children: [
-            ListTile(
-              title: Text('User1'),
+            SizedBox(
+              child: widget.groupMembers,
             ),
-            ListTile(
-              title: Text('User2'),
-            ),
-            ListTile(
-              title: Text('User3'),
-            ),
+            // Expanded(
+            //     child: SizedBox(
+            //   child: widget.groupMembers,
+            //       height: 600,
+            // ),
+            // ),
             RaisedButton(
               onPressed: () {
                 showDialog(
@@ -203,6 +255,7 @@ class _ChatPageState extends State<ChatPage> {
                               child: Text('취소')),
                           FlatButton(
                               onPressed: () async {
+                                _sendMessage('system_out');
                                 await DatabaseService(uid: _user.uid)
                                     .togglingGroupJoin(widget.groupId,
                                         widget.groupName, widget.userName);
