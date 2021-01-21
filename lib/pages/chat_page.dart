@@ -96,7 +96,8 @@ class _ChatPageState extends State<ChatPage> {
 
       if (checkingFormat.format(recent.toDate()) !=
           checkingFormat.format(Timestamp.now().toDate())) {
-        print('sending Message');
+        //print('Checking format : ' + checkingFormat.format(recent.toDate()).toString()  + 'Now : ' + checkingFormat.format(Timestamp.now().toDate()));
+
         Map<String, dynamic> chatMessageMap = {
           "message": printFormat.format(Timestamp.now().toDate()),
           "type": 'DateChecker',
@@ -313,10 +314,10 @@ class _ChatPageState extends State<ChatPage> {
                     GestureDetector(
                       onTap: () {
                         _sendMessage('text');
-                        // Timer(
-                        //     Duration(milliseconds: 100),
-                        //         () => scrollController
-                        //         .jumpTo(scrollController.position.maxScrollExtent));
+                        Timer(
+                            Duration(milliseconds: 100),
+                                () => scrollController
+                                .jumpTo(scrollController.position.minScrollExtent));
                       },
                       child: Container(
                         height: 50.0,

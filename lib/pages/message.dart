@@ -150,10 +150,14 @@ class _ChatState extends State<Chat> {
             shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index) {
-              int reqIndex = snapshot.data['members'].length - index - 1;
               return ListTile(
                 title:
-                    Text(_destructureName(snapshot.data['members'][reqIndex])),
+                   Row(
+                       children: [
+                         Text(_destructureName(snapshot.data['members'][index])),
+                         snapshot.data['admin'] == _destructureName(snapshot.data['members'][index]) ?
+                             Icon(Icons.star) : Text(''),
+                       ]),
               );
             },
           );
