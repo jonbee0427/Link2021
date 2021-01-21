@@ -198,6 +198,7 @@ String getRecentTimeString(String result){
                       recentMsg: getRecent( _destructureId(snapshot.data['groups'][reqIndex])),
                       groupMembers: getGroupMembers( _destructureId(snapshot.data['groups'][reqIndex])),
                       recentTime: getRecentTime( _destructureId(snapshot.data['groups'][reqIndex])),
+                      profilePic : snapshot.data['profilePic']
                     );
                   });
             } else {

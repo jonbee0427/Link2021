@@ -20,8 +20,9 @@ class ChatPage extends StatefulWidget {
   final String userName;
   final String groupName;
   final Widget groupMembers;
+  final String profilePic;
 
-  ChatPage({this.groupId, this.userName, this.groupName, this.groupMembers});
+  ChatPage({this.groupId, this.userName, this.groupName, this.groupMembers, this.profilePic});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -57,6 +58,7 @@ class _ChatPageState extends State<ChatPage> {
                     sentByMe: widget.userName ==
                         snapshot.data.documents[index].data()["sender"],
                     now: snapshot.data.documents[index].data()["time"],
+                    profilePic : widget.profilePic
                   );
                 },
               )
@@ -111,6 +113,7 @@ class _ChatPageState extends State<ChatPage> {
         "type": type,
         "sender": widget.userName,
         'time': DateTime.now(),
+        'profilePic' : widget.profilePic
       };
       DatabaseService().sendMessage(widget.groupId, chatMessageMap,  type);
     } else if(type =='text') {
@@ -120,6 +123,7 @@ class _ChatPageState extends State<ChatPage> {
           "type": type,
           "sender": widget.userName,
           'time': DateTime.now(),
+          'profilePic' : widget.profilePic
         };
 
         DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
