@@ -257,7 +257,7 @@ class _ChatPageState extends State<ChatPage> {
                           FlatButton(
                               onPressed: () async {
                                 _sendMessage('system_out');
-                                await DatabaseService(uid: _user.uid)
+                                 DatabaseService(uid: _user.uid)
                                     .togglingGroupJoin(widget.groupId,
                                         widget.groupName, widget.userName);
                                 Navigator.pop(context);

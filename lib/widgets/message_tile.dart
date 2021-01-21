@@ -20,7 +20,6 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(profilePic);
     final form = new DateFormat('Hm');
     if (type == 'text' || type == 'image') {
       return Column(
@@ -76,7 +75,7 @@ class MessageTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       //유저 프로필 사진
-                      profilePic == null?
+                      profilePic == null || profilePic == ""?
                       CircleAvatar(
                         backgroundColor: Colors.white,
                         backgroundImage: AssetImage("assets/user.png"),
