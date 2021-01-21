@@ -66,7 +66,8 @@ class _ChatPageState extends State<ChatPage> {
                       sentByMe: widget.userName ==
                           snapshot.data.documents[index].data()["sender"],
                       now: snapshot.data.documents[index].data()["time"],
-                      profilePic: snapshot.data.documents[index].data()["profilePic"]);
+                      profilePic:
+                          snapshot.data.documents[index].data()["profilePic"]);
                 },
               )
             : Container();
@@ -198,7 +199,6 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _getCurrentUserNameAndUid();
-
   }
 
   _getCurrentUserNameAndUid() async {
@@ -231,6 +231,7 @@ class _ChatPageState extends State<ChatPage> {
       endDrawer: Drawer(
         child: Column(
           children: [
+            Container(padding: EdgeInsets.only(top: 15), child: Text("참여 유저")),
             SizedBox(
               child: widget.groupMembers,
             ),

@@ -182,14 +182,17 @@ class _ChatState extends State<Chat> {
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
-                      userName: snapshot.data['name'],
-                      groupId:
-                      _destructureId(snapshot.data['groups'][reqIndex]),
-                      groupName:
-                      _destructureName(snapshot.data['groups'][reqIndex]),
-                      recentMsg: getRecent( _destructureId(snapshot.data['groups'][reqIndex])),
-                      groupMembers: getGroupMembers( _destructureId(snapshot.data['groups'][reqIndex])),
-                        recentTime: getRecentTime(_destructureId(snapshot.data['groups'][reqIndex])),
+                        userName: snapshot.data['name'],
+                        groupId:
+                            _destructureId(snapshot.data['groups'][reqIndex]),
+                        groupName:
+                            _destructureName(snapshot.data['groups'][reqIndex]),
+                        recentMsg: getRecent(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
+                        groupMembers: getGroupMembers(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
+                        recentTime: getRecentTime(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
                         profilePic: snapshot.data['profilePic']);
                   });
             } else {
@@ -204,7 +207,6 @@ class _ChatState extends State<Chat> {
       },
     );
   }
-
 
   // functions
   _getUserAuthAndJoinedGroups() async {
