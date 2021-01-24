@@ -62,7 +62,7 @@
 ## 1/3
 
 ### 백주원 
-이전에 오준석의 생존코딩이 조금 도움이 되었던 것을 알았기에 
+이전에 오준석의 생존코딩이 조금 도움이 되었던 것을 알았기에   
 [다트언어](https://www.youtube.com/watch?v=J_cQyPGyHRI&t=15s)   
 [플러터 초급](https://www.youtube.com/watch?v=lRbZsBvG9Ig&list=PLxTmPHxRH3VUueVvEnrP8qxHAP5x9XAPv)   
 [플러터 중급](https://www.youtube.com/watch?v=ei8TX-uqP6E&list=PLxTmPHxRH3VWLY-eyQuV1C_IbIQlCXEhe)   
