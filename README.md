@@ -6,7 +6,7 @@
  
  다트 언어 학습 동영상 : <https://www.youtube.com/watch?v=jrp_X8sa5aM&list=PLoJdZ7VvEiRMjoNiIBOEjFtlraB-JB02O>   
  플러터를 이용한 UI : <https://www.youtube.com/watch?v=AdYRASHRKwE&list=PLQt_pzi-LLfpcRFhWMywTePfZ2aPapvyl>      
- 파이어베이스 실습 : <https://codelabs.developers.google.com/codelabs/flutter-firebase#0>
+ 파이어베이스 실습 : <https://codelabs.developers.google.com/codelabs/flutter-firebase#0>    
  해당 동영상들, 사이트를 보며 다트와 플러터에 대한 기초를 다지는 시간을 가졌다.
  
  ## 12/29
