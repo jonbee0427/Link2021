@@ -147,6 +147,7 @@ class _ChatState extends State<Chat> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
+            padding:EdgeInsets.only(top: 0),
             shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index) {
@@ -156,7 +157,7 @@ class _ChatState extends State<Chat> {
                        children: [
                          Text(_destructureName(snapshot.data['members'][index])),
                          snapshot.data['admin'] == _destructureName(snapshot.data['members'][index]) ?
-                             Icon(Icons.star) : Text(''),
+                             Text(' (방장)') : Text(''),
                        ]),
               );
             },
@@ -186,6 +187,7 @@ class _ChatState extends State<Chat> {
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
+                        profilePic: snapshot.data['profilePic'],
                         userName: snapshot.data['name'],
                         groupId:
                             _destructureId(snapshot.data['groups'][reqIndex]),
@@ -197,7 +199,7 @@ class _ChatState extends State<Chat> {
                             _destructureId(snapshot.data['groups'][reqIndex])),
                         recentTime: getRecentTime(
                             _destructureId(snapshot.data['groups'][reqIndex])),
-                        profilePic: snapshot.data['profilePic']);
+                        );
                   });
             } else {
               return noGroupWidget();
