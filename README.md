@@ -141,4 +141,34 @@ Grouptile에 해당 채팅방에서 가장 최근에 보낸 메시지를 표시�
    }
 </code></pre>   
 
-print는 정상적으로 최근 메시지를 출력하지만, recentMsg 변수를 출력해보면 null이 떠서 여기에서 막혔던 것 같다. 
+print는 정상적으로 최근 메시지를 출력하지만, recentMsg 변수를 출력해보면 null이 떠서 여기에서 막혔던 것 같다.    
+
+## 1/11
+
+## 백주원
+은지, 신, 종현이형의 코드를 모두 합치는 작업을 완료했다.     
+
+
+## 1/12
+
+## 백주원   
+
+채팅방에 들어갔을 때/ 혹은 메시지를 전송했을 때에 맨 아래쪽으로 스크롤 되지 않았던 문제가 있었다.    
+<pre><code>
+Timer(
+            Duration(milliseconds: 100),
+                () => scrollController
+                .jumpTo(scrollController.position.maxScrollExtent));
+</code></pre>     
+
+위의 코드를 작성해서 채팅방에 들어가거나 메시지를 전송하면 채팅방 가장 아래쪽으로 Scroll되게끔 만들어주었다.    
+Duration 속성을 넣어주지 않으면 에러가 뜨는데, 아마 데이터를 받아오는 시간과 관련있지 않을까 싶었다.    
+
+
+
+## 1/13 시연회
+
+
+
+
+
