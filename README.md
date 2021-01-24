@@ -25,7 +25,8 @@
 
 ## 12/30
 
-이전까지 각자 개개인의 UI만을 내세워서 진행을 하다보니 일이 진척이 되질 않아 합의된 UI를 도출해냈음   
+이전까지 각자 개개인의 UI만을 내세워서 진행을 하다보니 일이 진척이 되질 않아 합의된 UI를 도출해냈음    
+
 [매칭앱 UI](https://github.com/21700340JuwonBaek/link_test/blob/master/%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20UI/%EC%8A%A4%ED%86%A0%EB%A6%AC%EB%B3%B4%EB%93%9C.pdf)
 
 ### 백주원
