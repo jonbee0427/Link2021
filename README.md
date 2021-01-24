@@ -121,4 +121,24 @@
 가 있다. 
 
 
+## 1/9
 
+### 백주원
+종현이 형의 코드와 내 코드를 합치는 데에 성공했다.    
+Grouptile에 해당 채팅방에서 가장 최근에 보낸 메시지를 표시해주고 싶어서 아래의 코드를 작성해보았다.    
+<pre><code>
+   void getRecentMsg() async {
+     await FirebaseFirestore.instance
+         .collection('groups')
+        .doc(groupId)
+        .get()
+       .then((DocumentSnapshot documentSnapshot) {
+       if (documentSnapshot.exists) {
+         recentMsg = documentSnapshot.get('recentMessage');
+         print(recentMsg);
+       }
+     });
+   }
+</code></pre>   
+
+print는 정상적으로 최근 메시지를 출력하지만, recentMsg 변수를 출력해보면 null이 떠서 여기에서 막혔던 것 같다. 
