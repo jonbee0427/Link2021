@@ -223,8 +223,8 @@ RecentMessage의 Overflow문제를 해결했다. [참조사이트](https://stack
 
 - StreamBuilder에서 멤버가 Admin이라면 (방장)이라는 텍스트를 같이 보내주게끔 바꾸어줬다.
 - Drawer의 UI를 좀 바꿔주었다. [참조사이트](https://stackoverflow.com/questions/47951907/change-flutter-drawer-background-color/47952148)   
-- 멤버의 목록을 divide해서 나타내는게 좋을까 생각해서 찾아본 사이트...[참조사이트](https://stackoverflow.com/questions/50687633/flutter-divider-how-could-i-add-divider-between-each-line-in-my-code)   
--마지막으로 멤버의 수가 많아지면 ListView가 핸드폰 화면 밖으로 나가버려 Overflow가 발생했는데, Extend태그를 써서 해결했다.
+- 멤버의 목록을 divide해서 나타내는게 좋을까 생각해서 찾아본 사이트...[참조사이트](https://stackoverflow.com/questions/50687633/flutter-divider-how-could-i-add-divider-between-each-line-in-my-code)    
+- 마지막으로 멤버의 수가 많아지면 ListView가 핸드폰 화면 밖으로 나가버려 Overflow가 발생했는데, Extend태그를 써서 해결했다.
 
 
 
