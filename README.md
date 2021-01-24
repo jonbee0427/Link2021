@@ -190,6 +190,42 @@ Drawer메뉴에서 Raised Button을 넣어주고, 그것을 클릭했을 때에 
 그 대로 코드를 제작해서 실행해 봤다. 성공했다. 그것을 통해서 최근 메시지 시간, 최근 메시지 내용이 Group Tile에 출력이 되었다.    
 다만 최근 메시지의 내용이 길 때에는 Overflow가 발생하는데, 이것을 해결할 필요가 있다.    
 
+## 1/19
+
+### 백주원
+
+- 채팅방 멤버 목록을 Drawer에 표시하는 것 까지 완료했다.(StreamBuilder을 이용해서 데이터 전송)    
+- 이전에는 사진을 전송할 때에 Storage에 그냥 전송했는데, 사진을 삭제할 때에는 Storage에서 분류를 해놓는 것이 필요하다고 판단해서    
+채팅방 GroupId의 폴더 내에 전송된 사진들을 보관하기로 했다.    
+- 채팅방에서 인원이 0명일 경우 채팅방이 데이터베이스에서 삭제되는 코드까지 추가를 했다.    
+- 마지막으로 채팅방 삭제시에 Storage에 저장된 데이터까지 삭제했다.   ([참조사이트](https://stackoverflow.com/questions/37749647/firebasestorage-how-to-delete-directory/37757909
+))
+
+## 1/20
+
+### 백주원
+
+채팅방에서 나갔을 때에 System type형 메시지를 전달하는 방법으로 '~가 나갔습니다'를 전송했다.   
+메시지 타입별로 UI를 다르게 해서 출력이 가능해서 좋았던 것 같다.   
+
+문제는 하루가 지날 때에 날짜를 채팅방에다 표시해주는 것인데, 위젯으로 최근 메시지의 시간을 전달해주다 보니 에러사항이 있다.   
+밤 11시쯤 문득 생각나서 코딩을 했는데, 그냥 chat_room에서 최근 메시지 시간에 대한 데이터를 받아오는 것이 방법이었다.   
+메시지를 전송할 때에 해당 채팅방의 document에서 recentMessageTime 필드를 가져오고, 메시지를 보내는 시점의 시간을 비교해서    
+Day의 차이가 있다면 DateChecker형 메시지를 전송하는 로직을 짰다.    
+
+GroupTile에서 시간을 위쪽, 최근 메시지를 아래쪽으로 분리하는 것이 좋다고 판단해서 시간을 받는 StreamBuilder을 또 생성했다.(흠....)   
+
+RecentMessage의 Overflow문제를 해결했다. [참조사이트](https://stackoverflow.com/questions/44579918/flutter-wrap-text-on-overflow-like-insert-ellipsis-or-fade)    
+
+## 1/21
+
+### 백주원
+
+- StreamBuilder에서 멤버가 Admin이라면 (방장)이라는 텍스트를 같이 보내주게끔 바꾸어줬다.
+- Drawer의 UI를 좀 바꿔주었다. [참조사이트](https://stackoverflow.com/questions/47951907/change-flutter-drawer-background-color/47952148)   
+- 멤버의 목록을 divide해서 나타내는게 좋을까 생각해서 찾아본 사이트...[참조사이트](https://stackoverflow.com/questions/50687633/flutter-divider-how-could-i-add-divider-between-each-line-in-my-code)   
+-마지막으로 멤버의 수가 많아지면 ListView가 핸드폰 화면 밖으로 나가버려 Overflow가 발생했는데, Extend태그를 써서 해결했다.
+
 
 
 
