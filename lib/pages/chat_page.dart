@@ -13,6 +13,7 @@ import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/message_tile.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
+
 //주석
 class ChatPage extends StatefulWidget {
   //message.dart에서 데이터 읽어옴 (MyUsers collection used)
@@ -27,8 +28,7 @@ class ChatPage extends StatefulWidget {
       this.userName,
       this.groupName,
       this.groupMembers,
-        this.profilePic
-      });
+      this.profilePic});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -62,14 +62,14 @@ class _ChatPageState extends State<ChatPage> {
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   return MessageTile(
-                      type: snapshot.data.documents[index].data()["type"],
-                      message: snapshot.data.documents[index].data()["message"],
-                      sender: snapshot.data.documents[index].data()["sender"],
-                      sentByMe: widget.userName ==
-                          snapshot.data.documents[index].data()["sender"],
-                      now: snapshot.data.documents[index].data()["time"],
-                    profilePic: snapshot.data.documents[index].data()["profilePic"],
-
+                    type: snapshot.data.documents[index].data()["type"],
+                    message: snapshot.data.documents[index].data()["message"],
+                    sender: snapshot.data.documents[index].data()["sender"],
+                    sentByMe: widget.userName ==
+                        snapshot.data.documents[index].data()["sender"],
+                    now: snapshot.data.documents[index].data()["time"],
+                    profilePic:
+                        snapshot.data.documents[index].data()["profilePic"],
                   );
                 },
               )
@@ -240,44 +240,37 @@ class _ChatPageState extends State<ChatPage> {
         child: Column(
           children: [
             Container(
-              width: MediaQuery.of(context).size.width*1,
+              width: MediaQuery.of(context).size.width * 1,
               decoration: BoxDecoration(
-                color: Color.fromARGB(250, 247, 162, 144),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10),
-                  bottomRight: Radius.circular(10)
-                )
-              ),
-                child: Column(
-                  children: [
-                    widget.profilePic != null ?
-                    CircleAvatar(
-                    radius: 60,
-                    backgroundImage: NetworkImage(
-                        widget.profilePic
-                    ),
-                  ) : CircleAvatar(
-                      backgroundColor: Colors.white,
-                      radius: 60,
-                      backgroundImage: AssetImage('assets/user.png'),
-                    ),
-                    Container(
-                        margin: EdgeInsets.fromLTRB(0,10,0,10),
-                        child: Text(_userName + '님', style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                        ),)
-                    )
-                  ]
-                ),
-
+                  color: Color.fromARGB(250, 247, 162, 144),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10))),
+              child: Column(children: [
+                widget.profilePic != null
+                    ? CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(widget.profilePic),
+                      )
+                    : CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 60,
+                        backgroundImage: AssetImage('assets/user.png'),
+                      ),
+                Container(
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    child: Text(
+                      _userName + '님',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ))
+              ]),
             ),
-              Expanded(
-                child: Container(
-                    child: widget.groupMembers,
-
-                ),
+            Expanded(
+              child: Container(
+                child: widget.groupMembers,
               ),
+            ),
             // Expanded(
             //     child: SizedBox(
             //   child: widget.groupMembers,
@@ -286,14 +279,14 @@ class _ChatPageState extends State<ChatPage> {
             // ),
 
             Container(
-             // color: Colors.grey[300],
-              child: Row(
-                children: [IconButton(
+              // color: Colors.grey[300],
+              child: Row(children: [
+                IconButton(
                   iconSize: 30,
                   color: basic,
-                  icon:Transform.rotate(
-                      angle:  math.pi,
-                    child:  Icon(Icons.input),
+                  icon: Transform.rotate(
+                    angle: math.pi,
+                    child: Icon(Icons.input),
                   ),
                   onPressed: () {
                     showDialog(
@@ -308,23 +301,23 @@ class _ChatPageState extends State<ChatPage> {
                                   },
                                   child: Text('취소')),
                               FlatButton(
-                                  onPressed: () async {
-                                    _sendMessage('system_out');
-                                    // DatabaseService(uid: _user.uid)
-                                    //     .togglingGroupJoin(widget.groupId,
-                                    //         widget.groupName, widget.userName);
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                    Navigator.pop(context);
-                                  },
+                                onPressed: () async {
+                                  _sendMessage('system_out');
+                                  DatabaseService(uid: _user.uid)
+                                      .togglingGroupJoin(widget.groupId,
+                                          widget.groupName, widget.userName);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
                                 child: Text('확인'),
                               )
                             ],
                           );
                         });
                   },
-                ),]
-              ),
+                ),
+              ]),
             )
           ],
         ),
