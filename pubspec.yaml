@@ -45,7 +45,7 @@ dependencies:
   date_time_picker: ^1.1.1
   path: ^1.7.0 #upload pic
   flutter_swiper: ^1.1.6
-  image_slider: ^1.0.2
+  carousel_slider: ^2.3.1
 
   
 

@@ -21,6 +21,8 @@ import 'message.dart';
 2.1 사진 업로드 할때 생기는 문제 ???
 3. 게시글 작성시 업로드되는 사진들을 하나의 폴더에 넣기  완료 
 
+사진 업로드 후 확인해보니 사진을 하나만 업로드 해도 여러개가 올라가 있음
+이미지 슬라이더 계속 문제
 */
 // import 'package:day_night_time_picker/day_night_time_picker.dart';
 import '../shared/constants.dart';
@@ -309,6 +311,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                         });
                                         for (String p in path) {
                                           uploadFile(p, _groupName);
+                                          print(p);
                                         }
                                         writing.add(
                                           {
