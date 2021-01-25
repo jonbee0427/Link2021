@@ -7,6 +7,7 @@ import 'post_buytogether.dart';
 import 'post_hobbytogether.dart';
 import 'post_studytogether.dart';
 import '../shared/constants.dart';
+import 'carousel_page.dart';
 
 class Post extends StatefulWidget {
   @override
@@ -44,97 +45,125 @@ class _PostState extends State<Post> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: 10,
+                    height: 20,
                   ),
-                  Text("H-links",
+                  Text("카테고리 선택",
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 45.0,
                           fontWeight: FontWeight.bold)),
                   SizedBox(
-                    height: 10,
+                    height: 30,
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 100.0,
-                    child: RaisedButton(
-                        elevation: 0.0,
-                        color: Colors.blue[200],
-                        // Color.fromARGB(300, 247, 162, 144),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
-                        child: Text('공동 구매',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 30.0)),
-                        onPressed: () {
-                          print('buy');
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PostBuyTogether()));
-                        }),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 100.0,
-                    child: RaisedButton(
-                        elevation: 0.0,
-                        color: Colors.blue[200],
-                        // Color.fromARGB(300, 247, 162, 144),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
-                        child: Text('스터디',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 30.0)),
-                        onPressed: () {
-                          print('study');
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PostStudyTogether()));
-                        }),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 100.0,
-                    child: RaisedButton(
-                        elevation: 0.0,
-                        color: Colors.blue[200],
-                        // Color.fromARGB(300, 247, 162, 144),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
-                        child: Text('취미 생활',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 30.0)),
-                        onPressed: () {
-                          print('Hobby');
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => PostHobbyTogether()));
-                        }),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 150.0,
+                          child: RaisedButton(
+                              elevation: 0.0,
+                              color: Colors.blue[200],
+                              // Color.fromARGB(300, 247, 162, 144),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0)),
+                              child: Text('공동 구매',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 30.0)),
+                              onPressed: () {
+                                print('buy');
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => PostBuyTogether()));
+                              }),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 150.0,
+                          child: RaisedButton(
+                              elevation: 0.0,
+                              color: Colors.blue[200],
+                              // Color.fromARGB(300, 247, 162, 144),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0)),
+                              child: Text('스터디',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 30.0)),
+                              onPressed: () {
+                                print('study');
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => PostStudyTogether()));
+                              }),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                    ],
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 100.0,
-                    child: RaisedButton(
-                        elevation: 0.0,
-                        color: Colors.blue[200],
-                        // Color.fromARGB(300, 247, 162, 144),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
-                        child: Text('준비중',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 30.0)),
-                        onPressed: () {
-                          print('준비중');
-                          Toast.show('준비중입니다.', context,
-                              duration: Toast.LENGTH_LONG,
-                              gravity: Toast.BOTTOM);
-                        }),
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 150.0,
+                          child: RaisedButton(
+                              elevation: 0.0,
+                              color: Colors.blue[200],
+                              // Color.fromARGB(300, 247, 162, 144),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0)),
+                              child: Text('취미 생활',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 30.0)),
+                              onPressed: () {
+                                print('Hobby');
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => PostHobbyTogether()));
+                              }),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Flexible(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 150.0,
+                          child: RaisedButton(
+                              elevation: 0.0,
+                              color: Colors.blue[200],
+                              // Color.fromARGB(300, 247, 162, 144),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0)),
+                              child: Text('준비중',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 30.0)),
+                              onPressed: () {
+                                print('준비중');
+                                Toast.show('준비중입니다.', context,
+                                    duration: Toast.LENGTH_LONG,
+                                    gravity: Toast.BOTTOM);
+                              }),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                    ],
                   ),
                 ],
               ),
