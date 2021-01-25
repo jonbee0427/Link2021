@@ -10,6 +10,7 @@ import 'package:path/path.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/screen/profileMain.dart';
+import 'package:link_ver1/helper/helper_functions.dart';
 
 //사진을 firebase storage에 저장 & 로그인된 사용자 필드값 update
 class ProfilePic extends StatefulWidget {
@@ -50,6 +51,7 @@ class _ProfilePicState extends State<ProfilePic> {
 
   void updateField() async {
     var firebaseUser = await FirebaseAuth.instance.currentUser;
+    firebaseUser.updateProfile(photoURL: imageUrl);
     FirebaseFirestore.instance
         .collection("MyUsers")
         .doc(firebaseUser.uid)
@@ -70,7 +72,8 @@ class _ProfilePicState extends State<ProfilePic> {
         overflow: Overflow.visible,
         children: [
           CircleAvatar(
-            backgroundImage: image == null
+            backgroundImage: image ==
+                    null //만약 사용자가 로그아웃을 했더라도 마지막에 저장된 프로필 사진으로 자동적으로 보이기 필요.
                 ? AssetImage("assets/user.png")
                 : FileImage(File(image.path)),
             backgroundColor: Colors.white,

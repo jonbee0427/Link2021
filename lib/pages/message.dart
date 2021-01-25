@@ -27,6 +27,7 @@ class _ChatState extends State<Chat> {
   Stream _groups;
   CollectionReference chats;
   Stream recent;
+  String recentTimeString;
 
   // initState
   @override
@@ -35,7 +36,10 @@ class _ChatState extends State<Chat> {
     _getUserAuthAndJoinedGroups();
   }
 
-  // widgets
+  String getRecentTimeString(String result) {
+    return result;
+  }
+
   Widget noGroupWidget() {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 25.0),
@@ -58,18 +62,79 @@ class _ChatState extends State<Chat> {
 
   Widget getRecent(String groupId) {
     _getRecentStream(groupId);
+    return StreamBuilder(
+      stream: recent,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          try {
+            Timestamp recentTime = snapshot.data['recentMessageTime'];
+            String type = snapshot.data['recentMessageType'];
+            if (type == 'image') {
+              return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Row(
+                        children: [
+                          Icon(Icons.photo),
+                          Text('사진'),
+                        ],
+                      ),
+                    ),
+                  ]);
+            } else {
+              return Container(
+                child: Row(children: [
+                  Expanded(
+                    flex: 85,
+                    child: Container(
+                      padding: EdgeInsets.only(right: 15),
+                      child: Text(
+                        snapshot.data['recentMessage'],
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 15,
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height * 0.04,
+                      decoration: BoxDecoration(
+                        color: Colors.pink,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        '10',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  )
+                ]),
+              );
+            }
+          } catch (e) {
+            return Text('nothing');
+          }
+        }
+        return Text('nothing');
+      },
+    );
+  }
+
+  Widget getRecentTime(String groupId) {
+    _getRecentStream(groupId);
     final form = new DateFormat('Md').add_Hm();
     return StreamBuilder(
       stream: recent,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          Timestamp recentTime = snapshot.data['recentMessageTime'];
-          return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(snapshot.data['recentMessage']),
-                Text(form.format(recentTime.toDate()))
-              ]);
+          try {
+            Timestamp recentTime = snapshot.data['recentMessageTime'];
+            return Text(form.format(recentTime.toDate()));
+          } catch (e) {
+            return Text(' ');
+          }
         }
         return Text('nothing');
       },
@@ -83,11 +148,18 @@ class _ChatState extends State<Chat> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
+            padding: EdgeInsets.only(top: 0),
+            shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index) {
-              int reqIndex = snapshot.data['members'].length - index - 1;
               return ListTile(
-                title: Text(snapshot.data['members'][reqIndex]),
+                title: Row(children: [
+                  Text(_destructureName(snapshot.data['members'][index])),
+                  snapshot.data['admin'] ==
+                          _destructureName(snapshot.data['members'][index])
+                      ? Text(' (방장)')
+                      : Text(''),
+                ]),
               );
             },
           );
@@ -116,6 +188,7 @@ class _ChatState extends State<Chat> {
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
+                      profilePic: snapshot.data['profilePic'],
                       userName: snapshot.data['name'],
                       groupId:
                           _destructureId(snapshot.data['groups'][reqIndex]),
@@ -124,6 +197,8 @@ class _ChatState extends State<Chat> {
                       recentMsg: getRecent(
                           _destructureId(snapshot.data['groups'][reqIndex])),
                       groupMembers: getGroupMembers(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                      recentTime: getRecentTime(
                           _destructureId(snapshot.data['groups'][reqIndex])),
                     );
                   });
@@ -173,6 +248,7 @@ class _ChatState extends State<Chat> {
     return res.substring(res.indexOf('_') + 1);
   }
 
+  //사라질 기능
   void _popupDialog(BuildContext context) {
     Widget cancelButton = FlatButton(
       child: Text("Cancel"),

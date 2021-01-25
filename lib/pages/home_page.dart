@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/scroll_view.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:link_ver1/pages/authenticate_page.dart';
 import 'package:link_ver1/pages/chat_page.dart';
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
   int selectedPage = 0;
   final _pageOptions = [Home(), Chat(), Post(), Alarm(), Profile()];
   // Building the HomePage widget
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

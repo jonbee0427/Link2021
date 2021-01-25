@@ -7,7 +7,8 @@ import 'post_buytogether.dart';
 import 'post_hobbytogether.dart';
 import 'post_studytogether.dart';
 import '../shared/constants.dart';
-import 'carousel_page.dart';
+import 'package:link_ver1/pages/home.dart';
+import 'package:link_ver1/pages/home_page.dart';
 
 class Post extends StatefulWidget {
   @override
@@ -15,6 +16,14 @@ class Post extends StatefulWidget {
 }
 
 class _PostState extends State<Post> {
+  final _formKey = GlobalKey<FormState>();
+  CollectionReference writing =
+      FirebaseFirestore.instance.collection('writing');
+  String title;
+  String body, datetime;
+  int tag; //for category (1. 공동구매 2. 스터디 3. 취미생활)
+  int max_person;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,8 +146,47 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       SizedBox(
-                        width: 20,
+                        width: 10,
                       ),
+                      /*
+                      Flexible(
+                        child: SizedBox(
+                          width: double.infinity,
+                          height: 50.0,
+                          child: RaisedButton(
+                              elevation: 0.0,
+                              color: Colors.pink[300],
+                              // Color.fromARGB(300, 247, 162, 144),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30.0)),
+                              child: Text('작성 완료',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16.0)),
+                              onPressed: () {
+                                DateTime create_time = new DateTime.now();
+                                if (_formKey.currentState.validate()) {
+                                  writing
+                                      .add(
+                                        {
+                                          'title': title,
+                                          'body': body,
+                                          'time_limit': datetime,
+                                          'max_person': max_person,
+                                          'create_time': create_time
+                                        },
+                                      )
+                                      .then((value) => print('writing added'))
+                                      .catchError(
+                                          (value) => print('failed to add'));
+                                }
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => HomePage()));
+                              }),
+                        ),
+                      ),
+                      */
                       Flexible(
                         child: SizedBox(
                           width: double.infinity,
