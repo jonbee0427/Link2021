@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DatabaseService {
-
   final String uid;
-  DatabaseService({
-    this.uid
-  });
+  DatabaseService({this.uid});
 
   // Collection reference
-  final CollectionReference userCollection = FirebaseFirestore.instance.collection('MyUsers');
-  final CollectionReference groupCollection = FirebaseFirestore.instance.collection('groups');
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('MyUsers');
+  final CollectionReference groupCollection =
+      FirebaseFirestore.instance.collection('groups');
 
   // update userdata
   Future updateUserData(String fullName, String email, String password) async {
@@ -19,10 +18,9 @@ class DatabaseService {
       'password': password,
       'groups': [],
       'profilePic': '',
-      'account' : ''
+      'account': ''
     });
   }
-
 
   // create group
   Future createGroup(String userName, String groupName) async {
@@ -48,10 +46,9 @@ class DatabaseService {
     });
   }
 
-
   // toggling the user group join
-  Future togglingGroupJoin(String groupId, String groupName, String userName) async {
-
+  Future togglingGroupJoin(
+      String groupId, String groupName, String userName) async {
     DocumentReference userDocRef = userCollection.doc(uid);
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
@@ -59,7 +56,7 @@ class DatabaseService {
 
     List<dynamic> groups = await userDocSnapshot.data()['groups'];
 
-    if(groups.contains(groupId + '_' + groupName)) {
+    if (groups.contains(groupId + '_' + groupName)) {
       //print('hey');
       await userDocRef.update({
         'groups': FieldValue.arrayRemove([groupId + '_' + groupName])
@@ -70,8 +67,7 @@ class DatabaseService {
       });
 
       groupDocRef.delete();
-    }
-    else {
+    } else {
       //print('nay');
       await userDocRef.update({
         'groups': FieldValue.arrayUnion([groupId + '_' + groupName])
@@ -83,46 +79,47 @@ class DatabaseService {
     }
   }
 
-
   // has user joined the group
-  Future<bool> isUserJoined(String groupId, String groupName, String userName) async {
-
+  Future<bool> isUserJoined(
+      String groupId, String groupName, String userName) async {
     DocumentReference userDocRef = userCollection.doc(uid);
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
     List<dynamic> groups = await userDocSnapshot.data()['groups'];
 
-
-    if(groups.contains(groupId + '_' + groupName)) {
+    if (groups.contains(groupId + '_' + groupName)) {
       //print('he');
       return true;
-    }
-    else {
+    } else {
       //print('ne');
       return false;
     }
   }
 
-
   // get user data
   Future getUserData(String email) async {
-    QuerySnapshot snapshot = await userCollection.where('email', isEqualTo: email).get();
+    QuerySnapshot snapshot =
+        await userCollection.where('email', isEqualTo: email).get();
     print(snapshot.docs[0].data);
     return snapshot;
   }
 
-
   // get user groups
   getUserGroups() async {
     // return await Firestore.instance.collection("users").where('email', isEqualTo: email).snapshots();
-    return FirebaseFirestore.instance.collection("MyUsers").doc(uid).snapshots();
+    return FirebaseFirestore.instance
+        .collection("MyUsers")
+        .doc(uid)
+        .snapshots();
   }
-
-
 
   // send message
   sendMessage(String groupId, chatMessageData) {
-    FirebaseFirestore.instance.collection('groups').doc(groupId).collection('messages').add(chatMessageData);
+    FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .collection('messages')
+        .add(chatMessageData);
     FirebaseFirestore.instance.collection('groups').doc(groupId).update({
       'recentMessage': chatMessageData['message'],
       'recentMessageSender': chatMessageData['sender'],
@@ -130,25 +127,36 @@ class DatabaseService {
     });
   }
 
-
   // get chats of a particular group
   getChats(String groupId) async {
-    return FirebaseFirestore.instance.collection('groups').doc(groupId).collection('messages').orderBy('time', descending: true).snapshots();
+    return FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .collection('messages')
+        .orderBy('time', descending: true)
+        .snapshots();
   }
 
-  getGroup(String groupId) async{
-     return FirebaseFirestore.instance.collection('groups').doc(groupId).get().then((DocumentSnapshot documentSnapshot) {
-       if (documentSnapshot.exists) {
-         print('Document data: ${documentSnapshot.data()}');
-         return documentSnapshot.data();
-       } else {
-         print('Document does not exist on the database');
-       }
-     });
+  getGroup(String groupId) async {
+    return FirebaseFirestore.instance
+        .collection('groups')
+        .doc(groupId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document data: ${documentSnapshot.data()}');
+        return documentSnapshot.data();
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
   }
 
   // search groups
   searchByName(String groupName) {
-    return FirebaseFirestore.instance.collection("groups").where('groupName', isEqualTo: groupName).get();
+    return FirebaseFirestore.instance
+        .collection("groups")
+        .where('groupName', isEqualTo: groupName)
+        .get();
   }
 }

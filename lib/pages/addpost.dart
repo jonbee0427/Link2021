@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../shared/constants.dart';
+import 'package:link_ver1/pages/home.dart';
+import 'package:link_ver1/pages/home_page.dart';
 
 class Post extends StatefulWidget {
   @override
@@ -16,6 +18,7 @@ class _PostState extends State<Post> {
       FirebaseFirestore.instance.collection('writing');
   String title;
   String body, datetime;
+  int tag; //for category (1. 공동구매 2. 스터디 3. 취미생활)
   int max_person;
 
   @override
@@ -175,7 +178,7 @@ class _PostState extends State<Post> {
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16.0)),
                             onPressed: () {
-                              var create_time = new DateTime.now();
+                              DateTime create_time = new DateTime.now();
                               if (_formKey.currentState.validate()) {
                                 writing
                                     .add(
@@ -191,6 +194,10 @@ class _PostState extends State<Post> {
                                     .catchError(
                                         (value) => print('failed to add'));
                               }
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage()));
                             }),
                       ),
                     ),
