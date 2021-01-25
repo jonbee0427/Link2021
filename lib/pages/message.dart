@@ -147,13 +147,18 @@ class _ChatState extends State<Chat> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
+            padding: EdgeInsets.only(top: 0),
             shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index) {
-              int reqIndex = snapshot.data['members'].length - index - 1;
               return ListTile(
-                title:
-                    Text(_destructureName(snapshot.data['members'][reqIndex])),
+                title: Row(children: [
+                  Text(_destructureName(snapshot.data['members'][index])),
+                  snapshot.data['admin'] ==
+                          _destructureName(snapshot.data['members'][index])
+                      ? Text(' (방장)')
+                      : Text(''),
+                ]),
               );
             },
           );
@@ -182,18 +187,19 @@ class _ChatState extends State<Chat> {
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
-                        userName: snapshot.data['name'],
-                        groupId:
-                            _destructureId(snapshot.data['groups'][reqIndex]),
-                        groupName:
-                            _destructureName(snapshot.data['groups'][reqIndex]),
-                        recentMsg: getRecent(
-                            _destructureId(snapshot.data['groups'][reqIndex])),
-                        groupMembers: getGroupMembers(
-                            _destructureId(snapshot.data['groups'][reqIndex])),
-                        recentTime: getRecentTime(
-                            _destructureId(snapshot.data['groups'][reqIndex])),
-                        profilePic: snapshot.data['profilePic']);
+                      profilePic: snapshot.data['profilePic'],
+                      userName: snapshot.data['name'],
+                      groupId:
+                          _destructureId(snapshot.data['groups'][reqIndex]),
+                      groupName:
+                          _destructureName(snapshot.data['groups'][reqIndex]),
+                      recentMsg: getRecent(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                      groupMembers: getGroupMembers(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                      recentTime: getRecentTime(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                    );
                   });
             } else {
               return noGroupWidget();

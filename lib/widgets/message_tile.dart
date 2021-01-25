@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,7 +21,9 @@ class MessageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final form = new DateFormat('Hm');
+    final form = new DateFormat().add_jm(); //12hour format
+    // final form = new DateFormat('Hm'); //24hour format
+
     if (type == 'text' || type == 'image') {
       return Column(
         children: [
@@ -39,6 +42,7 @@ class MessageTile extends StatelessWidget {
                       //채팅 시간 출력 text
                       Text(
                         form.format(now.toDate()),
+                        style: TextStyle(fontSize: 13),
                       ),
                       //채팅 말풍선
                       Container(
@@ -75,15 +79,16 @@ class MessageTile extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       //유저 프로필 사진
-                      profilePic == null || profilePic == ""?
-                      CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage("assets/user.png"),
-                        radius: 25,
-                      ) : CircleAvatar(
-                        backgroundImage: NetworkImage(profilePic),
-                        radius: 25,
-                      ),
+                      profilePic == null || profilePic == ""
+                          ? CircleAvatar(
+                              backgroundColor: Colors.white,
+                              backgroundImage: AssetImage("assets/user.png"),
+                              radius: 25,
+                            )
+                          : CircleAvatar(
+                              backgroundImage: NetworkImage(profilePic),
+                              radius: 25,
+                            ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -136,6 +141,7 @@ class MessageTile extends StatelessWidget {
                               //채팅 시간 출력 text
                               Text(
                                 form.format(now.toDate()),
+                                style: TextStyle(fontSize: 13),
                               )
                             ],
                           ),
@@ -147,22 +153,38 @@ class MessageTile extends StatelessWidget {
         ],
       );
     } else {
-      return Container(
-        margin: EdgeInsets.fromLTRB(100, 20, 100, 20),
-        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-            color: Colors.grey, borderRadius: BorderRadius.circular(20)),
-        child: Text(
-          message,
-          style: TextStyle(
-            color: Colors.white,
-            backgroundColor: Colors.grey,
-          ),
-        ),
-      );
+      if (type == 'system_out' || type == 'system_in') {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Container(
+            margin: EdgeInsets.fromLTRB(0,10,0,10),
+            padding: EdgeInsets.fromLTRB(7, 5, 7, 5),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                color: Colors.grey[400], borderRadius: BorderRadius.circular(20)),
+            child: Text(
+              message,
+              style: TextStyle(color: Colors.white, fontSize: 15),
+            ),
+          )],
+        );
+      } else {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(0,10,0,10),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+              child: Text(
+                message,
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              ),
+            ),
+          ],
+        );
+      }
     }
-    //Date format
   }
 
   Widget _buildContent() {

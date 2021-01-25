@@ -77,7 +77,7 @@ class DatabaseService {
           });
         });
         await groupDocRef.collection('messages').get().then((snapshot) {
-          for (DocumentSnapshot ds in snapshot.docs){
+          for (DocumentSnapshot ds in snapshot.docs) {
             ds.reference.delete();
           }
         });
