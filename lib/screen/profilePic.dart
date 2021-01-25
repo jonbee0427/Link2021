@@ -52,7 +52,6 @@ class _ProfilePicState extends State<ProfilePic> {
   void updateField() async {
     var firebaseUser = await FirebaseAuth.instance.currentUser;
     firebaseUser.updateProfile(photoURL: imageUrl);
-    await HelperFunctions.saveUserProfilePicPreference(imageUrl);
     FirebaseFirestore.instance
         .collection("MyUsers")
         .doc(firebaseUser.uid)
