@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -167,7 +168,7 @@ class MessageTile extends StatelessWidget {
                 message,
                 style: TextStyle(color: Colors.white, fontSize: 15),
               ),
-            ),
+            )
           ],
         );
       } else {
