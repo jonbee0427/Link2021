@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
+import 'package:link_ver1/pages/search.dart';
 import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/group_tile.dart';
@@ -62,35 +63,35 @@ class _ChatState extends State<Chat> {
       stream: recent,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          Timestamp recentTime= snapshot.data['recentMessageTime'];
-          return
-            Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children:[
-              Text(snapshot.data['recentMessage']),
-              Text(form.format(recentTime.toDate()))
-            ]);
+          Timestamp recentTime = snapshot.data['recentMessageTime'];
+          return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(snapshot.data['recentMessage']),
+                Text(form.format(recentTime.toDate()))
+              ]);
         }
         return Text('nothing');
       },
     );
   }
 
-  Widget getGroupMembers(String groupId){
+  Widget getGroupMembers(String groupId) {
     _getRecentStream(groupId);
     return StreamBuilder(
       stream: recent,
-      builder: (context, snapshot){
-        if(snapshot.hasData){
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
           return ListView.builder(
             itemCount: snapshot.data['members'].length,
-            itemBuilder: (context, index){
+            itemBuilder: (context, index) {
               int reqIndex = snapshot.data['members'].length - index - 1;
               return ListTile(
                 title: Text(snapshot.data['members'][reqIndex]),
               );
             },
           );
-        }else{
+        } else {
           return Text('noOne');
         }
       },
@@ -120,8 +121,10 @@ class _ChatState extends State<Chat> {
                           _destructureId(snapshot.data['groups'][reqIndex]),
                       groupName:
                           _destructureName(snapshot.data['groups'][reqIndex]),
-                      recentMsg: getRecent( _destructureId(snapshot.data['groups'][reqIndex])),
-                      groupMembers: getGroupMembers( _destructureId(snapshot.data['groups'][reqIndex])),
+                      recentMsg: getRecent(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                      groupMembers: getGroupMembers(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
                     );
                   });
             } else {
@@ -213,6 +216,23 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("LINK"),
+        centerTitle: true,
+        //backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+        elevation: 10.0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              showSearch(context: context, delegate: Search());
+            },
+          )
+        ],
+      ),
       body: groupsList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
