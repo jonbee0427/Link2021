@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
+import 'package:link_ver1/pages/search.dart';
 import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/group_tile.dart';
@@ -147,18 +148,18 @@ class _ChatState extends State<Chat> {
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
-            padding:EdgeInsets.only(top: 0),
+            padding: EdgeInsets.only(top: 0),
             shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index) {
               return ListTile(
-                title:
-                   Row(
-                       children: [
-                         Text(_destructureName(snapshot.data['members'][index])),
-                         snapshot.data['admin'] == _destructureName(snapshot.data['members'][index]) ?
-                             Text(' (방장)') : Text(''),
-                       ]),
+                title: Row(children: [
+                  Text(_destructureName(snapshot.data['members'][index])),
+                  snapshot.data['admin'] ==
+                          _destructureName(snapshot.data['members'][index])
+                      ? Text(' (방장)')
+                      : Text(''),
+                ]),
               );
             },
           );
@@ -187,19 +188,19 @@ class _ChatState extends State<Chat> {
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
-                        profilePic: snapshot.data['profilePic'],
-                        userName: snapshot.data['name'],
-                        groupId:
-                            _destructureId(snapshot.data['groups'][reqIndex]),
-                        groupName:
-                            _destructureName(snapshot.data['groups'][reqIndex]),
-                        recentMsg: getRecent(
-                            _destructureId(snapshot.data['groups'][reqIndex])),
-                        groupMembers: getGroupMembers(
-                            _destructureId(snapshot.data['groups'][reqIndex])),
-                        recentTime: getRecentTime(
-                            _destructureId(snapshot.data['groups'][reqIndex])),
-                        );
+                      profilePic: snapshot.data['profilePic'],
+                      userName: snapshot.data['name'],
+                      groupId:
+                          _destructureId(snapshot.data['groups'][reqIndex]),
+                      groupName:
+                          _destructureName(snapshot.data['groups'][reqIndex]),
+                      recentMsg: getRecent(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                      groupMembers: getGroupMembers(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                      recentTime: getRecentTime(
+                          _destructureId(snapshot.data['groups'][reqIndex])),
+                    );
                   });
             } else {
               return noGroupWidget();
@@ -291,6 +292,23 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("LINK"),
+        centerTitle: true,
+        //backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+        elevation: 10.0,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              showSearch(context: context, delegate: Search());
+            },
+          )
+        ],
+      ),
       body: groupsList(),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

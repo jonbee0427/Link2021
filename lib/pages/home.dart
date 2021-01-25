@@ -5,6 +5,7 @@ import 'package:link_ver1/services/database_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_ver1/pages/home_page.dart';
+import 'package:link_ver1/pages/search.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 
 class Home extends StatefulWidget {
@@ -64,14 +65,33 @@ class _HomeState extends State<Home> {
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
-          appBar: TabBar(
-            indicatorColor: Color.fromARGB(250, 247, 162, 144),
-            labelColor: Color.fromARGB(250, 247, 162, 144),
-            tabs: [
-              Tab(icon: Icon(Icons.local_grocery_store_outlined)),
-              Tab(icon: Icon(Icons.school_outlined)),
-              Tab(icon: Icon(Icons.directions_bike_outlined)),
+          appBar: AppBar(
+            title: Text("LINK"),
+            centerTitle: true,
+            backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+            elevation: 10.0,
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(
+                  Icons.search,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  showSearch(context: context, delegate: Search());
+                },
+              ),
             ],
+            bottom: TabBar(
+              indicatorColor: Colors.white,
+              // fromARGB(250, 247, 162, 144),
+              labelColor: Colors.white,
+              // Color.fromARGB(250, 247, 162, 144),
+              tabs: [
+                Tab(icon: Icon(Icons.local_grocery_store_outlined)),
+                Tab(icon: Icon(Icons.school_outlined)),
+                Tab(icon: Icon(Icons.directions_bike_outlined)),
+              ],
+            ),
           ),
           body: TabBarView(
             children: [
@@ -121,8 +141,7 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   Container(
-                    child: SizedBox(
-                      height: 550,
+                    child: Expanded(
                       child: getBoard(),
                     ),
                   ),

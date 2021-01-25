@@ -33,7 +33,7 @@ class DatabaseService {
       'membersNum': 1,
       //'messages': ,
       'groupId': '',
-      'recentMessage': '',
+      'recentMessage': '채팅방이 생성되었습니다.',
       'recentMessageSender': ''
     });
 
