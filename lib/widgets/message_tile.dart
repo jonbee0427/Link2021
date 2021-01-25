@@ -153,26 +153,38 @@ class MessageTile extends StatelessWidget {
       );
     } else {
       if (type == 'system_out' || type == 'system_in') {
-        return Container(
-          margin: EdgeInsets.fromLTRB(90, 20, 90, 20),
-          padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-              color: Colors.grey[400], borderRadius: BorderRadius.circular(20)),
-          child: Text(
-            message,
-            style: TextStyle(color: Colors.white, fontSize: 15),
-          ),
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+              padding: EdgeInsets.fromLTRB(7, 5, 7, 5),
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  color: Colors.grey[400],
+                  borderRadius: BorderRadius.circular(20)),
+              child: Text(
+                message,
+                style: TextStyle(color: Colors.white, fontSize: 15),
+              ),
+            ),
+          ],
         );
       } else {
-        return Container(
-          margin: EdgeInsets.fromLTRB(125, 20, 125, 20),
-          alignment: Alignment.center,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
-          child: Text(
-            message,
-            style: TextStyle(color: Colors.black, fontSize: 15),
-          ),
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+              alignment: Alignment.center,
+              decoration:
+                  BoxDecoration(borderRadius: BorderRadius.circular(20)),
+              child: Text(
+                message,
+                style: TextStyle(color: Colors.black, fontSize: 15),
+              ),
+            ),
+          ],
         );
       }
     }
