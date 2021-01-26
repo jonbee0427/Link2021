@@ -108,7 +108,7 @@ class _SearchPageState extends State<SearchPage> {
       subtitle: Text("Admin: $admin"),
       trailing: InkWell(
         onTap: () async {
-          await DatabaseService(uid: _user.uid).togglingGroupJoin(groupId, groupName, userName);
+         // await DatabaseService(uid: _user.uid).togglingGroupJoin(groupId, groupName, userName);
           if(_isJoined) {
             setState(() {
               _isJoined = !_isJoined;

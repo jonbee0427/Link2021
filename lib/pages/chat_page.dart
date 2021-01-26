@@ -320,7 +320,7 @@ class _ChatPageState extends State<ChatPage> {
                                   onPressed: () async {
                                     _sendMessage('system_out');
                                     DatabaseService(uid: _user.uid)
-                                        .togglingGroupJoin(widget.groupId,
+                                        .OutChat(widget.groupId,
                                             widget.groupName, widget.userName);
                                     Navigator.pop(context);
                                     Navigator.pop(context);
