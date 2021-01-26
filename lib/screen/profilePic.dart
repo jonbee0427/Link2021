@@ -72,7 +72,8 @@ class _ProfilePicState extends State<ProfilePic> {
         overflow: Overflow.visible,
         children: [
           CircleAvatar(
-            backgroundImage: image == null
+            backgroundImage: image ==
+                    null //만약 사용자가 로그아웃을 했더라도 마지막에 저장된 프로필 사진으로 자동적으로 보이기 필요.
                 ? AssetImage("assets/user.png")
                 : FileImage(File(image.path)),
             backgroundColor: Colors.white,
