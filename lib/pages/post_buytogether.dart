@@ -49,6 +49,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
     _getUserAuthAndJoinedGroups();
     maxpicture = 0;
     images = [];
+    path = [];
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -62,13 +63,14 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
     PickedFile image = await imagePicker.getImage(source: ImageSource.gallery);
-    if (image != null && maxpicture <= 3) {
+    if (image != null && maxpicture <= 7) {
       setState(() {
         path.add(image.path);
         images.add(image.path);
         maxpicture++;
       });
       //uploadFile(path);
+
     } else {
       Fluttertoast.showToast(msg: 'no more images');
       print('no more picture');
@@ -107,6 +109,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
               child: Container(
                 color: Color.fromARGB(250, 247, 162, 144),
                 child: ListView(
+                  controller: new ScrollController(),
                   padding:
                       EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
                   children: <Widget>[
@@ -241,20 +244,31 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 getImage();
                               }),
                         ),
-                        Container(
-                          width: 400,
-                          height: 300,
-                          child: Swiper(
-                            itemBuilder: (BuildContext context, int index) {
-                              return new Image.asset(
-                                images[index],
-                              );
-                            },
-                            itemCount: images.length,
-                            autoplayDisableOnInteraction: true,
-                            pagination: SwiperPagination(),
-                            control: SwiperControl(),
-                          ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        SizedBox(
+                          child: maxpicture != 0
+                              ? Container(
+                                  width: 400,
+                                  height: 350,
+                                  child: maxpicture != 0
+                                      ? Swiper(
+                                          key: UniqueKey(),
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return Image.asset(
+                                              images[index],
+                                            );
+                                          },
+                                          itemCount: images.length,
+                                          autoplayDisableOnInteraction: true,
+                                          pagination: SwiperPagination(),
+                                          control: SwiperControl(),
+                                        )
+                                      : null,
+                                )
+                              : null,
                         ),
                         SizedBox(
                           height: 10,
@@ -278,6 +292,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                             fontSize: 16.0)),
                                     onPressed: () {
                                       print('글 작성 취소!');
+                                      Navigator.of(context).pop();
                                     }),
                               ),
                             ),
@@ -312,6 +327,9 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                         for (String p in path) {
                                           uploadFile(p, _groupName);
                                           print(p);
+                                        }
+                                        if (datetime == null) {
+                                          datetime = '없음';
                                         }
                                         writing.add(
                                           {
