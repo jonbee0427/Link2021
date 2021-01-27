@@ -15,11 +15,16 @@ import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'message.dart';
+import 'board_page.dart';
 import '../shared/constants.dart';
 
-class PostStudyTogether extends StatefulWidget {
+class EditPage extends StatefulWidget {
+  //final Todo todo;
+
+  //EditPage({Key key, @required this.todo}) : super(key: key);
+
   @override
-  _PostStudyTogether createState() => _PostStudyTogether();
+  _EditPage createState() => _EditPage();
 }
 
 List<String> images = [];
@@ -32,7 +37,7 @@ Stream _groups;
 CollectionReference chats;
 int maxpicture = 0;
 
-class _PostStudyTogether extends State<PostStudyTogether> {
+class _EditPage extends State<EditPage> {
   @override
   void initState() {
     super.initState();
@@ -45,9 +50,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
   final _formKey = GlobalKey<FormState>();
   CollectionReference writing =
       FirebaseFirestore.instance.collection('writing');
-  String title;
-  String body, datetime;
-  int max_person;
+
   final AuthService _auth = AuthService();
 
   Future getImage() async {
@@ -85,11 +88,16 @@ class _PostStudyTogether extends State<PostStudyTogether> {
   @override
   Widget build(BuildContext context) {
     DateTime _selectedDateTime = DateTime.now();
+    // Todo todos = widget.todo;
+    String title; //= todos.title;
+    String body; //= todos.body,
+    String datetime; //= todos.time_limit;
+    int max_person; //= todos.max_person;
 
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: Text('스터디 모집 글 작성'),
+              title: Text('게시글 수정 페이지'),
               centerTitle: true,
               backgroundColor: Color.fromARGB(250, 247, 162, 144),
               elevation: 0,
@@ -107,7 +115,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("게시글 작성",
+                        Text("게시글 수정",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 30.0,
@@ -121,8 +129,10 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                             color: Colors.black,
                           ),
                           maxLength: 50,
-                          decoration:
-                              textInputDecoration.copyWith(labelText: '게시글 제목'),
+                          decoration: textInputDecoration.copyWith(
+                            labelText: '게시글 제목',
+                          ),
+                          initialValue: title,
                           validator: (val) =>
                               val.length < 2 ? '2글자 이상 입력해주세요' : null,
                           onChanged: (val) {
@@ -154,6 +164,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                                 // icon: Icon(Icons.event),
                                 dateLabelText: 'Date',
                                 timeLabelText: "Hour",
+
                                 selectableDayPredicate: (date) {
                                   // Disable weekend days to select from the calendar
                                   // if (date.weekday == 6 || date.weekday == 7) {
@@ -180,6 +191,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                               flex: 2,
                               child: TextFormField(
                                 cursorColor: Colors.black,
+                                initialValue: max_person.toString(),
                                 style: TextStyle(
                                   color: Colors.black,
                                 ),
@@ -204,6 +216,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                           maxLines: 20,
                           minLines: 15,
                           maxLength: 1000,
+                          initialValue: body,
                           style: TextStyle(
                             color: Colors.black,
                           ),
@@ -305,15 +318,9 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                                             color: Colors.white,
                                             fontSize: 16.0)),
                                     onPressed: () async {
-                                      var create_time = new DateTime.now()
-                                          .millisecondsSinceEpoch;
+                                      // var create_time = new DateTime.now()
+                                      //     .millisecondsSinceEpoch;
                                       if (_formKey.currentState.validate()) {
-                                        await HelperFunctions
-                                                .getUserNameSharedPreference()
-                                            .then((val) {
-                                          DatabaseService(uid: _user.uid)
-                                              .createGroup(val, _groupName);
-                                        });
                                         for (String p in path) {
                                           uploadFile(p, _groupName);
                                           print(p);
@@ -321,23 +328,23 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                                         if (datetime == null) {
                                           datetime = '없음';
                                         }
-                                        writing.add(
-                                          {
-                                            'title': title,
-                                            'body': body,
-                                            'time_limit': datetime,
-                                            'max_person': max_person,
-                                            'create_time': create_time,
-                                            'category': '스터디',
-                                          },
-                                        ).then((value) {
-                                          print('writing added');
-                                          setState(() {
-                                            images = [];
-                                          });
-                                          Navigator.of(context).pop();
-                                        }).catchError(
-                                            (value) => print('failed to add'));
+                                        // writing.add(
+                                        //   {
+                                        //     'title': title,
+                                        //     'body': body,
+                                        //     'time_limit': datetime,
+                                        //     'max_person': max_person,
+                                        //     // 'create_time': create_time,
+                                        //     'category': '임시',
+                                        //   },
+                                        // ).then((value) {
+                                        //   print('writing added');
+                                        //   setState(() {
+                                        //     images = [];
+                                        //   });
+                                        //   Navigator.of(context).pop();
+                                        // }).catchError(
+                                        //     (value) => print('failed to add'));
                                       }
                                     }),
                               ),

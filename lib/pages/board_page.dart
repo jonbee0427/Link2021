@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:link_ver1/pages/EditPage.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 
 class BoardPage extends StatefulWidget {
@@ -98,6 +99,27 @@ class _BoardPageState extends State<BoardPage> {
                         fontSize: 16,
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    //width: double.infinity,
+                    height: 50.0,
+                    child: RaisedButton(
+                        elevation: 0.0,
+                        color: Colors.pink[300],
+                        // Color.fromARGB(300, 247, 162, 144),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.0)),
+                        child: Text('게시글 수정',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 16.0)),
+                        onPressed: () {
+                          print('글 수정!');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EditPage()));
+                        }),
                   ),
                 ],
               ),
