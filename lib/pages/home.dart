@@ -36,7 +36,8 @@ class _HomeState extends State<Home> {
               itemBuilder: (context, index) {
                 //itemBuilder : 게시글 하나하나,  index : 순서
                 int reqIndex = snapshot.data.docs.length - index - 1;
-                //print(snapshot.data.docs.length);
+                print(
+                    "document length " + snapshot.data.docs.length.toString());
 
                 return BoardTile(
                   title: snapshot.data.docs[reqIndex]['title'],
@@ -149,11 +150,11 @@ class _HomeState extends State<Home> {
               ),
               Container(
                 alignment: Alignment.center,
-                //   Text(
-                //     "스터디",
-                //     style: TextStyle(fontSize: 30, color: Colors.black),
-                //     textAlign: TextAlign.center,
-                //   ),
+                child: Text(
+                  "스터디",
+                  style: TextStyle(fontSize: 30, color: Colors.black),
+                  textAlign: TextAlign.center,
+                ),
               ),
               Container(
                 alignment: Alignment.center,
