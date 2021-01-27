@@ -109,7 +109,7 @@ class _ChatPageState extends State<ChatPage> {
         };
         await DatabaseService()
             .sendMessage(widget.groupId, chatMessageMap, type);
-        Timer(Duration(milliseconds: 100), () {});
+        Timer(Duration(milliseconds: 1000), () {});
       }
     } catch (e) {
       Map<String, dynamic> chatMessageMap = {
@@ -119,7 +119,7 @@ class _ChatPageState extends State<ChatPage> {
         'time': DateTime.now(),
       };
       await DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
-      Timer(Duration(milliseconds: 100), () {});
+      Timer(Duration(milliseconds: 1000), () {});
     }
 
     if (type == 'image') {
