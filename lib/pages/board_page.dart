@@ -150,19 +150,21 @@ class _BoardPageState extends State<BoardPage> {
                           maxWidth: MediaQuery.of(context).size.width * 0.875,
                           maxHeight: MediaQuery.of(context).size.height * 0.8),
                       margin: const EdgeInsets.only(
-                          top: 30, left: 20, right: 20, bottom: 50),
+                          top: 30, left: 25, right: 15, bottom: 50),
                       padding: const EdgeInsets.only(
                           top: 15, left: 15, right: 15, bottom: 15),
+                      width:
+                          MediaQuery.of(context).size.width, //responsive sizing
                       decoration: BoxDecoration(
                         border: Border.all(color: priority, width: 3),
                         borderRadius: BorderRadius.all(
                           Radius.circular(40),
                         ),
                       ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Text(
+                      child: Container(
+                        child: SingleChildScrollView(
+                          //mainAxisAlignment: MainAxisAlignment.start,
+                          child: Text(
                             '내용 : ' + widget.body,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -170,7 +172,7 @@ class _BoardPageState extends State<BoardPage> {
                             ),
                             overflow: TextOverflow.visible,
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
