@@ -272,7 +272,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     Container(
                         margin: EdgeInsets.fromLTRB(0,10,0,10),
-                        child: Text(_userName + '님', style: TextStyle(
+                        child: Text(widget.userName + '님', style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold
                         ),)
