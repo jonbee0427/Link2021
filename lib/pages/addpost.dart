@@ -73,11 +73,13 @@ class _PostState extends State<Post> {
                           width: double.infinity,
                           height: 150.0,
                           child: RaisedButton(
+
                               elevation: 0.0,
                               color: Colors.blue[200],
                               // Color.fromARGB(300, 247, 162, 144),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
+                                  borderRadius: BorderRadius.circular(30.0),
+                              ),
                               child: Text('공동 구매',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 30.0)),

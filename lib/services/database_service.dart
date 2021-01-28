@@ -42,7 +42,9 @@ class DatabaseService {
       'time_limit': datetime,
       'max_person': max_person,
       'create_time': create_time,
-      'category': '공동 구매'
+      'category': '공동 구매',
+      'isdeleted': false,
+      'current_person': 1,
     });
 
     await groupDocRef.update({
@@ -58,7 +60,6 @@ class DatabaseService {
 
   // toggling the user group join
   Future JoinChat(String groupId, String groupName, String userName) async {
-    print("uid : " + uid);
     DocumentReference userDocRef = userCollection.doc(uid);
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
@@ -68,31 +69,30 @@ class DatabaseService {
 
     int membersNum = await groupDocSnapshot.data()['membersNum'];
     print(membersNum);
-      //List<dynamic> groups = await userDocSnapshot.data()['groups'];
+    //List<dynamic> groups = await userDocSnapshot.data()['groups'];
 
     //int membersNum = await groupDocSnapshot.data()['membersNum'];
-    try{
+    try {
       List<dynamic> groups = await userDocSnapshot.data()['groups'];
       print(groups.length);
 
       print('is not Null?');
 
       if (groups.contains(groupId + '_' + groupName)) {
-      Fluttertoast.showToast(msg: '이미 들어가있습니다');
-    } else {
-      //print('nay');
-      await userDocRef.update({
-        'groups': FieldValue.arrayUnion([groupId + '_' + groupName])
-      });
+        Fluttertoast.showToast(msg: '이미 들어가있습니다');
+      } else {
+        //print('nay');
+        await userDocRef.update({
+          'groups': FieldValue.arrayUnion([groupId + '_' + groupName])
+        });
 
-      await groupDocRef.update({
-        'members': FieldValue.arrayUnion([uid + '_' + userName]),
-        'membersNum': FieldValue.increment(1)
-      });
-      print(groupId + " " + groupName + " " + userName);
-
-    }
-    }catch(e){
+        await groupDocRef.update({
+          'members': FieldValue.arrayUnion([uid + '_' + userName]),
+          'membersNum': FieldValue.increment(1)
+        });
+        print(groupId + " " + groupName + " " + userName);
+      }
+    } catch (e) {
       await userDocRef.update({
         'groups': FieldValue.arrayUnion([groupId + '_' + groupName])
       });
@@ -107,7 +107,6 @@ class DatabaseService {
 
   // toggling the user group join
   Future OutChat(String groupId, String groupName, String userName) async {
-    print('out');
     DocumentReference userDocRef = userCollection.doc(uid);
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 

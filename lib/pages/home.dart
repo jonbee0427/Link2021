@@ -66,12 +66,16 @@ class _HomeState extends State<Home> {
                 return BoardTile(
                   userName: _userName,
                   groupId: snapshot.data.docs[reqIndex]['groupId'],
+                  //groupMembers: snapshot.data.docs[reqIndex]['members'],
                   groupName: snapshot.data.docs[reqIndex]['groupName'],
                   title: snapshot.data.docs[reqIndex]['title'],
                   body: snapshot.data.docs[reqIndex]['body'],
                   time_limit: snapshot.data.docs[reqIndex]['time_limit'],
                   category: snapshot.data.docs[reqIndex]['category'],
                   uid: _user.uid,
+                  max_person: snapshot.data.docs[reqIndex]['max_person'],
+                  current_person: snapshot.data.docs[reqIndex]
+                      ['current_person'],
                 );
               },
               separatorBuilder: (context, index) {
@@ -135,18 +139,6 @@ class _HomeState extends State<Home> {
                         Container(
                           padding: const EdgeInsets.only(left: 25),
                           child: Text(
-                            '카테고리',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 100,
-                        ),
-                        Container(
-                          child: Text(
                             '제목',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -155,7 +147,7 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                         SizedBox(
-                          width: 100,
+                          width: 250,
                         ),
                         Container(
                           child: Text(
