@@ -9,11 +9,12 @@ class BoardTile extends StatelessWidget {
   final String body;
   final Timestamp create_time;
   final int max_person;
-
+  final int current_person;
   final String userName;
   final String groupId;
   final String groupName;
   final Widget groupMembers;
+  final String profilePic;
 
   BoardTile({
     this.title,
@@ -22,10 +23,12 @@ class BoardTile extends StatelessWidget {
     this.body,
     this.create_time,
     this.max_person,
+    this.current_person,
     this.groupId,
     this.groupMembers,
     this.groupName,
     this.userName,
+    this.profilePic,
   });
 
   @override
@@ -43,6 +46,7 @@ class BoardTile extends StatelessWidget {
                       body: body,
                       create_time: create_time,
                       max_person: max_person,
+                      current_person: current_person,
                       groupId: groupId,
                       groupMembers: groupMembers,
                       groupName: groupName,
