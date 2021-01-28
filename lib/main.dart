@@ -4,14 +4,10 @@ import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:link_ver1/pages/authenticate_page.dart';
 import 'package:link_ver1/pages/home_page.dart';
 
-void main() {
-  initializeFlutterFire();
-  return runApp(MyApp());
-}
-
-void initializeFlutterFire() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  return runApp(MyApp());
 }
 
 class MyApp extends StatefulWidget {
