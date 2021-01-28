@@ -181,33 +181,63 @@ class _BoardPageState extends State<BoardPage> {
                   SizedBox(
                     height: 10,
                   ),
-                  SizedBox(
-                    //width: double.infinity,
-                    height: 50.0,
-                    child: RaisedButton(
-                        elevation: 0.0,
-                        color: Colors.pink[300],
-                        // Color.fromARGB(300, 247, 162, 144),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30.0)),
-                        child: Text('게시글 수정',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 16.0)),
-                        onPressed: () {
-                          print('글 수정!');
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => EditPage(
-                                    title: widget.title,
-                                    category: widget.category,
-                                    time_limit: widget.time_limit,
-                                    body: widget.body,
-                                    create_time: widget.create_time,
-                                    max_person: widget.max_person,
-                                    groupId: widget.groupId,
-                                    groupName: widget.groupName,
-                                    userName: widget.userName,
-                                  )));
-                        }),
+                  Row(
+                    children: [
+                      SizedBox(
+                        //width: double.infinity,
+                        height: 50.0,
+                        child: RaisedButton(
+                            elevation: 0.0,
+                            color: Colors.pink[300],
+                            // Color.fromARGB(300, 247, 162, 144),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            child: Text('게시글 수정',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0)),
+                            onPressed: () {
+                              print('글 수정!');
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => EditPage(
+                                        title: widget.title,
+                                        category: widget.category,
+                                        time_limit: widget.time_limit,
+                                        body: widget.body,
+                                        create_time: widget.create_time,
+                                        max_person: widget.max_person,
+                                        groupId: widget.groupId,
+                                        groupName: widget.groupName,
+                                        userName: widget.userName,
+                                      )));
+                            }),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      SizedBox(
+                        //width: double.infinity,
+                        height: 50.0,
+                        child: RaisedButton(
+                            elevation: 0.0,
+                            color: Colors.pink[300],
+                            // Color.fromARGB(300, 247, 162, 144),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            child: Text('게시글 삭제',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0)),
+                            onPressed: () {
+                              print('글 삭제!');
+                              CollectionReference groups = FirebaseFirestore
+                                  .instance
+                                  .collection('groups');
+                              groups
+                                  .doc(widget.groupId)
+                                  .update({'isdeleted': true});
+                              Navigator.of(context).pop();
+                            }),
+                      ),
+                    ],
                   ),
                 ],
               ),

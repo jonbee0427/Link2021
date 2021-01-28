@@ -68,10 +68,11 @@ class _PostBuyTogether extends State<PostBuyTogether> {
     }
   }
 
-  Future uploadFile(String path, String groupname) async {
+  Future uploadFile(String path, String groupname, int createtime) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference reference =
-        FirebaseStorage.instance.ref().child('$groupname/' + fileName);
+    Reference reference = FirebaseStorage.instance
+        .ref()
+        .child('$groupname$createtime/' + fileName);
     UploadTask uploadTask = reference.putFile(File(path));
     TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadURL) {
@@ -366,7 +367,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                   create_time);
                                         });
                                         for (String p in path) {
-                                          uploadFile(p, _groupName);
+                                          uploadFile(
+                                              p, _groupName, create_time);
                                           print(p);
                                         }
                                         Navigator.of(context).pop();

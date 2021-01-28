@@ -42,7 +42,9 @@ class DatabaseService {
       'time_limit': datetime,
       'max_person': max_person,
       'create_time': create_time,
-      'category': '공동 구매'
+      'category': '공동 구매',
+      'isdeleted': false,
+      'current_person': 1,
     });
 
     await groupDocRef.update({
