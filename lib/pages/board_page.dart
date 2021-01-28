@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:link_ver1/helper/helper_functions.dart';
 
 class BoardPage extends StatefulWidget {
   final String title;
@@ -22,6 +23,7 @@ class BoardPage extends StatefulWidget {
   final String userName;
   final String groupId;
   final String groupName;
+  final String uid;
 
   BoardPage({
     this.title,
@@ -33,6 +35,7 @@ class BoardPage extends StatefulWidget {
     this.groupId,
     this.groupName,
     this.userName,
+    this.uid
   });
   @override
   _BoardPageState createState() => _BoardPageState();
@@ -41,21 +44,21 @@ class BoardPage extends StatefulWidget {
 class _BoardPageState extends State<BoardPage> {
   Color priority = Color.fromARGB(250, 247, 162, 144);
 
-  void print_test() {
-    print('title : ' + widget.title);
-    print('category : ' + widget.category);
-    print('time limit : ' + widget.time_limit);
-    print('body : ' + widget.body);
-    //print('create time : ' + widget.create_time);
-    print('max person : ' + widget.max_person.toString());
-    print('group id : ' + widget.groupId);
-    print('group name : ' + widget.groupName);
-    print('user name : ' + widget.userName);
-  }
+  // void print_test() {
+  //   print('title : ' + widget.title);
+  //   print('category : ' + widget.category);
+  //   print('time limit : ' + widget.time_limit);
+  //   print('body : ' + widget.body);
+  //   //print('create time : ' + widget.create_time);
+  //   print('max person : ' + widget.max_person.toString());
+  //   print('group id : ' + widget.groupId);
+  //   print('group name : ' + widget.groupName);
+  //   print('user name : ' + widget.userName);
+  // }
 
   @override
   Widget build(BuildContext context) {
-    print_test();
+   // print_test();
     return Scaffold(
       appBar: AppBar(
         title: Text('게시글 상세 정보'),
@@ -99,8 +102,8 @@ class _BoardPageState extends State<BoardPage> {
                                   width: 45,
                                   height: 45,
                                   child: Icon(Icons.near_me_outlined)),
-                              onTap: () {
-                                DatabaseService().JoinChat(widget.groupId,
+                              onTap: () async {
+                               await DatabaseService(uid: widget.uid).JoinChat(widget.groupId,
                                     widget.groupName, widget.userName);
                               },
                             ),

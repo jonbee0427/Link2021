@@ -13,6 +13,7 @@ class BoardTile extends StatelessWidget {
   final String userName;
   final String groupId;
   final String groupName;
+  final String uid;
 
   BoardTile({
     this.title,
@@ -24,11 +25,12 @@ class BoardTile extends StatelessWidget {
     this.groupId,
     this.groupName,
     this.userName,
+    this.uid
   });
 
   @override
   Widget build(BuildContext context) {
-    print(groupId);
+    //print(groupId);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -44,6 +46,7 @@ class BoardTile extends StatelessWidget {
                       groupId: groupId,
                       groupName: groupName,
                       userName: userName,
+                      uid: uid,
                     )));
       },
       child: Column(

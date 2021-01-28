@@ -21,7 +21,7 @@ class _HomeState extends State<Home> {
   int max_person;
   Stream _boards;
   Stream _groups;
-  var _user;
+  User _user;
   String _userName = '';
   Color priority = Color.fromARGB(250, 247, 162, 144);
 
@@ -71,6 +71,7 @@ class _HomeState extends State<Home> {
                   body: snapshot.data.docs[reqIndex]['body'],
                   time_limit: snapshot.data.docs[reqIndex]['time_limit'],
                   category: snapshot.data.docs[reqIndex]['category'],
+                  uid: _user.uid,
                 );
               },
               separatorBuilder: (context, index) {
