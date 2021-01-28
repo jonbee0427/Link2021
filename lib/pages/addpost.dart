@@ -17,8 +17,7 @@ class Post extends StatefulWidget {
 
 class _PostState extends State<Post> {
   final _formKey = GlobalKey<FormState>();
-  CollectionReference writing =
-      FirebaseFirestore.instance.collection('writing');
+  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
   String title;
   String body, datetime;
   int tag; //for category (1. 공동구매 2. 스터디 3. 취미생활)

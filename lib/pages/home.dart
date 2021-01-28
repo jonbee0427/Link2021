@@ -7,6 +7,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:link_ver1/pages/home_page.dart';
 import 'package:link_ver1/pages/search.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
+import 'package:link_ver1/helper/helper_functions.dart';
+
+import 'dart:async';
 
 class Home extends StatefulWidget {
   @override
@@ -17,18 +20,42 @@ class _HomeState extends State<Home> {
   String title, body, time_limit, create_time;
   int max_person;
   Stream _boards;
+  Stream _groups;
+  var _user;
+  String _userName = '';
   Color priority = Color.fromARGB(250, 247, 162, 144);
 
   // initState
   @override
   void initState() {
     super.initState();
-    _boards = FirebaseFirestore.instance.collection('writing').snapshots();
+    //_boards = FirebaseFirestore.instance.collection('writing').snapshots();
+    _groups = FirebaseFirestore.instance.collection('groups').snapshots();
+    _getUserAuthAndJoinedGroups();
+  }
+
+  _getUserAuthAndJoinedGroups() async {
+    _user = await FirebaseAuth.instance.currentUser;
+    await HelperFunctions.getUserNameSharedPreference().then((value) {
+      setState(() {
+        _userName = value;
+      });
+    });
+  }
+
+  String _destructureId(String res) {
+    // print(res.substring(0, res.indexOf('_')));
+    return res.substring(0, res.indexOf('_'));
+  }
+
+  String _destructureName(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('_') + 1);
   }
 
   Widget getBoard() {
     return StreamBuilder(
-        stream: _boards,
+        stream: _groups,
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.separated(
@@ -36,10 +63,10 @@ class _HomeState extends State<Home> {
               itemBuilder: (context, index) {
                 //itemBuilder : 게시글 하나하나,  index : 순서
                 int reqIndex = snapshot.data.docs.length - index - 1;
-                print(
-                    "document length " + snapshot.data.docs.length.toString());
-
                 return BoardTile(
+                  userName: _userName,
+                  groupId: snapshot.data.docs[reqIndex]['groupId'],
+                  groupName: snapshot.data.docs[reqIndex]['groupName'],
                   title: snapshot.data.docs[reqIndex]['title'],
                   body: snapshot.data.docs[reqIndex]['body'],
                   time_limit: snapshot.data.docs[reqIndex]['time_limit'],

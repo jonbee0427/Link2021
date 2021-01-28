@@ -19,9 +19,21 @@ class ProfilePic extends StatefulWidget {
 }
 
 class _ProfilePicState extends State<ProfilePic> {
+  @override
+  initState() {
+    super.initState();
+    initalizeUser();
+  }
+
+  User user;
   String imageUrl;
   PickedFile image;
   String profilePic;
+
+  initalizeUser() async {
+    user = await FirebaseAuth.instance.currentUser;
+    imageUrl = user.photoURL;
+  }
 
   Future uploadPic() async {
     final _storage = FirebaseStorage.instance; //FirebaseStorage의 인스턴스 가져오기
@@ -72,10 +84,10 @@ class _ProfilePicState extends State<ProfilePic> {
         overflow: Overflow.visible,
         children: [
           CircleAvatar(
-            backgroundImage: image ==
+            backgroundImage: imageUrl ==
                     null //만약 사용자가 로그아웃을 했더라도 마지막에 저장된 프로필 사진으로 자동적으로 보이기 필요.
                 ? AssetImage("assets/user.png")
-                : FileImage(File(image.path)),
+                : NetworkImage(imageUrl),
             backgroundColor: Colors.white,
           ),
           Positioned(
