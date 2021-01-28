@@ -12,8 +12,7 @@ class PostStudyTogether extends StatefulWidget {
 
 class _PostStudyTogether extends State<PostStudyTogether> {
   final _formKey = GlobalKey<FormState>();
-  CollectionReference writing =
-      FirebaseFirestore.instance.collection('writing');
+  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
   String title;
   String body, datetime;
   int max_person;
@@ -186,7 +185,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                                 onPressed: () {
                                   var create_time = new DateTime.now();
                                   if (_formKey.currentState.validate()) {
-                                    writing.add(
+                                    groups.add(
                                       {
                                         'title': title,
                                         'body': body,
