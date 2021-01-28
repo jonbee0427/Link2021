@@ -16,16 +16,6 @@ import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'message.dart';
-/*
-1. timestamp 완료
-2.0 사진 업로드 갯수 제한 구현 완료
-2.1 사진 업로드 할때 생기는 문제 ???
-3. 게시글 작성시 업로드되는 사진들을 하나의 폴더에 넣기  완료 
-
-사진 업로드 후 확인해보니 사진을 하나만 업로드 해도 여러개가 올라가 있음
-이미지 슬라이더 계속 문제
-*/
-// import 'package:day_night_time_picker/day_night_time_picker.dart';
 import '../shared/constants.dart';
 
 class PostBuyTogether extends StatefulWidget {
@@ -371,31 +361,6 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                           uploadFile(p, _groupName);
                                           print(p);
                                         }
-<<<<<<< HEAD
-                                        if (datetime == null) {
-                                          datetime = '없음';
-                                        }
-                                        writing.doc('ABC123').update({
-                                          'title': title,
-                                          'body': body,
-                                          'time_limit': datetime,
-                                          'max_person': max_person,
-                                          'create_time': create_time,
-                                          'category': '공동 구매',
-                                          'sub_category': _category,
-                                        }
-                                            // writing.add(
-                                            //   {
-                                            //     'title': title,
-                                            //     'body': body,
-                                            //     'time_limit': datetime,
-                                            //     'max_person': max_person,
-                                            //     'create_time': create_time,
-                                            //     'category': '공동 구매',
-                                            //     'sub_category': _category,
-                                            //   },
-                                            ).then((value) {
-=======
                                         groups.add(
                                           {
                                             'title': title,
@@ -406,7 +371,6 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                             'category': '공동 구매'
                                           },
                                         ).then((value) {
->>>>>>> 0e606b1cfe927fb174c83c264d9710291e3e2951
                                           print('writing added');
                                           setState(() {
                                             images = [];

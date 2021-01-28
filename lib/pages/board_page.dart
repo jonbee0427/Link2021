@@ -1,10 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:link_ver1/pages/EditPage.dart';
-=======
 import 'package:flutter/scheduler.dart';
->>>>>>> 0e606b1cfe927fb174c83c264d9710291e3e2951
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -14,6 +10,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'EditPage.dart';
 
 class BoardPage extends StatefulWidget {
   final String title;
@@ -196,7 +194,17 @@ class _BoardPageState extends State<BoardPage> {
                         onPressed: () {
                           print('글 수정!');
                           Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => EditPage()));
+                              builder: (context) => EditPage(
+                                    title: widget.title,
+                                    category: widget.category,
+                                    time_limit: widget.time_limit,
+                                    body: widget.body,
+                                    create_time: widget.create_time,
+                                    max_person: widget.max_person,
+                                    groupId: widget.groupId,
+                                    groupName: widget.groupName,
+                                    userName: widget.userName,
+                                  )));
                         }),
                   ),
                 ],

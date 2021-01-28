@@ -19,9 +19,28 @@ import 'board_page.dart';
 import '../shared/constants.dart';
 
 class EditPage extends StatefulWidget {
-  //final Todo todo;
+  String title;
+  final String category;
+  String time_limit;
+  String body;
+  final Timestamp create_time;
+  int max_person;
 
-  //EditPage({Key key, @required this.todo}) : super(key: key);
+  final String userName;
+  final String groupId;
+  final String groupName;
+
+  EditPage({
+    this.title,
+    this.category,
+    this.time_limit,
+    this.body,
+    this.create_time,
+    this.max_person,
+    this.groupId,
+    this.groupName,
+    this.userName,
+  });
 
   @override
   _EditPage createState() => _EditPage();
@@ -48,8 +67,7 @@ class _EditPage extends State<EditPage> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  CollectionReference writing =
-      FirebaseFirestore.instance.collection('writing');
+  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
 
   final AuthService _auth = AuthService();
 
@@ -88,11 +106,10 @@ class _EditPage extends State<EditPage> {
   @override
   Widget build(BuildContext context) {
     DateTime _selectedDateTime = DateTime.now();
-    // Todo todos = widget.todo;
-    String title; //= todos.title;
-    String body; //= todos.body,
-    String datetime; //= todos.time_limit;
-    int max_person; //= todos.max_person;
+    String title = widget.title;
+    String body = widget.body;
+    String datetime = widget.time_limit;
+    int max_person = widget.max_person;
 
     return SafeArea(
         child: Scaffold(
@@ -328,23 +345,21 @@ class _EditPage extends State<EditPage> {
                                         if (datetime == null) {
                                           datetime = '없음';
                                         }
-                                        // writing.add(
-                                        //   {
-                                        //     'title': title,
-                                        //     'body': body,
-                                        //     'time_limit': datetime,
-                                        //     'max_person': max_person,
-                                        //     // 'create_time': create_time,
-                                        //     'category': '임시',
-                                        //   },
-                                        // ).then((value) {
-                                        //   print('writing added');
-                                        //   setState(() {
-                                        //     images = [];
-                                        //   });
-                                        //   Navigator.of(context).pop();
-                                        // }).catchError(
-                                        //     (value) => print('failed to add'));
+                                        print(widget.groupId);
+                                        groups.doc(widget.groupId).set({
+                                          'title': title,
+                                          'body': body,
+                                          'time_limit': datetime,
+                                          'max_person': max_person,
+                                          'category': widget.category,
+                                        }).then((value) {
+                                          print('writing added');
+                                          setState(() {
+                                            images = [];
+                                          });
+                                          Navigator.of(context).pop();
+                                        }).catchError(
+                                            (value) => print('failed to add'));
                                       }
                                     }),
                               ),

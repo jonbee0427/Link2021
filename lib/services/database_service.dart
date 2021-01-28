@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-<<<<<<< HEAD
-=======
 import 'package:fluttertoast/fluttertoast.dart';
->>>>>>> 0e606b1cfe927fb174c83c264d9710291e3e2951
 
 class DatabaseService {
   final String uid;
