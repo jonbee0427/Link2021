@@ -20,7 +20,7 @@ class BoardPage extends StatefulWidget {
   final String body;
   final Timestamp create_time;
   final int max_person;
-
+  final int current_person;
   final String userName;
   final String groupId;
   final String groupName;
@@ -32,6 +32,7 @@ class BoardPage extends StatefulWidget {
     this.body,
     this.create_time,
     this.max_person,
+    this.current_person,
     this.groupId,
     this.groupName,
     this.userName,
@@ -140,6 +141,34 @@ class _BoardPageState extends State<BoardPage> {
                     padding: const EdgeInsets.only(top: 10, left: 25),
                     child: Text(
                       '마감시간 : ' + widget.time_limit,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    /*
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)),
+                        */
+                    padding: const EdgeInsets.only(top: 10, left: 25),
+                    child: Text(
+                      '최대 인원 : ' + '${widget.max_person}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    /*
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)),
+                        */
+                    padding: const EdgeInsets.only(top: 10, left: 25),
+                    child: Text(
+                      '현재 인원 : ' + '${widget.current_person}',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,

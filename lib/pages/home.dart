@@ -73,6 +73,8 @@ class _HomeState extends State<Home> {
                   time_limit: snapshot.data.docs[reqIndex]['time_limit'],
                   category: snapshot.data.docs[reqIndex]['category'],
                   max_person: snapshot.data.docs[reqIndex]['max_person'],
+                  current_person: snapshot.data.docs[reqIndex]
+                      ['current_person'],
                 );
               },
               separatorBuilder: (context, index) {
