@@ -105,12 +105,6 @@ class _EditPage extends State<EditPage> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime _selectedDateTime = DateTime.now();
-    String title = widget.title;
-    String body = widget.body;
-    String datetime = widget.time_limit;
-    int max_person = widget.max_person;
-
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
@@ -149,12 +143,12 @@ class _EditPage extends State<EditPage> {
                           decoration: textInputDecoration.copyWith(
                             labelText: '게시글 제목',
                           ),
-                          initialValue: title,
+                          initialValue: widget.title,
                           validator: (val) =>
                               val.length < 2 ? '2글자 이상 입력해주세요' : null,
                           onChanged: (val) {
                             setState(() {
-                              title = val;
+                              widget.title = val;
                               _groupName = val;
                             });
                           },
@@ -181,7 +175,6 @@ class _EditPage extends State<EditPage> {
                                 // icon: Icon(Icons.event),
                                 dateLabelText: 'Date',
                                 timeLabelText: "Hour",
-
                                 selectableDayPredicate: (date) {
                                   // Disable weekend days to select from the calendar
                                   // if (date.weekday == 6 || date.weekday == 7) {
@@ -191,7 +184,7 @@ class _EditPage extends State<EditPage> {
                                 },
                                 onChanged: (val) {
                                   setState(() {
-                                    datetime = val;
+                                    widget.time_limit = val;
                                     print('1');
                                   });
                                 },
@@ -208,7 +201,7 @@ class _EditPage extends State<EditPage> {
                               flex: 2,
                               child: TextFormField(
                                 cursorColor: Colors.black,
-                                initialValue: max_person.toString(),
+                                initialValue: widget.max_person.toString(),
                                 style: TextStyle(
                                   color: Colors.black,
                                 ),
@@ -218,7 +211,7 @@ class _EditPage extends State<EditPage> {
                                     val.length < 1 ? '최대 인원을 입력해주세요' : null,
                                 onChanged: (val) {
                                   setState(() {
-                                    max_person = int.parse(val);
+                                    widget.max_person = int.parse(val);
                                   });
                                 },
                               ),
@@ -233,7 +226,7 @@ class _EditPage extends State<EditPage> {
                           maxLines: 20,
                           minLines: 15,
                           maxLength: 1000,
-                          initialValue: body,
+                          initialValue: widget.body,
                           style: TextStyle(
                             color: Colors.black,
                           ),
@@ -243,7 +236,7 @@ class _EditPage extends State<EditPage> {
                               val.length < 1 ? '게시할 내용을 입력하세요' : null,
                           onChanged: (val) {
                             setState(() {
-                              body = val;
+                              widget.body = val;
                             });
                           },
                         ),
@@ -342,21 +335,24 @@ class _EditPage extends State<EditPage> {
                                           uploadFile(p, _groupName);
                                           print(p);
                                         }
-                                        if (datetime == null) {
-                                          datetime = '없음';
+                                        if (widget.time_limit == null) {
+                                          widget.time_limit = '없음';
                                         }
+                                        print('------------------------');
                                         print(widget.groupId);
-                                        groups.doc(widget.groupId).set({
-                                          'title': title,
-                                          'body': body,
-                                          'time_limit': datetime,
-                                          'max_person': max_person,
+                                        print(widget.title);
+                                        print(widget.body);
+                                        print('------------------------');
+                                        groups.doc(widget.groupId).update({
+                                          'title': widget.title,
+                                          'groupName': widget.title,
+                                          'body': widget.body,
+                                          'time_limit': widget.time_limit,
+                                          'max_person': widget.max_person,
                                           'category': widget.category,
                                         }).then((value) {
-                                          print('writing added');
-                                          setState(() {
-                                            images = [];
-                                          });
+                                          print('updated');
+                                          Navigator.of(context).pop();
                                           Navigator.of(context).pop();
                                         }).catchError(
                                             (value) => print('failed to add'));

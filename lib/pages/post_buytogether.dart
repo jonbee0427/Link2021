@@ -149,7 +149,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 decoration: textInputDecoration,
                                 type: DateTimePickerType.dateTimeSeparate,
                                 dateMask: 'd MMM, yyyy',
-                                initialValue: DateTime.now().toString(),
+                                //initialValue: DateTime.now().toString(),
                                 firstDate: DateTime(2000),
                                 lastDate: DateTime(2100),
                                 // icon: Icon(Icons.event),
@@ -351,6 +351,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                       var create_time = new DateTime.now()
                                           .millisecondsSinceEpoch;
                                       if (_formKey.currentState.validate()) {
+                                        if (datetime == null) datetime = '없음';
                                         await HelperFunctions
                                                 .getUserNameSharedPreference()
                                             .then((val) {

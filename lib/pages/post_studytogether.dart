@@ -186,6 +186,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                                 onPressed: () {
                                   var create_time = new DateTime.now();
                                   if (_formKey.currentState.validate()) {
+                                    if (datetime == null) datetime = '없음';
                                     writing.add(
                                       {
                                         'title': title,
