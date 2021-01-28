@@ -10,6 +10,10 @@ class BoardTile extends StatelessWidget {
   final Timestamp create_time;
   final int max_person;
 
+  final String userName;
+  final String groupId;
+  final String groupName;
+
   BoardTile({
     this.title,
     this.category,
@@ -17,10 +21,14 @@ class BoardTile extends StatelessWidget {
     this.body,
     this.create_time,
     this.max_person,
+    this.groupId,
+    this.groupName,
+    this.userName,
   });
 
   @override
   Widget build(BuildContext context) {
+    print(groupId);
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -33,6 +41,9 @@ class BoardTile extends StatelessWidget {
                       body: body,
                       create_time: create_time,
                       max_person: max_person,
+                      groupId: groupId,
+                      groupName: groupName,
+                      userName: userName,
                     )));
       },
       child: Column(
@@ -48,25 +59,31 @@ class BoardTile extends StatelessWidget {
                     endIndent: 0,
                   ),
                   Expanded(
-                    flex: 85, //필드의 사이즈를 정해줌
-                    child: Text(category,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    flex: 60, //필드의 사이즈를 정해줌
+                    child: category == null || category == ""
+                        ? Text('Nothing')
+                        : Text(category,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   SizedBox(
                     width: 30,
                   ),
                   Expanded(
-                    flex: 55,
-                    child: Text(title,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    flex: 80,
+                    child: title == null || title == ""
+                        ? Text('nothing')
+                        : Text(title,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   SizedBox(
                     width: 40,
                   ),
                   Expanded(
                     flex: 80,
-                    child: Text(time_limit,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: time_limit == null || time_limit == ""
+                        ? Text('시간없음')
+                        : Text(time_limit,
+                            style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),

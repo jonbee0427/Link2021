@@ -54,8 +54,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  CollectionReference writing =
-      FirebaseFirestore.instance.collection('writing');
+  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
   String title;
   String body, datetime;
   int max_person;
@@ -372,6 +371,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                           uploadFile(p, _groupName);
                                           print(p);
                                         }
+<<<<<<< HEAD
                                         if (datetime == null) {
                                           datetime = '없음';
                                         }
@@ -395,6 +395,18 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                             //     'sub_category': _category,
                                             //   },
                                             ).then((value) {
+=======
+                                        groups.add(
+                                          {
+                                            'title': title,
+                                            'body': body,
+                                            'time_limit': datetime,
+                                            'max_person': max_person,
+                                            'create_time': create_time,
+                                            'category': '공동 구매'
+                                          },
+                                        ).then((value) {
+>>>>>>> 0e606b1cfe927fb174c83c264d9710291e3e2951
                                           print('writing added');
                                           setState(() {
                                             images = [];

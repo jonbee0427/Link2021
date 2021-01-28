@@ -43,8 +43,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  CollectionReference writing =
-      FirebaseFirestore.instance.collection('writing');
+  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
   String title;
   String body, datetime;
   int max_person;
@@ -263,6 +262,7 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                         SizedBox(
                           height: 10,
                         ),
+<<<<<<< HEAD
                         Row(
                           children: [
                             Flexible(
@@ -282,6 +282,35 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                                             fontSize: 16.0)),
                                     onPressed: () {
                                       print('글 작성 취소!');
+=======
+                        Flexible(
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50.0,
+                            child: RaisedButton(
+                                elevation: 0.0,
+                                color: Colors.pink[300],
+                                // Color.fromARGB(300, 247, 162, 144),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0)),
+                                child: Text('작성 완료',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16.0)),
+                                onPressed: () {
+                                  var create_time = new DateTime.now();
+                                  if (_formKey.currentState.validate()) {
+                                    groups.add(
+                                      {
+                                        'title': title,
+                                        'body': body,
+                                        'time_limit': datetime,
+                                        'max_person': max_person,
+                                        'create_time': create_time,
+                                        'category': '스터디'
+                                      },
+                                    ).then((value) {
+                                      print('writing added');
+>>>>>>> 0e606b1cfe927fb174c83c264d9710291e3e2951
                                       Navigator.of(context).pop();
                                     }),
                               ),
