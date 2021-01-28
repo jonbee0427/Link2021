@@ -13,6 +13,7 @@ class BoardTile extends StatelessWidget {
   final String userName;
   final String groupId;
   final String groupName;
+  final Widget groupMembers;
 
   BoardTile({
     this.title,
@@ -22,6 +23,7 @@ class BoardTile extends StatelessWidget {
     this.create_time,
     this.max_person,
     this.groupId,
+    this.groupMembers,
     this.groupName,
     this.userName,
   });
@@ -42,6 +44,7 @@ class BoardTile extends StatelessWidget {
                       create_time: create_time,
                       max_person: max_person,
                       groupId: groupId,
+                      groupMembers: groupMembers,
                       groupName: groupName,
                       userName: userName,
                     )));
@@ -49,37 +52,47 @@ class BoardTile extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.only(left: 8),
             child: ListTile(
               title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Divider(
-                    color: Colors.black,
-                    thickness: 5,
-                    endIndent: 0,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        child: category == null || category == ""
+                            ? Text('Nothing')
+                            : Text(category, style: TextStyle(fontSize: 14)),
+                      ),
+                      Container(
+                        child: title == null || title == ""
+                            ? Text(
+                                'nothing',
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            : Container(
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.6),
+                                child: Text(
+                                  title,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                      )
+                    ],
                   ),
-                  Expanded(
-                    flex: 60, //필드의 사이즈를 정해줌
-                    child: category == null || category == ""
-                        ? Text('Nothing')
-                        : Text(category,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                  Container(
+                    /*
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)), */
+                    child: SizedBox(
+                      width: 50,
+                    ),
                   ),
-                  SizedBox(
-                    width: 30,
-                  ),
-                  Expanded(
-                    flex: 80,
-                    child: title == null || title == ""
-                        ? Text('nothing')
-                        : Text(title,
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                  ),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  Expanded(
-                    flex: 80,
+                  Container(
                     child: time_limit == null || time_limit == ""
                         ? Text('시간없음')
                         : Text(time_limit,

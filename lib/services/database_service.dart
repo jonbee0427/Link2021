@@ -32,6 +32,7 @@ class DatabaseService {
       'groupIcon': '',
       'admin': userName,
       'members': [],
+      'membersNum': 1,
       //'messages': ,
       'groupId': '',
       'recentMessage': '채팅방이 생성되었습니다.',
@@ -53,56 +54,6 @@ class DatabaseService {
     return await userDocRef.update({
       'groups': FieldValue.arrayUnion([groupDocRef.id + '_' + groupName])
     });
-  }
-
-  // toggling the user group join
-  Future togglingGroupJoin(
-      String groupId, String groupName, String userName) async {
-    DocumentReference userDocRef = userCollection.doc(uid);
-    DocumentSnapshot userDocSnapshot = await userDocRef.get();
-
-    DocumentReference groupDocRef = groupCollection.doc(groupId);
-
-    List<dynamic> groups = await userDocSnapshot.data()['groups'];
-
-    if (groups.contains(groupId + '_' + groupName)) {
-      //print('hey');
-      await userDocRef.update({
-        'groups': FieldValue.arrayRemove([groupId + '_' + groupName])
-      });
-
-      await groupDocRef.update({
-        'members': FieldValue.arrayRemove([uid + '_' + userName])
-      });
-
-      groupDocRef.delete();
-    } else {
-      //print('nay');
-      await userDocRef.update({
-        'groups': FieldValue.arrayUnion([groupId + '_' + groupName])
-      });
-
-      await groupDocRef.update({
-        'members': FieldValue.arrayUnion([uid + '_' + userName])
-      });
-    }
-  }
-
-  // has user joined the group
-  Future<bool> isUserJoined(
-      String groupId, String groupName, String userName) async {
-    DocumentReference userDocRef = userCollection.doc(uid);
-    DocumentSnapshot userDocSnapshot = await userDocRef.get();
-
-    List<dynamic> groups = await userDocSnapshot.data()['groups'];
-
-    if (groups.contains(groupId + '_' + groupName)) {
-      //print('he');
-      return true;
-    } else {
-      //print('ne');
-      return false;
-    }
   }
 
   // toggling the user group join
@@ -131,6 +82,62 @@ class DatabaseService {
     }
   }
 
+  // toggling the user group join
+  Future OutChat(String groupId, String groupName, String userName) async {
+    DocumentReference userDocRef = userCollection.doc(uid);
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
+    DocumentReference groupDocRef = groupCollection.doc(groupId);
+    DocumentSnapshot groupDocSnapshot = await groupDocRef.get();
+    FirebaseStorage desertRef = FirebaseStorage.instance;
+
+    int membersNum = await groupDocSnapshot.data()['membersNum'];
+    List<dynamic> groups = await userDocSnapshot.data()['groups'];
+    if (groups.contains(groupId + '_' + groupName)) {
+      //print('hey');
+      await userDocRef.update({
+        'groups': FieldValue.arrayRemove([groupId + '_' + groupName])
+      });
+
+      await groupDocRef.update({
+        'members': FieldValue.arrayRemove([uid + '_' + userName]),
+        'membersNum': FieldValue.increment(-1)
+      });
+      if (membersNum == 1) {
+        desertRef.ref().child(groupId + '/').listAll().then((value) {
+          value.items.forEach((element) {
+            element.delete();
+          });
+        });
+        await groupDocRef.collection('messages').get().then((snapshot) {
+          for (DocumentSnapshot ds in snapshot.docs) {
+            ds.reference.delete();
+          }
+        });
+        await groupDocRef.delete();
+      }
+    } else {
+      Fluttertoast.showToast(msg: '속해있는 채팅방이 아닙니다!');
+    }
+  }
+
+  // has user joined the group
+  Future<bool> isUserJoined(
+      String groupId, String groupName, String userName) async {
+    DocumentReference userDocRef = userCollection.doc(uid);
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
+    List<dynamic> groups = await userDocSnapshot.data()['groups'];
+
+    if (groups.contains(groupId + '_' + groupName)) {
+      //print('he');
+      return true;
+    } else {
+      //print('ne');
+      return false;
+    }
+  }
+
   // get user data
   Future getUserData(String email) async {
     QuerySnapshot snapshot =
@@ -149,7 +156,7 @@ class DatabaseService {
   }
 
   // send message
-  sendMessage(String groupId, chatMessageData) {
+  sendMessage(String groupId, chatMessageData, String type) {
     FirebaseFirestore.instance
         .collection('groups')
         .doc(groupId)
@@ -159,6 +166,7 @@ class DatabaseService {
       'recentMessage': chatMessageData['message'],
       'recentMessageSender': chatMessageData['sender'],
       'recentMessageTime': chatMessageData['time'],
+      'recentMessageType': chatMessageData['type']
     });
   }
 
@@ -179,12 +187,16 @@ class DatabaseService {
         .get()
         .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        print('Document data: ${documentSnapshot.data()}');
+        print('Document data: ${documentSnapshot.data()['recentMessageTime']}');
         return documentSnapshot.data();
       } else {
         print('Document does not exist on the database');
       }
     });
+  }
+
+  getRecentTime(String groupId) async {
+    FirebaseFirestore.instance.collection('groups').doc(groupId).snapshots();
   }
 
   // search groups

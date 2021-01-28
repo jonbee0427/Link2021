@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
+import 'package:link_ver1/pages/chat_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:async';
@@ -22,6 +23,8 @@ class BoardPage extends StatefulWidget {
   final String userName;
   final String groupId;
   final String groupName;
+  final String profilePic;
+  final Widget groupMembers;
 
   BoardPage({
     this.title,
@@ -31,8 +34,10 @@ class BoardPage extends StatefulWidget {
     this.create_time,
     this.max_person,
     this.groupId,
+    this.groupMembers,
     this.groupName,
     this.userName,
+    this.profilePic,
   });
   @override
   _BoardPageState createState() => _BoardPageState();
@@ -102,6 +107,17 @@ class _BoardPageState extends State<BoardPage> {
                               onTap: () {
                                 DatabaseService().JoinChat(widget.groupId,
                                     widget.groupName, widget.userName);
+
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatPage(
+                                              groupId: widget.groupId,
+                                              userName: widget.userName,
+                                              groupName: widget.groupName,
+                                              groupMembers: widget.groupMembers,
+                                              profilePic: widget.profilePic,
+                                            )));
                               },
                             ),
                           ),
