@@ -169,7 +169,7 @@ class _EditPage extends State<EditPage> {
                                 decoration: textInputDecoration,
                                 type: DateTimePickerType.dateTimeSeparate,
                                 dateMask: 'd MMM, yyyy',
-                                initialValue: DateTime.now().toString(),
+                                //initialValue: DateTime.now().toString(),
                                 firstDate: DateTime(2000),
                                 lastDate: DateTime(2100),
                                 // icon: Icon(Icons.event),
@@ -201,7 +201,7 @@ class _EditPage extends State<EditPage> {
                               flex: 2,
                               child: TextFormField(
                                 cursorColor: Colors.black,
-                                initialValue: widget.max_person.toString(),
+                                initialValue: '${widget.max_person}',
                                 style: TextStyle(
                                   color: Colors.black,
                                 ),
@@ -342,6 +342,7 @@ class _EditPage extends State<EditPage> {
                                         print(widget.groupId);
                                         print(widget.title);
                                         print(widget.body);
+                                        print(widget.max_person);
                                         print('------------------------');
                                         groups.doc(widget.groupId).update({
                                           'title': widget.title,
