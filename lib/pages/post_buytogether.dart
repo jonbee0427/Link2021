@@ -355,29 +355,20 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                 .getUserNameSharedPreference()
                                             .then((val) {
                                           DatabaseService(uid: _user.uid)
-                                              .createGroup(val, _groupName);
+                                              .createGroup(
+                                                  val,
+                                                  _groupName,
+                                                  title,
+                                                  body,
+                                                  datetime,
+                                                  max_person,
+                                                  create_time);
                                         });
                                         for (String p in path) {
                                           uploadFile(p, _groupName);
                                           print(p);
                                         }
-                                        groups.add(
-                                          {
-                                            'title': title,
-                                            'body': body,
-                                            'time_limit': datetime,
-                                            'max_person': max_person,
-                                            'create_time': create_time,
-                                            'category': '공동 구매'
-                                          },
-                                        ).then((value) {
-                                          print('writing added');
-                                          setState(() {
-                                            images = [];
-                                          });
-                                          Navigator.of(context).pop();
-                                        }).catchError(
-                                            (value) => print('failed to add'));
+                                        Navigator.of(context).pop();
                                       }
                                     }),
                               ),

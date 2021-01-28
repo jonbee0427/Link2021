@@ -25,7 +25,8 @@ class DatabaseService {
   }
 
   // create group
-  Future createGroup(String userName, String groupName) async {
+  Future createGroup(String userName, String groupName, String title,
+      String body, String datetime, int max_person, int create_time) async {
     DocumentReference groupDocRef = await groupCollection.add({
       'groupName': groupName,
       'groupIcon': '',
@@ -35,7 +36,13 @@ class DatabaseService {
       //'messages': ,
       'groupId': '',
       'recentMessage': '채팅방이 생성되었습니다.',
-      'recentMessageSender': ''
+      'recentMessageSender': '',
+      'title': title,
+      'body': body,
+      'time_limit': datetime,
+      'max_person': max_person,
+      'create_time': create_time,
+      'category': '공동 구매'
     });
 
     await groupDocRef.update({
