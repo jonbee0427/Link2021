@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
-import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,11 +15,35 @@ import 'package:link_ver1/services/auth_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'message.dart';
+import 'board_page.dart';
 import '../shared/constants.dart';
 
-class PostBuyTogether extends StatefulWidget {
+class EditPage extends StatefulWidget {
+  String title;
+  final String category;
+  String time_limit;
+  String body;
+  final Timestamp create_time;
+  int max_person;
+
+  final String userName;
+  final String groupId;
+  final String groupName;
+
+  EditPage({
+    this.title,
+    this.category,
+    this.time_limit,
+    this.body,
+    this.create_time,
+    this.max_person,
+    this.groupId,
+    this.groupName,
+    this.userName,
+  });
+
   @override
-  _PostBuyTogether createState() => _PostBuyTogether();
+  _EditPage createState() => _EditPage();
 }
 
 List<String> images = [];
@@ -33,7 +56,7 @@ Stream _groups;
 CollectionReference chats;
 int maxpicture = 0;
 
-class _PostBuyTogether extends State<PostBuyTogether> {
+class _EditPage extends State<EditPage> {
   @override
   void initState() {
     super.initState();
@@ -45,10 +68,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
 
   final _formKey = GlobalKey<FormState>();
   CollectionReference groups = FirebaseFirestore.instance.collection('groups');
-  String title;
-  String body, datetime;
-  int max_person;
-  String _category;
+
   final AuthService _auth = AuthService();
 
   Future getImage() async {
@@ -68,11 +88,10 @@ class _PostBuyTogether extends State<PostBuyTogether> {
     }
   }
 
-  Future uploadFile(String path, String groupname, int createtime) async {
+  Future uploadFile(String path, String groupname) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference reference = FirebaseStorage.instance
-        .ref()
-        .child('$groupname$createtime/' + fileName);
+    Reference reference =
+        FirebaseStorage.instance.ref().child('$groupname/' + fileName);
     UploadTask uploadTask = reference.putFile(File(path));
     TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadURL) {
@@ -86,15 +105,13 @@ class _PostBuyTogether extends State<PostBuyTogether> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime _selectedDateTime = DateTime.now();
-
     return SafeArea(
         child: Scaffold(
             appBar: AppBar(
-              title: Text('공동 구매 글 작성'),
+              title: Text('게시글 수정 페이지'),
               centerTitle: true,
               backgroundColor: Color.fromARGB(250, 247, 162, 144),
-              elevation: 05,
+              elevation: 0,
             ),
             body: Form(
               key: _formKey,
@@ -109,7 +126,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("게시글 작성",
+                        Text("게시글 수정",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 30.0,
@@ -123,13 +140,15 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                             color: Colors.black,
                           ),
                           maxLength: 50,
-                          decoration:
-                              textInputDecoration.copyWith(labelText: '게시글 제목'),
+                          decoration: textInputDecoration.copyWith(
+                            labelText: '게시글 제목',
+                          ),
+                          initialValue: widget.title,
                           validator: (val) =>
                               val.length < 2 ? '2글자 이상 입력해주세요' : null,
                           onChanged: (val) {
                             setState(() {
-                              title = val;
+                              widget.title = val;
                               _groupName = val;
                             });
                           },
@@ -165,7 +184,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 },
                                 onChanged: (val) {
                                   setState(() {
-                                    datetime = val;
+                                    widget.time_limit = val;
                                     print('1');
                                   });
                                 },
@@ -182,6 +201,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                               flex: 2,
                               child: TextFormField(
                                 cursorColor: Colors.black,
+                                initialValue: '${widget.max_person}',
                                 style: TextStyle(
                                   color: Colors.black,
                                 ),
@@ -191,7 +211,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                     val.length < 1 ? '최대 인원을 입력해주세요' : null,
                                 onChanged: (val) {
                                   setState(() {
-                                    max_person = int.parse(val);
+                                    widget.max_person = int.parse(val);
                                   });
                                 },
                               ),
@@ -201,53 +221,12 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                         SizedBox(
                           height: 10,
                         ),
-                        DropDownFormField(
-                          titleText: '세부 카테고리',
-                          hintText: '선택하지 않아도 됩니다.',
-                          value: _category,
-                          onSaved: (value) {
-                            setState(() {
-                              _category = value;
-                            });
-                          },
-                          onChanged: (value) {
-                            setState(() {
-                              _category = value;
-                            });
-                          },
-                          dataSource: [
-                            {
-                              "display": "배달 음식",
-                              "value": "배달 음식",
-                            },
-                            {
-                              "display": "생필품",
-                              "value": "생필품",
-                            },
-                            {
-                              "display": "의류/잡화",
-                              "value": "의류/잡화",
-                            },
-                            {
-                              "display": "식품",
-                              "value": "식품",
-                            },
-                            {
-                              "display": "기타",
-                              "value": "기타",
-                            },
-                          ],
-                          textField: 'display',
-                          valueField: 'value',
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
                         TextFormField(
                           cursorColor: Colors.black,
                           maxLines: 20,
                           minLines: 15,
                           maxLength: 1000,
+                          initialValue: widget.body,
                           style: TextStyle(
                             color: Colors.black,
                           ),
@@ -257,7 +236,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                               val.length < 1 ? '게시할 내용을 입력하세요' : null,
                           onChanged: (val) {
                             setState(() {
-                              body = val;
+                              widget.body = val;
                             });
                           },
                         ),
@@ -349,29 +328,35 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                             color: Colors.white,
                                             fontSize: 16.0)),
                                     onPressed: () async {
-                                      var create_time = new DateTime.now()
-                                          .millisecondsSinceEpoch;
+                                      // var create_time = new DateTime.now()
+                                      //     .millisecondsSinceEpoch;
                                       if (_formKey.currentState.validate()) {
-                                        if (datetime == null) datetime = '없음';
-                                        await HelperFunctions
-                                                .getUserNameSharedPreference()
-                                            .then((val) {
-                                          DatabaseService(uid: _user.uid)
-                                              .createGroup(
-                                                  val,
-                                                  _groupName,
-                                                  title,
-                                                  body,
-                                                  datetime,
-                                                  max_person,
-                                                  create_time);
-                                        });
                                         for (String p in path) {
-                                          uploadFile(
-                                              p, _groupName, create_time);
+                                          uploadFile(p, _groupName);
                                           print(p);
                                         }
-                                        Navigator.of(context).pop();
+                                        if (widget.time_limit == null) {
+                                          widget.time_limit = '없음';
+                                        }
+                                        print('------------------------');
+                                        print(widget.groupId);
+                                        print(widget.title);
+                                        print(widget.body);
+                                        print(widget.max_person);
+                                        print('------------------------');
+                                        groups.doc(widget.groupId).update({
+                                          'title': widget.title,
+                                          'groupName': widget.title,
+                                          'body': widget.body,
+                                          'time_limit': widget.time_limit,
+                                          'max_person': widget.max_person,
+                                          'category': widget.category,
+                                        }).then((value) {
+                                          print('updated');
+                                          Navigator.of(context).pop();
+                                          Navigator.of(context).pop();
+                                        }).catchError(
+                                            (value) => print('failed to add'));
                                       }
                                     }),
                               ),

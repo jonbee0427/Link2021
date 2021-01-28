@@ -12,7 +12,8 @@ class PostHobbyTogether extends StatefulWidget {
 
 class _PostHobbyTogether extends State<PostHobbyTogether> {
   final _formKey = GlobalKey<FormState>();
-  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
+  CollectionReference writing =
+      FirebaseFirestore.instance.collection('writing');
   String title;
   String body, datetime;
   int max_person;
@@ -77,7 +78,7 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                             decoration: textInputDecoration,
                             type: DateTimePickerType.dateTimeSeparate,
                             dateMask: 'd MMM, yyyy',
-                            initialValue: DateTime.now().toString(),
+                            //initialValue: DateTime.now().toString(),
                             firstDate: DateTime(2000),
                             lastDate: DateTime(2100),
                             // icon: Icon(Icons.event),
@@ -185,7 +186,8 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                                 onPressed: () {
                                   var create_time = new DateTime.now();
                                   if (_formKey.currentState.validate()) {
-                                    groups.add(
+                                    if (datetime == null) datetime = '없음';
+                                    writing.add(
                                       {
                                         'title': title,
                                         'body': body,

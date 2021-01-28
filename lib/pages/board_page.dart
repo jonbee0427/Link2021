@@ -4,12 +4,15 @@ import 'package:flutter/scheduler.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
+import 'package:link_ver1/pages/chat_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'EditPage.dart';
 
 class BoardPage extends StatefulWidget {
   final String title;
@@ -18,10 +21,12 @@ class BoardPage extends StatefulWidget {
   final String body;
   final Timestamp create_time;
   final int max_person;
-
+  final int current_person;
   final String userName;
   final String groupId;
   final String groupName;
+  final String profilePic;
+  final Widget groupMembers;
 
   BoardPage({
     this.title,
@@ -30,9 +35,12 @@ class BoardPage extends StatefulWidget {
     this.body,
     this.create_time,
     this.max_person,
+    this.current_person,
     this.groupId,
+    this.groupMembers,
     this.groupName,
     this.userName,
+    this.profilePic,
   });
   @override
   _BoardPageState createState() => _BoardPageState();
@@ -102,6 +110,17 @@ class _BoardPageState extends State<BoardPage> {
                               onTap: () {
                                 DatabaseService().JoinChat(widget.groupId,
                                     widget.groupName, widget.userName);
+
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatPage(
+                                              groupId: widget.groupId,
+                                              userName: widget.userName,
+                                              groupName: widget.groupName,
+                                              groupMembers: widget.groupMembers,
+                                              profilePic: widget.profilePic,
+                                            )));
                               },
                             ),
                           ),
@@ -144,6 +163,34 @@ class _BoardPageState extends State<BoardPage> {
                       ),
                     ),
                   ),
+                  Container(
+                    /*
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)),
+                        */
+                    padding: const EdgeInsets.only(top: 10, left: 25),
+                    child: Text(
+                      '최대 인원 : ' + '${widget.max_person}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    /*
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent)),
+                        */
+                    padding: const EdgeInsets.only(top: 10, left: 25),
+                    child: Text(
+                      '현재 인원 : ' + '${widget.current_person}',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
                   Expanded(
                     child: Container(
                       constraints: BoxConstraints(
@@ -175,6 +222,67 @@ class _BoardPageState extends State<BoardPage> {
                         ),
                       ),
                     ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      SizedBox(
+                        //width: double.infinity,
+                        height: 50.0,
+                        child: RaisedButton(
+                            elevation: 0.0,
+                            color: Colors.pink[300],
+                            // Color.fromARGB(300, 247, 162, 144),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            child: Text('게시글 수정',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0)),
+                            onPressed: () {
+                              print('글 수정!');
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => EditPage(
+                                        title: widget.title,
+                                        category: widget.category,
+                                        time_limit: widget.time_limit,
+                                        body: widget.body,
+                                        create_time: widget.create_time,
+                                        max_person: widget.max_person,
+                                        groupId: widget.groupId,
+                                        groupName: widget.groupName,
+                                        userName: widget.userName,
+                                      )));
+                            }),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      SizedBox(
+                        //width: double.infinity,
+                        height: 50.0,
+                        child: RaisedButton(
+                            elevation: 0.0,
+                            color: Colors.pink[300],
+                            // Color.fromARGB(300, 247, 162, 144),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            child: Text('게시글 삭제',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0)),
+                            onPressed: () {
+                              print('글 삭제!');
+                              CollectionReference groups = FirebaseFirestore
+                                  .instance
+                                  .collection('groups');
+                              groups
+                                  .doc(widget.groupId)
+                                  .update({'isdeleted': true});
+                              Navigator.of(context).pop();
+                            }),
+                      ),
+                    ],
                   ),
                 ],
               ),

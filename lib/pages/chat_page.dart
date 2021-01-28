@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-
+import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:date_time_picker/date_time_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
@@ -11,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/message_tile.dart';
+import 'package:link_ver1/helper/helper_functions.dart';
 
 //주석
 class ChatPage extends StatefulWidget {
@@ -19,8 +21,14 @@ class ChatPage extends StatefulWidget {
   final String userName;
   final String groupName;
   final Widget groupMembers;
+  final String profilePic;
 
-  ChatPage({this.groupId, this.userName, this.groupName, this.groupMembers});
+  ChatPage(
+      {this.groupId,
+      this.userName,
+      this.groupName,
+      this.groupMembers,
+      this.profilePic});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -29,12 +37,15 @@ class ChatPage extends StatefulWidget {
 class _ChatPageState extends State<ChatPage> {
   User _user;
   String _userName;
+  //String profilePic;
+  final checkingFormat = new DateFormat('dd');
+  final printFormat = new DateFormat('yyyy년 MM월 dd일');
   bool _isJoined;
   Stream<QuerySnapshot> _chats;
-  DocumentSnapshot _groupInfo;
   TextEditingController messageEditingController = new TextEditingController();
   ScrollController scrollController = new ScrollController();
-
+  Timestamp recent;
+  Stream _recentStream;
   Widget _chatMessages() {
     return StreamBuilder(
       stream: _chats,
@@ -57,6 +68,8 @@ class _ChatPageState extends State<ChatPage> {
                     sentByMe: widget.userName ==
                         snapshot.data.documents[index].data()["sender"],
                     now: snapshot.data.documents[index].data()["time"],
+                    profilePic:
+                        snapshot.data.documents[index].data()["profilePic"],
                   );
                 },
               )
@@ -80,25 +93,55 @@ class _ChatPageState extends State<ChatPage> {
   //           Text('Nothing');
   //     },
 
-  _sendMessage(String type, {path}) {
+  _sendMessage(String type, {path}) async {
+    try {
+      await getRecentTime();
+
+      if (checkingFormat.format(recent.toDate()) !=
+          checkingFormat.format(Timestamp.now().toDate())) {
+        //print('Checking format : ' + checkingFormat.format(recent.toDate()).toString()  + 'Now : ' + checkingFormat.format(Timestamp.now().toDate()));
+
+        Map<String, dynamic> chatMessageMap = {
+          "message": printFormat.format(Timestamp.now().toDate()),
+          "type": 'DateChecker',
+          "sender": 'system',
+          'time': DateTime.now(),
+        };
+        await DatabaseService()
+            .sendMessage(widget.groupId, chatMessageMap, type);
+        Timer(Duration(milliseconds: 1000), () {});
+      }
+    } catch (e) {
+      Map<String, dynamic> chatMessageMap = {
+        "message": printFormat.format(Timestamp.now().toDate()),
+        "type": 'DateChecker',
+        "sender": 'system',
+        'time': DateTime.now(),
+      };
+      await DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
+      Timer(Duration(milliseconds: 1000), () {});
+    }
+
     if (type == 'image') {
       Map<String, dynamic> chatMessageMap = {
         "message": path,
         "type": type,
         "sender": widget.userName,
         'time': DateTime.now(),
+        'profilePic': widget.profilePic
       };
-      DatabaseService().sendMessage(widget.groupId, chatMessageMap);
-    } else {
+      DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
+    } else if (type == 'text') {
       if (messageEditingController.text.isNotEmpty) {
         Map<String, dynamic> chatMessageMap = {
           "message": messageEditingController.text,
           "type": type,
           "sender": widget.userName,
           'time': DateTime.now(),
+          'profilePic': widget.profilePic
         };
 
-        DatabaseService().sendMessage(widget.groupId, chatMessageMap);
+        DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
 
         setState(() {
           messageEditingController.text = "";
@@ -106,6 +149,14 @@ class _ChatPageState extends State<ChatPage> {
       }
 
       //scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    } else if (type == 'system_out') {
+      Map<String, dynamic> chatMessageMap = {
+        "message": widget.userName + '님이 나가셨습니다',
+        "type": type,
+        "sender": widget.userName,
+        'time': DateTime.now(),
+      };
+      DatabaseService().sendMessage(widget.groupId, chatMessageMap, type);
     }
   }
 
@@ -120,7 +171,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Future uploadFile(String path) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference reference = FirebaseStorage.instance.ref().child(fileName);
+    Reference reference =
+        FirebaseStorage.instance.ref().child(widget.groupId + '/' + fileName);
     UploadTask uploadTask = reference.putFile(File(path));
     TaskSnapshot taskSnapshot = await uploadTask;
     taskSnapshot.ref.getDownloadURL().then((downloadURL) {
@@ -129,6 +181,18 @@ class _ChatPageState extends State<ChatPage> {
       });
     }, onError: (err) {
       Fluttertoast.showToast(msg: 'This File is not an image');
+    });
+  }
+
+  void getRecentTime() async {
+    await FirebaseFirestore.instance
+        .collection('groups')
+        .doc(widget.groupId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        recent = documentSnapshot.get('recentMessageTime');
+      }
     });
   }
 
@@ -142,18 +206,16 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _getCurrentUserNameAndUid();
-
-    // DatabaseService().getGroup(widget.groupId).then((val) {
-    //   setState(() {
-    //     _groupInfo = val;
-    //   });
-    // });
   }
 
   _getCurrentUserNameAndUid() async {
     await HelperFunctions.getUserNameSharedPreference().then((value) {
       _userName = value;
     });
+    // await HelperFunctions.getUserProfilePicPreference().then((value)
+    // {
+    //   profilePic = value;
+    // });
     _user = await FirebaseAuth.instance.currentUser;
   }
 
@@ -175,50 +237,97 @@ class _ChatPageState extends State<ChatPage> {
         title: Text(widget.groupName, style: TextStyle(color: Colors.white)),
         centerTitle: true,
         backgroundColor: basic,
-        elevation: 0.0,
+        elevation: 10.0,
       ),
       endDrawer: Drawer(
         child: Column(
           children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 1,
+              decoration: BoxDecoration(
+                  color: Color.fromARGB(250, 247, 162, 144),
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(10),
+                      bottomRight: Radius.circular(10))),
+              child: Column(children: [
+                widget.profilePic != null
+                    ? CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(widget.profilePic),
+                      )
+                    : CircleAvatar(
+                        backgroundColor: Colors.white,
+                        radius: 60,
+                        backgroundImage: AssetImage('assets/user.png'),
+                      ),
+                Container(
+                    margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    child: Text(
+                      widget.userName + '님',
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ))
+              ]),
+            ),
             Expanded(
-                child: SizedBox(
-              height: 10.0,
-              child: widget.groupMembers,
-            )),
-            RaisedButton(
-              onPressed: () {
-                showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('나가시겠습니까?'),
-                        actions: [
-                          FlatButton(
-                              onPressed: () async {
-                                Navigator.pop(context);
-                              },
-                              child: Text('취소')),
-                          FlatButton(
-                              onPressed: () async {
-                                await DatabaseService(uid: _user.uid)
-                                    .togglingGroupJoin(widget.groupId,
-                                        widget.groupName, widget.userName);
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                                Navigator.pop(context);
-                              },
-                              child: Text('확인')),
-                        ],
-                      );
-                    });
-              },
-              child: Text('나가기'),
+              child: Container(
+                child: widget.groupMembers,
+              ),
+            ),
+            // Expanded(
+            //     child: SizedBox(
+            //   child: widget.groupMembers,
+            //       height: 600,
+            // ),
+            // ),
+
+            Container(
+              // color: Colors.grey[300],
+              child: Row(children: [
+                IconButton(
+                  iconSize: 30,
+                  color: basic,
+                  icon: Transform.rotate(
+                    angle: math.pi,
+                    child: Icon(Icons.input),
+                  ),
+                  onPressed: () {
+                    showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('나가시겠습니까?'),
+                            actions: [
+                              FlatButton(
+                                  onPressed: () async {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text('취소')),
+                              FlatButton(
+                                onPressed: () async {
+                                  _sendMessage('system_out');
+                                  DatabaseService(uid: _user.uid).OutChat(
+                                      widget.groupId,
+                                      widget.groupName,
+                                      widget.userName);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                                child: Text('확인'),
+                              )
+                            ],
+                          );
+                        });
+                  },
+                ),
+              ]),
             )
           ],
         ),
       ),
 
-      //하단에 위치한 채팅 입력하는 칸
+      //화면에 채팅 내용 출력 & 하단에 위치한 채팅 입력하는 칸
       body: Container(
         child: Stack(
           children: <Widget>[
@@ -257,10 +366,10 @@ class _ChatPageState extends State<ChatPage> {
                     GestureDetector(
                       onTap: () {
                         _sendMessage('text');
-                        // Timer(
-                        //     Duration(milliseconds: 100),
-                        //         () => scrollController
-                        //         .jumpTo(scrollController.position.maxScrollExtent));
+                        Timer(
+                            Duration(milliseconds: 100),
+                            () => scrollController.jumpTo(
+                                scrollController.position.minScrollExtent));
                       },
                       child: Container(
                         height: 50.0,

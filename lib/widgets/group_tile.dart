@@ -6,10 +6,19 @@ class GroupTile extends StatelessWidget {
   final String userName;
   final String groupId;
   final String groupName;
+  final String profilePic;
   final Widget recentMsg;
   final Widget groupMembers;
+  final Widget recentTime;
 
-  GroupTile({this.userName, this.groupId, this.groupName, this.recentMsg, this.groupMembers});
+  GroupTile(
+      {this.userName,
+      this.groupId,
+      this.groupName,
+      this.recentMsg,
+      this.groupMembers,
+      this.recentTime,
+      this.profilePic});
 
   // void getRecentMsg() async {
   //   await FirebaseFirestore.instance
@@ -32,11 +41,12 @@ class GroupTile extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => ChatPage(
-                  groupId: groupId,
-                  userName: userName,
-                  groupName: groupName,
-                  groupMembers: groupMembers,
-                )));
+                      groupId: groupId,
+                      userName: userName,
+                      groupName: groupName,
+                      groupMembers: groupMembers,
+                      profilePic: profilePic,
+                    )));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
@@ -48,11 +58,23 @@ class GroupTile extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(color: Colors.white)),
             ),
-            title: Text(groupName, style: TextStyle(fontWeight: FontWeight.bold)),
-          //   subtitle: Text('Join the ' + groupName + ' as ' + userName,
-          // style: TextStyle(fontSize: 13.0)),
-          subtitle: recentMsg
-        ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    groupName,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Container(
+                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0), child: recentTime)
+              ],
+            ),
+            //   subtitle: Text('Join the ' + groupName + ' as ' + userName,
+            // style: TextStyle(fontSize: 13.0)),
+            subtitle: recentMsg),
       ),
     );
   }
