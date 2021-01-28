@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -58,6 +59,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   String title;
   String body, datetime;
   int max_person;
+  String _category;
   final AuthService _auth = AuthService();
 
   Future getImage() async {
@@ -102,7 +104,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
               title: Text('공동 구매 글 작성'),
               centerTitle: true,
               backgroundColor: Color.fromARGB(250, 247, 162, 144),
-              elevation: 0,
+              elevation: 05,
             ),
             body: Form(
               key: _formKey,
@@ -205,6 +207,48 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                               ),
                             ),
                           ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        DropDownFormField(
+                          titleText: '세부 카테고리',
+                          hintText: '선택하지 않아도 됩니다.',
+                          value: _category,
+                          onSaved: (value) {
+                            setState(() {
+                              _category = value;
+                            });
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              _category = value;
+                            });
+                          },
+                          dataSource: [
+                            {
+                              "display": "배달 음식",
+                              "value": "배달 음식",
+                            },
+                            {
+                              "display": "생필품",
+                              "value": "생필품",
+                            },
+                            {
+                              "display": "의류/잡화",
+                              "value": "의류/잡화",
+                            },
+                            {
+                              "display": "식품",
+                              "value": "식품",
+                            },
+                            {
+                              "display": "기타",
+                              "value": "기타",
+                            },
+                          ],
+                          textField: 'display',
+                          valueField: 'value',
                         ),
                         SizedBox(
                           height: 10,
@@ -331,16 +375,26 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                         if (datetime == null) {
                                           datetime = '없음';
                                         }
-                                        writing.add(
-                                          {
-                                            'title': title,
-                                            'body': body,
-                                            'time_limit': datetime,
-                                            'max_person': max_person,
-                                            'create_time': create_time,
-                                            'category': '공동 구매'
-                                          },
-                                        ).then((value) {
+                                        writing.doc('ABC123').update({
+                                          'title': title,
+                                          'body': body,
+                                          'time_limit': datetime,
+                                          'max_person': max_person,
+                                          'create_time': create_time,
+                                          'category': '공동 구매',
+                                          'sub_category': _category,
+                                        }
+                                            // writing.add(
+                                            //   {
+                                            //     'title': title,
+                                            //     'body': body,
+                                            //     'time_limit': datetime,
+                                            //     'max_person': max_person,
+                                            //     'create_time': create_time,
+                                            //     'category': '공동 구매',
+                                            //     'sub_category': _category,
+                                            //   },
+                                            ).then((value) {
                                           print('writing added');
                                           setState(() {
                                             images = [];
