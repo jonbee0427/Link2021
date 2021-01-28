@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class DatabaseService {
   final String uid;
@@ -93,6 +95,32 @@ class DatabaseService {
     } else {
       //print('ne');
       return false;
+    }
+  }
+
+  // toggling the user group join
+  Future JoinChat(String groupId, String groupName, String userName) async {
+    DocumentReference userDocRef = userCollection.doc(uid);
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
+    DocumentReference groupDocRef = groupCollection.doc(groupId);
+    DocumentSnapshot groupDocSnapshot = await groupDocRef.get();
+    FirebaseStorage desertRef = FirebaseStorage.instance;
+
+    int membersNum = await groupDocSnapshot.data()['membersNum'];
+    List<dynamic> groups = await userDocSnapshot.data()['groups'];
+    if (groups.contains(groupId + '_' + groupName)) {
+      Fluttertoast.showToast(msg: '이미 들어가있습니다');
+    } else {
+      //print('nay');
+      await userDocRef.update({
+        'groups': FieldValue.arrayUnion([groupId + '_' + groupName])
+      });
+
+      await groupDocRef.update({
+        'members': FieldValue.arrayUnion([uid + '_' + userName]),
+        'membersNum': FieldValue.increment(1)
+      });
     }
   }
 
