@@ -18,8 +18,7 @@ class GroupTile extends StatelessWidget {
       this.recentMsg,
       this.groupMembers,
       this.recentTime,
-        this.profilePic
-});
+      this.profilePic});
 
   // void getRecentMsg() async {
   //   await FirebaseFirestore.instance
@@ -62,8 +61,15 @@ class GroupTile extends StatelessWidget {
             title: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(groupName, style: TextStyle(fontWeight: FontWeight.bold)),
-                recentTime
+                Expanded(
+                  child: Text(
+                    groupName,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Container(
+                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0), child: recentTime)
               ],
             ),
             //   subtitle: Text('Join the ' + groupName + ' as ' + userName,

@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:link_ver1/pages/board_page.dart';
 
 class Search extends SearchDelegate<String> {
   @override
@@ -47,27 +48,16 @@ class Search extends SearchDelegate<String> {
         });
   }
 
-  //검색 결과 출력 화면 (Enter 입력 후) [게시물 CRUD 구현이 끝나면 상세 페이지로 넘기기]
+  //검색 결과 출력 화면 (Enter 입력 후)
   @override
   Widget buildResults(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Center(
-              child: Text(
-            query,
-            style: TextStyle(fontSize: 50),
-          ))
-        ],
-      ),
-    );
+    return buildSuggestions(context);
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('cities').snapshots(),
+      stream: FirebaseFirestore.instance.collection('writing').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         //파이어베이스에 데이터가 없을 경우
         if (!snapshot.hasData) return new Text('검색중...');
@@ -77,25 +67,77 @@ class Search extends SearchDelegate<String> {
 
         //검색어를 토대로 파이어베이스에서 검색어가 포함되는 데이터들을 확인하여 저장
         final results =
-            snapshot.data.docs.where((a) => a['city'].contains(query));
+            snapshot.data.docs.where((a) => a['title'].contains(query));
 
+        print("results size: " + results.length.toString());
         //검색어와 일치하는 데이터가 없다면 초기 화면, 있다면 상세 페이지로 이동
         return results.isEmpty
             ? defaultScreen()
             : ListView(
                 children: results
                     .map((a) => ListTile(
-                          leading: Icon(Icons.location_city),
-                          title: Text(a['city']),
+                          //검색어가 포함된 제목의 카테고리에 따라 Icon 지정
+                          leading: a['category'].toString() == "공동 구매"
+                              ? Icon(Icons.local_grocery_store_outlined)
+                              : a['category'].toString() == "스터디"
+                                  ? Icon(Icons.school_outlined)
+                                  : Icon(Icons.directions_bike_outlined),
+                          title: Row(
+                            children: [
+                              //검색어가 포함된 제목의 카테고리
+                              // Expanded(
+                              //   child: Text(
+                              //     a['category'],
+                              //     style: TextStyle(
+                              //         fontSize: 16,
+                              //         fontWeight: FontWeight.bold),
+                              //     overflow: TextOverflow.ellipsis,
+                              //   ),
+                              // ),
+
+                              //검색어가 포함된 제목
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  a['title'],
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 30,
+                              ),
+
+                              //검색어가 포함된 제목의 마감시간
+                              Expanded(
+                                child: Text(
+                                  a['time_limit'],
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                            ],
+                          ),
                           contentPadding: EdgeInsets.fromLTRB(15, 5, 5, 0),
                           onTap: () {
-                            //print(a['city']);
+                            //검색 목록에서 원하는 게시글을 누르면 해당 상세정보로 이동
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
-                                        getResult(a['city'])));
+                                    builder: (context) => BoardPage(
+                                          title: a['title'],
+                                          category: a['category'],
+                                          time_limit: a['time_limit'],
+                                          body: a['body'],
+                                          create_time: a['create_time'],
+                                          max_person: a['max_person'],
+                                        )
+                                    //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
+                                    ));
                           },
                         ))
                     .toList());
@@ -126,22 +168,22 @@ class Search extends SearchDelegate<String> {
     );
   }
 
-  //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
-  Container getResult(a) {
-    return Container(
-      child: Scaffold(
-        appBar: AppBar(title: Text("LINK"), centerTitle: true, elevation: 10.0),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Center(
-                child: Text(
-              a,
-              style: TextStyle(fontSize: 50),
-            ))
-          ],
-        ),
-      ),
-    );
-  }
+//   //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
+//   Container getResult(a) {
+//     return Container(
+//       child: Scaffold(
+//         appBar: AppBar(title: Text("LINK"), centerTitle: true, elevation: 10.0),
+//         body: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             Center(
+//                 child: Text(
+//               a,
+//               style: TextStyle(fontSize: 50),
+//             ))
+//           ],
+//         ),
+//       ),
+//     );
+//   }
 }
