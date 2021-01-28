@@ -50,8 +50,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   }
 
   final _formKey = GlobalKey<FormState>();
-  CollectionReference writing =
-      FirebaseFirestore.instance.collection('writing');
+  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
   String title;
   String body, datetime;
   int max_person;
@@ -310,7 +309,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                         for (String p in path) {
                                           uploadFile(p, _groupName);
                                         }
-                                        writing.add(
+                                        groups.add(
                                           {
                                             'title': title,
                                             'body': body,
