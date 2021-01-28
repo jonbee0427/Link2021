@@ -57,7 +57,7 @@ class Search extends SearchDelegate<String> {
   @override
   Widget buildSuggestions(BuildContext context) {
     return StreamBuilder<QuerySnapshot>(
-      stream: FirebaseFirestore.instance.collection('writing').snapshots(),
+      stream: FirebaseFirestore.instance.collection('groups').snapshots(),
       builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
         //파이어베이스에 데이터가 없을 경우
         if (!snapshot.hasData) return new Text('검색중...');
@@ -123,6 +123,7 @@ class Search extends SearchDelegate<String> {
                             ],
                           ),
                           contentPadding: EdgeInsets.fromLTRB(15, 5, 5, 0),
+
                           onTap: () {
                             //검색 목록에서 원하는 게시글을 누르면 해당 상세정보로 이동
                             Navigator.push(
@@ -135,6 +136,12 @@ class Search extends SearchDelegate<String> {
                                           body: a['body'],
                                           create_time: a['create_time'],
                                           max_person: a['max_person'],
+                                          current_person: a['current_person'],
+                                          groupId: a['groupId'],
+                                          // groupMembers: a['groupMembers'],
+                                          groupName: a['groupName'],
+                                          //userName: a['userName'],
+                                          // uid: a['uid'],
                                         )
                                     //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
                                     ));
