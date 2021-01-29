@@ -114,7 +114,6 @@ class _BoardPageState extends State<BoardPage> {
             Row(
               children: [
                 Container(
-
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width),
                   /*
@@ -134,7 +133,6 @@ class _BoardPageState extends State<BoardPage> {
               ],
             ),
             Container(
-
               /*
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.blueAccent)),
@@ -163,7 +161,6 @@ class _BoardPageState extends State<BoardPage> {
               ),
             ),
             Container(
-
               /*
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.blueAccent)),
