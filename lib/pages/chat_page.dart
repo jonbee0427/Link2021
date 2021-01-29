@@ -312,7 +312,7 @@ class _ChatPageState extends State<ChatPage> {
                                       widget.userName);
                                   Navigator.pop(context);
                                   Navigator.pop(context);
-                                //  Navigator.pop(context);
+                                  Navigator.pop(context);
                                 },
                                 child: Text('확인'),
                               )
