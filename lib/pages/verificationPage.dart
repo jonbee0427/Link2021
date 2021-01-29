@@ -31,8 +31,8 @@ class _VerificationPageState extends State<VerificationPage> {
 
   _onVerification() async {
     User user = FirebaseAuth.instance.currentUser;
-    // await user.sendEmailVerification();
-    Toast.show('회원가입이 성공적으로 되었습니다.\n이메일 인증을 한 후 로그인 하십시오', context,
+     await user.sendEmailVerification();
+    Toast.show('회원가입이 성공적으로 되었습니다.\n한동메일을 확인하여 이메일 인증을 한 후 로그인 하십시오', context,
         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     Navigator.of(context).pushReplacement(MaterialPageRoute(
         builder: (context) => SignInPage(

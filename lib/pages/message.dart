@@ -306,7 +306,7 @@ class _ChatState extends State<Chat> {
             onPressed: () {
               showSearch(context: context, delegate: Search(
                   uid: _user.uid,
-                  userName: _user.displayName,
+                  userName: _userName,
                   profilePic: _user.photoURL
               ));
             },

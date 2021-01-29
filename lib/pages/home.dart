@@ -152,7 +152,7 @@ class _HomeState extends State<Home> {
                 onPressed: () {
                   showSearch(context: context, delegate: Search(
                     uid: _user.uid,
-                    userName: _user.displayName,
+                    userName: _userName,
                     profilePic: _user.photoURL
                   ));
                 },
