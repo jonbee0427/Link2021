@@ -66,6 +66,8 @@ class _BoardPageState extends State<BoardPage> {
 
   @override
   Widget build(BuildContext context) {
+    print("Cunnrent : " + widget.current_person.toString());
+    print(widget.groupId + " " + widget.uid);
     // print_test();
     return Scaffold(
       appBar: AppBar(
@@ -73,224 +75,194 @@ class _BoardPageState extends State<BoardPage> {
         centerTitle: true,
         backgroundColor: priority,
         elevation: 10.0,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.near_me_outlined),
+            onPressed: () async {
+              await DatabaseService(uid: widget.uid)
+                  .JoinChat(widget.groupId, widget.groupName, widget.userName);
+
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatPage(
+                            groupId: widget.groupId,
+                            userName: widget.userName,
+                            groupName: widget.groupName,
+                            groupMembers: widget.groupMembers,
+                            profilePic: widget.profilePic,
+                          )));
+            },
+          )
+        ],
       ),
       body: Container(
         //카테고리,제목,마감시간 text 컨테이너와 getBoard()가 Column으로 묶여있다
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        /*
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blueAccent)),
-                            */
-                        margin: const EdgeInsets.only(top: 30, left: 25),
-                        child: Text(
-                          '카테고리 : ' + widget.category,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 150),
-                      Container(
-                        margin: const EdgeInsets.only(top: 30),
-                        child: ClipOval(
-                          child: Material(
-                            color: priority, // button color
-                            child: InkWell(
-                              splashColor: Colors.red, // inkwell color
-                              child: SizedBox(
-                                  width: 45,
-                                  height: 45,
-                                  child: Icon(Icons.near_me_outlined)),
-                              onTap: () async {
-                                await DatabaseService(uid: widget.uid).JoinChat(
-                                    widget.groupId,
-                                    widget.groupName,
-                                    widget.userName);
-
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ChatPage(
-                                              groupId: widget.groupId,
-                                              userName: widget.userName,
-                                              groupName: widget.groupName,
-                                              groupMembers: widget.groupMembers,
-                                              profilePic: widget.profilePic,
-                                            )));
-                              },
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Container(
-                        constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width),
-                        /*
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.blueAccent)),
-                            */
-                        padding: const EdgeInsets.only(top: 10, left: 25),
-                        child: Text(
-                          '제목 : ' + widget.title,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 16,
-                          ),
-                          // overflow: TextOverflow.ellipse,
-                        ),
-                      ),
-                    ],
-                  ),
-                  Container(
-                    /*
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueAccent)),
-                        */
-                    padding: const EdgeInsets.only(top: 10, left: 25),
-                    child: Text(
-                      '마감시간 : ' + widget.time_limit,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    /*
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueAccent)),
-                        */
-                    padding: const EdgeInsets.only(top: 10, left: 25),
-                    child: Text(
-                      '최대 인원 : ' + '${widget.max_person}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Container(
-                    /*
-                    decoration: BoxDecoration(
-                        border: Border.all(color: Colors.blueAccent)),
-                        */
-                    padding: const EdgeInsets.only(top: 10, left: 25),
-                    child: Text(
-                      '현재 인원 : ' + '${widget.current_person}',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.875,
-                          maxHeight: MediaQuery.of(context).size.height * 0.8),
-                      margin: const EdgeInsets.only(
-                          top: 30, left: 25, right: 15, bottom: 50),
-                      padding: const EdgeInsets.only(
-                          top: 15, left: 15, right: 15, bottom: 15),
-                      width:
-                          MediaQuery.of(context).size.width, //responsive sizing
-                      decoration: BoxDecoration(
-                        border: Border.all(color: priority, width: 3),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(40),
-                        ),
-                      ),
-                      child: Container(
-                        child: SingleChildScrollView(
-                          //mainAxisAlignment: MainAxisAlignment.start,
-                          child: Text(
-                            '내용 : ' + widget.body,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                            overflow: TextOverflow.visible,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        //width: double.infinity,
-                        height: 50.0,
-                        child: RaisedButton(
-                            elevation: 0.0,
-                            color: Colors.pink[300],
-                            // Color.fromARGB(300, 247, 162, 144),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0)),
-                            child: Text('게시글 수정',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16.0)),
-                            onPressed: () {
-                              print('글 수정!');
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => EditPage(
-                                        title: widget.title,
-                                        category: widget.category,
-                                        time_limit: widget.time_limit,
-                                        body: widget.body,
-                                        create_time: widget.create_time,
-                                        max_person: widget.max_person,
-                                        groupId: widget.groupId,
-                                        groupName: widget.groupName,
-                                        userName: widget.userName,
-                                      )));
-                            }),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      SizedBox(
-                        //width: double.infinity,
-                        height: 50.0,
-                        child: RaisedButton(
-                            elevation: 0.0,
-                            color: Colors.pink[300],
-                            // Color.fromARGB(300, 247, 162, 144),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0)),
-                            child: Text('게시글 삭제',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16.0)),
-                            onPressed: () {
-                              print('글 삭제!');
-                              CollectionReference groups = FirebaseFirestore
-                                  .instance
-                                  .collection('groups');
-                              groups
-                                  .doc(widget.groupId)
-                                  .update({'isdeleted': true});
-                              Navigator.of(context).pop();
-                            }),
-                      ),
-                    ],
-                  ),
-                ],
+              margin: const EdgeInsets.only(top: 30, left: 25),
+              child: Text(
+                '카테고리 : ' + widget.category,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
               ),
+            ),
+            Row(
+              children: [
+                Container(
+
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width),
+                  /*
+                  decoration: BoxDecoration(
+                      border: Border.all(color: Colors.blueAccent)),
+                      */
+                  padding: const EdgeInsets.only(top: 10, left: 25),
+                  child: Text(
+                    '제목 : ' + widget.title,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    // overflow: TextOverflow.ellipse,
+                  ),
+                ),
+              ],
+            ),
+            Container(
+
+              /*
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent)),
+                  */
+              padding: const EdgeInsets.only(top: 10, left: 25),
+              child: Text(
+                '마감시간 : ' + widget.time_limit,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            Container(
+              /*
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent)),
+                  */
+              padding: const EdgeInsets.only(top: 10, left: 25),
+              child: Text(
+                '최대 인원 : ' + '${widget.max_person}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            Container(
+
+              /*
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent)),
+                  */
+              padding: const EdgeInsets.only(top: 10, left: 25),
+              child: Text(
+                '현재 인원 : ' + '${widget.current_person}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.875,
+              height: MediaQuery.of(context).size.height * 0.4,
+              margin: const EdgeInsets.only(
+                  top: 30, left: 25, right: 15, bottom: 10),
+              padding: const EdgeInsets.only(
+                  top: 15, left: 15, right: 15, bottom: 15),
+              decoration: BoxDecoration(
+                border: Border.all(color: priority, width: 3),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(40),
+                ),
+              ),
+              child: Container(
+                child: SingleChildScrollView(
+                  //mainAxisAlignment: MainAxisAlignment.start,
+                  child: Text(
+                    '내용 : ' + widget.body,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                    overflow: TextOverflow.visible,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  //width: double.infinity,
+                  height: 50.0,
+                  child: RaisedButton(
+                      elevation: 0.0,
+                      color: Colors.pink[300],
+                      // Color.fromARGB(300, 247, 162, 144),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
+                      child: Text('게시글 수정',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 16.0)),
+                      onPressed: () {
+                        print('글 수정!');
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => EditPage(
+                                  title: widget.title,
+                                  category: widget.category,
+                                  time_limit: widget.time_limit,
+                                  body: widget.body,
+                                  create_time: widget.create_time,
+                                  max_person: widget.max_person,
+                                  groupId: widget.groupId,
+                                  groupName: widget.groupName,
+                                  userName: widget.userName,
+                                )));
+                      }),
+                ),
+                SizedBox(
+                  width: 20,
+                ),
+                SizedBox(
+                  //width: double.infinity,
+                  height: 50.0,
+                  child: RaisedButton(
+                      elevation: 0.0,
+                      color: Colors.pink[300],
+                      // Color.fromARGB(300, 247, 162, 144),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
+                      child: Text('게시글 삭제',
+                          style:
+                              TextStyle(color: Colors.white, fontSize: 16.0)),
+                      onPressed: () {
+                        print('글 삭제!');
+                        CollectionReference groups =
+                            FirebaseFirestore.instance.collection('groups');
+                        groups.doc(widget.groupId).update({'isdeleted': true});
+                        Navigator.of(context).pop();
+                      }),
+                ),
+              ],
             ),
           ],
         ),

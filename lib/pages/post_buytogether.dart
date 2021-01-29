@@ -351,6 +351,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                     onPressed: () async {
                                       var create_time = new DateTime.now()
                                           .millisecondsSinceEpoch;
+                                      var create_time_s = new Timestamp.now();
                                       if (_formKey.currentState.validate()) {
                                         if (datetime == null) datetime = '없음';
                                         await HelperFunctions
@@ -364,7 +365,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                   body,
                                                   datetime,
                                                   max_person,
-                                                  create_time);
+                                              create_time_s);
                                         });
                                         for (String p in path) {
                                           uploadFile(

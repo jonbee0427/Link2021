@@ -304,7 +304,11 @@ class _ChatState extends State<Chat> {
               color: Colors.white,
             ),
             onPressed: () {
-              showSearch(context: context, delegate: Search());
+              showSearch(context: context, delegate: Search(
+                  uid: _user.uid,
+                  userName: _user.displayName,
+                  profilePic: _user.photoURL
+              ));
             },
           )
         ],

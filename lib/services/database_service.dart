@@ -26,7 +26,7 @@ class DatabaseService {
 
   // create group
   Future createGroup(String userName, String groupName, String title,
-      String body, String datetime, int max_person, int create_time) async {
+      String body, String datetime, int max_person, Timestamp create_time) async {
     DocumentReference groupDocRef = await groupCollection.add({
       'groupName': groupName,
       'groupIcon': '',
@@ -126,7 +126,7 @@ class DatabaseService {
         'members': FieldValue.arrayRemove([uid + '_' + userName]),
         'membersNum': FieldValue.increment(-1)
       });
-      if (membersNum == 1) {
+      if (membersNum <= 1) {
         desertRef.ref().child(groupId + '/').listAll().then((value) {
           value.items.forEach((element) {
             element.delete();

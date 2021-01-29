@@ -24,6 +24,8 @@ class _HomeState extends State<Home> {
   User _user;
   String _userName = '';
   Color priority = Color.fromARGB(250, 247, 162, 144);
+  CollectionReference chats;
+  Stream recent;
 
   // initState
   @override
@@ -32,15 +34,19 @@ class _HomeState extends State<Home> {
     //_boards = FirebaseFirestore.instance.collection('writing').snapshots();
     _groups = FirebaseFirestore.instance.collection('groups').snapshots();
     _getUserAuthAndJoinedGroups();
+
   }
 
   _getUserAuthAndJoinedGroups() async {
+    //groups = await FirebaseFirestore.instance.collection('groups').doc(groupId).get().data['members'];
     _user = await FirebaseAuth.instance.currentUser;
     await HelperFunctions.getUserNameSharedPreference().then((value) {
       setState(() {
         _userName = value;
       });
     });
+    chats = await FirebaseFirestore.instance.collection('groups');
+
   }
 
   String _destructureId(String res) {
@@ -51,6 +57,39 @@ class _HomeState extends State<Home> {
   String _destructureName(String res) {
     // print(res.substring(res.indexOf('_') + 1));
     return res.substring(res.indexOf('_') + 1);
+  }
+
+  _getRecentStream(String groupId) async {
+    recent = chats.doc(groupId).snapshots();
+  }
+
+  Widget getGroupMembers(String groupId) {
+    _getRecentStream(groupId);
+    return StreamBuilder(
+      stream: recent,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            padding: EdgeInsets.only(top: 0),
+            shrinkWrap: true,
+            itemCount: snapshot.data['members'].length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Row(children: [
+                  Text(_destructureName(snapshot.data['members'][index])),
+                  snapshot.data['admin'] ==
+                      _destructureName(snapshot.data['members'][index])
+                      ? Text(' (방장)')
+                      : Text(''),
+                ]),
+              );
+            },
+          );
+        } else {
+          return Text('noOne');
+        }
+      },
+    );
   }
 
   Widget getBoard() {
@@ -66,7 +105,7 @@ class _HomeState extends State<Home> {
                 return BoardTile(
                   userName: _userName,
                   groupId: snapshot.data.docs[reqIndex]['groupId'],
-                  //groupMembers: snapshot.data.docs[reqIndex]['members'],
+                  groupMembers: getGroupMembers(snapshot.data.docs[reqIndex]['groupId']),
                   groupName: snapshot.data.docs[reqIndex]['groupName'],
                   title: snapshot.data.docs[reqIndex]['title'],
                   body: snapshot.data.docs[reqIndex]['body'],
@@ -75,7 +114,8 @@ class _HomeState extends State<Home> {
                   uid: _user.uid,
                   max_person: snapshot.data.docs[reqIndex]['max_person'],
                   current_person: snapshot.data.docs[reqIndex]
-                      ['current_person'],
+                      ['membersNum'],
+                  profilePic: _user.photoURL,
                 );
               },
               separatorBuilder: (context, index) {
@@ -110,7 +150,11 @@ class _HomeState extends State<Home> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  showSearch(context: context, delegate: Search());
+                  showSearch(context: context, delegate: Search(
+                    uid: _user.uid,
+                    userName: _user.displayName,
+                    profilePic: _user.photoURL
+                  ));
                 },
               ),
             ],

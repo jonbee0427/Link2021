@@ -4,6 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:link_ver1/pages/board_page.dart';
 
 class Search extends SearchDelegate<String> {
+  final Widget groupMembers;
+  final String profilePic;
+  final String uid;
+  final String userName;
+
+  Search({
+    this.groupMembers,
+    this.profilePic,
+    this.uid,
+    this.userName
+});
   @override
   String get searchFieldLabel => "검색";
 
@@ -51,7 +62,42 @@ class Search extends SearchDelegate<String> {
   //검색 결과 출력 화면 (Enter 입력 후)
   @override
   Widget buildResults(BuildContext context) {
+    print(uid);
     return buildSuggestions(context);
+  }
+
+
+  Widget getGroupMembers(String groupId) {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('groups').doc(groupId).snapshots(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return ListView.builder(
+            padding: EdgeInsets.only(top: 0),
+            shrinkWrap: true,
+            itemCount: snapshot.data['members'].length,
+            itemBuilder: (context, index) {
+              return ListTile(
+                title: Row(children: [
+                  Text(_destructureName(snapshot.data['members'][index])),
+                  snapshot.data['admin'] ==
+                      _destructureName(snapshot.data['members'][index])
+                      ? Text(' (방장)')
+                      : Text(''),
+                ]),
+              );
+            },
+          );
+        } else {
+          return Text('noOne');
+        }
+      },
+    );
+  }
+
+  String _destructureName(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('_') + 1);
   }
 
   @override
@@ -138,8 +184,11 @@ class Search extends SearchDelegate<String> {
                                           max_person: a['max_person'],
                                           current_person: a['current_person'],
                                           groupId: a['groupId'],
-                                          // groupMembers: a['groupMembers'],
                                           groupName: a['groupName'],
+                                          profilePic: profilePic,
+                                          uid: uid,
+                                          groupMembers: getGroupMembers(a['groupId']),
+                                          userName: userName ,
                                           //userName: a['userName'],
                                           // uid: a['uid'],
                                         )

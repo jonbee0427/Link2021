@@ -54,6 +54,7 @@ class BoardTile extends StatelessWidget {
                       groupName: groupName,
                       userName: userName,
                       uid: uid,
+                  profilePic: profilePic,
                     )));
       },
       child: Column(
@@ -63,33 +64,35 @@ class BoardTile extends StatelessWidget {
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        child: category == null || category == ""
-                            ? Text('Nothing')
-                            : Text(category, style: TextStyle(fontSize: 14)),
-                      ),
-                      Container(
-                        child: title == null || title == ""
-                            ? Text(
-                                'nothing',
-                                overflow: TextOverflow.ellipsis,
-                              )
-                            : Container(
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.6),
-                                child: Text(
-                                  title,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          child: category == null || category == ""
+                              ? Text('Nothing')
+                              : Text(category, style: TextStyle(fontSize: 14)),
+                        ),
+                        Container(
+                          child: title == null || title == ""
+                              ? Text(
+                                  'nothing',
                                   overflow: TextOverflow.ellipsis,
+                                )
+                              : Container(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.6),
+                                  child: Text(
+                                    title,
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
-                              ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                   Container(
                     /*
