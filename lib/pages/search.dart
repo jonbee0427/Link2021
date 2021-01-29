@@ -9,12 +9,7 @@ class Search extends SearchDelegate<String> {
   final String uid;
   final String userName;
 
-  Search({
-    this.groupMembers,
-    this.profilePic,
-    this.uid,
-    this.userName
-});
+  Search({this.groupMembers, this.profilePic, this.uid, this.userName});
   @override
   String get searchFieldLabel => "검색";
 
@@ -66,10 +61,12 @@ class Search extends SearchDelegate<String> {
     return buildSuggestions(context);
   }
 
-
   Widget getGroupMembers(String groupId) {
     return StreamBuilder(
-      stream: FirebaseFirestore.instance.collection('groups').doc(groupId).snapshots(),
+      stream: FirebaseFirestore.instance
+          .collection('groups')
+          .doc(groupId)
+          .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return ListView.builder(
@@ -81,7 +78,7 @@ class Search extends SearchDelegate<String> {
                 title: Row(children: [
                   Text(_destructureName(snapshot.data['members'][index])),
                   snapshot.data['admin'] ==
-                      _destructureName(snapshot.data['members'][index])
+                          _destructureName(snapshot.data['members'][index])
                       ? Text(' (방장)')
                       : Text(''),
                 ]),
@@ -158,6 +155,7 @@ class Search extends SearchDelegate<String> {
 
                               //검색어가 포함된 제목의 마감시간
                               Expanded(
+                                flex: 2,
                                 child: Text(
                                   a['time_limit'],
                                   style: TextStyle(
@@ -187,8 +185,9 @@ class Search extends SearchDelegate<String> {
                                           groupName: a['groupName'],
                                           profilePic: profilePic,
                                           uid: uid,
-                                          groupMembers: getGroupMembers(a['groupId']),
-                                          userName: userName ,
+                                          groupMembers:
+                                              getGroupMembers(a['groupId']),
+                                          userName: userName,
                                           //userName: a['userName'],
                                           // uid: a['uid'],
                                         )
