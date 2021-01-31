@@ -8,6 +8,11 @@ class HelperFunctions{
   static String sharedPreferenceUserGroupKey = "USERGROUPS";
   static String sharedPreferenceUserProfilePicKey = "USERPIC";
 
+  static Future<bool> saveUserdeletePermitSharedPreference(String GroupId, bool isPermit)async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.setBool(GroupId, isPermit);
+  }
+
   // saving data to sharedpreference
   static Future<bool> saveUserLoggedInSharedPreference(bool isUserLoggedIn) async{
 
@@ -51,4 +56,8 @@ class HelperFunctions{
     return await preferences.getString(sharedPreferenceUserEmailKey);
   }
 
+  static Future<bool> getUserdeletePermitSharedPreference(String groupId) async{
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return await preferences.getBool(groupId);
+  }
 }

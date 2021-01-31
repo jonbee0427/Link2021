@@ -29,6 +29,7 @@ class BoardPage extends StatefulWidget {
   final String uid;
   final String profilePic;
   final Widget groupMembers;
+  final int deletePermit;
 
   BoardPage({
     this.title,
@@ -44,6 +45,7 @@ class BoardPage extends StatefulWidget {
     this.userName,
     this.uid,
     this.profilePic,
+    this.deletePermit
   });
   @override
   _BoardPageState createState() => _BoardPageState();
@@ -63,11 +65,24 @@ class _BoardPageState extends State<BoardPage> {
   //   print('group name : ' + widget.groupName);
   //   print('user name : ' + widget.userName);
   // }
+  String _destructureId(String res) {
+    // print(res.substring(0, res.indexOf('_')));
+    return res.substring(0, res.indexOf('_'));
+  }
+
+  String _destructureName(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('_') + 1);
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    print("Cunnrent : " + widget.current_person.toString());
-    print(widget.groupId + " " + widget.uid);
+    print(context);
+print(widget.current_person);
+
+print(widget.deletePermit);
+
     // print_test();
     return Scaffold(
       appBar: AppBar(
@@ -239,6 +254,7 @@ class _BoardPageState extends State<BoardPage> {
                 SizedBox(
                   width: 20,
                 ),
+                widget.current_person-1 == widget.deletePermit ?
                 SizedBox(
                   //width: double.infinity,
                   height: 50.0,
@@ -251,12 +267,42 @@ class _BoardPageState extends State<BoardPage> {
                       child: Text('게시글 삭제',
                           style:
                               TextStyle(color: Colors.white, fontSize: 16.0)),
-                      onPressed: () {
+                      onPressed: ()async {
+
+                        DocumentReference currentDoc = await FirebaseFirestore.instance.collection('groups').doc(widget.groupId);
+                         await currentDoc.get().then((value){
+                           List<dynamic> currentMembers  = value.get('members');
+                           currentMembers.forEach((element) async {
+                             String userId = _destructureId(element);
+                             String userName = _destructureName(element);
+                            await DatabaseService(uid: userId).OutChat(widget.groupId, widget.groupName, userName);
+                           });
+                         });
+                         DatabaseService(uid:widget.uid).DeleteChat(widget.groupId, widget.groupName, widget.userName);
+
                         print('글 삭제!');
-                        CollectionReference groups =
-                            FirebaseFirestore.instance.collection('groups');
-                        groups.doc(widget.groupId).update({'isdeleted': true});
-                        Navigator.of(context).pop();
+                        //예상치 못한 난관...
+                        //해당 상태에서는
+
+                      }),
+                ) :     SizedBox(
+                  //width: double.infinity,
+                  height: 50.0,
+                  child: RaisedButton(
+                      elevation: 0.0,
+                      color: Colors.grey,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30.0)),
+                      child: Text('게시글 삭제',
+                          style:
+                          TextStyle(color: Colors.white, fontSize: 16.0)),
+                      onPressed: ()  {
+                        print('글 삭제!');
+                        //예상치 못한 난관...
+                        //해당 상태에서는 Groups Collection에서 Members데이터를 받아와서
+                        //foreach문으로 해당 OutChat를 실행시켜주면 될 듯 한데...
+
+
                       }),
                 ),
               ],

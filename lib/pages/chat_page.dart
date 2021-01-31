@@ -46,6 +46,10 @@ class _ChatPageState extends State<ChatPage> {
   ScrollController scrollController = new ScrollController();
   Timestamp recent;
   Stream _recentStream;
+  bool isChecked = false;
+  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
+  String admin;
+
   Widget _chatMessages() {
     return StreamBuilder(
       stream: _chats,
@@ -217,6 +221,21 @@ class _ChatPageState extends State<ChatPage> {
     //   profilePic = value;
     // });
     _user = await FirebaseAuth.instance.currentUser;
+
+    await groups.doc(widget.groupId).get().then((value){
+      admin = value.data()['admin'];
+    });
+    await HelperFunctions.getUserdeletePermitSharedPreference(widget.groupId).then(
+        (bool val)async{
+          if(val == null) {
+            isChecked = false;
+         await HelperFunctions.saveUserdeletePermitSharedPreference(widget.groupId, false);
+          }
+          else{
+            isChecked = val;
+          }
+        }
+    );
   }
 
   _joinValueInGroup(
@@ -283,7 +302,9 @@ class _ChatPageState extends State<ChatPage> {
 
             Container(
               // color: Colors.grey[300],
-              child: Row(children: [
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
                 IconButton(
                   iconSize: 30,
                   color: basic,
@@ -321,6 +342,36 @@ class _ChatPageState extends State<ChatPage> {
                         });
                   },
                 ),
+                    admin == _userName ?
+                        Container():
+                Container(
+                  child: Row(
+                    children: [
+                      Text('거래완료!'),
+                      Checkbox(
+                      activeColor:Color.fromARGB(250, 247, 162, 144),
+                      value: isChecked,
+                      onChanged: (bool value) async {
+                        setState(() {
+                          isChecked = value;
+                        });
+                        int calculateNum;
+                        if(isChecked == true){
+                          calculateNum = 1;
+                        }else{
+                          calculateNum = -1;
+                        }
+
+                        await groups.doc(widget.groupId).update({
+                          'deletePermit' : FieldValue.increment(calculateNum)
+                        });
+
+                        await HelperFunctions.saveUserdeletePermitSharedPreference(widget.groupId, value);
+                      },
+                    )
+              ],
+                  ),
+                )
               ]),
             )
           ],

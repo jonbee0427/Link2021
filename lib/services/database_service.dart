@@ -44,7 +44,7 @@ class DatabaseService {
       'create_time': create_time,
       'category': '공동 구매',
       'isdeleted': false,
-      'current_person': 1,
+      'deletePermit' : 0
     });
 
     await groupDocRef.update({
@@ -126,6 +126,7 @@ class DatabaseService {
         'members': FieldValue.arrayRemove([uid + '_' + userName]),
         'membersNum': FieldValue.increment(-1)
       });
+      print('currentNum: '+membersNum.toString());
       if (membersNum <= 1) {
         desertRef.ref().child(groupId + '/').listAll().then((value) {
           value.items.forEach((element) {
@@ -143,6 +144,28 @@ class DatabaseService {
       Fluttertoast.showToast(msg: '속해있는 채팅방이 아닙니다!');
     }
   }
+
+  Future DeleteChat(String groupId, String groupName, String userName)async{
+    DocumentReference userDocRef = userCollection.doc(uid);
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+
+    DocumentReference groupDocRef = groupCollection.doc(groupId);
+    DocumentSnapshot groupDocSnapshot = await groupDocRef.get();
+    FirebaseStorage desertRef = FirebaseStorage.instance;
+    desertRef.ref().child(groupId + '/').listAll().then((value) {
+      value.items.forEach((element) {
+        element.delete();
+      });
+    });
+    await groupDocRef.collection('messages').get().then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        ds.reference.delete();
+      }
+    });
+    await groupDocRef.delete();
+
+  }
+
 
   // has user joined the group
   Future<bool> isUserJoined(

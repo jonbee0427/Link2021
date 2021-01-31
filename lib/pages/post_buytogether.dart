@@ -18,6 +18,7 @@ import 'package:link_ver1/services/database_service.dart';
 import 'message.dart';
 import '../shared/constants.dart';
 
+
 class PostBuyTogether extends StatefulWidget {
   @override
   _PostBuyTogether createState() => _PostBuyTogether();

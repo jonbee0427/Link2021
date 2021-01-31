@@ -116,6 +116,7 @@ class _HomeState extends State<Home> {
                   current_person: snapshot.data.docs[reqIndex]
                       ['membersNum'],
                   profilePic: _user.photoURL,
+                  deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
                 );
               },
               separatorBuilder: (context, index) {
@@ -210,6 +211,9 @@ class _HomeState extends State<Home> {
                       child: getBoard(),
                     ),
                   ),
+                  SizedBox(
+                    height: 30,//하드코딩을 해서 고쳐야 할 소지가 있다.
+                  )
                 ],
               ),
               Container(

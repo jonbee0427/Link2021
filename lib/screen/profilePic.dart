@@ -144,6 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.greenAccent,
       body: ProfileMain(
         userName: _userName, //pass user name
       ),
