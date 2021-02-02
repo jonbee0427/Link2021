@@ -34,7 +34,6 @@ class _HomeState extends State<Home> {
     //_boards = FirebaseFirestore.instance.collection('writing').snapshots();
     _groups = FirebaseFirestore.instance.collection('groups').snapshots();
     _getUserAuthAndJoinedGroups();
-
   }
 
   _getUserAuthAndJoinedGroups() async {
@@ -46,7 +45,6 @@ class _HomeState extends State<Home> {
       });
     });
     chats = await FirebaseFirestore.instance.collection('groups');
-
   }
 
   String _destructureId(String res) {
@@ -78,7 +76,7 @@ class _HomeState extends State<Home> {
                 title: Row(children: [
                   Text(_destructureName(snapshot.data['members'][index])),
                   snapshot.data['admin'] ==
-                      _destructureName(snapshot.data['members'][index])
+                          _destructureName(snapshot.data['members'][index])
                       ? Text(' (방장)')
                       : Text(''),
                 ]),
@@ -105,7 +103,8 @@ class _HomeState extends State<Home> {
                 return BoardTile(
                   userName: _userName,
                   groupId: snapshot.data.docs[reqIndex]['groupId'],
-                  groupMembers: getGroupMembers(snapshot.data.docs[reqIndex]['groupId']),
+                  groupMembers:
+                      getGroupMembers(snapshot.data.docs[reqIndex]['groupId']),
                   groupName: snapshot.data.docs[reqIndex]['groupName'],
                   title: snapshot.data.docs[reqIndex]['title'],
                   body: snapshot.data.docs[reqIndex]['body'],
@@ -113,8 +112,7 @@ class _HomeState extends State<Home> {
                   category: snapshot.data.docs[reqIndex]['category'],
                   uid: _user.uid,
                   max_person: snapshot.data.docs[reqIndex]['max_person'],
-                  current_person: snapshot.data.docs[reqIndex]
-                      ['membersNum'],
+                  current_person: snapshot.data.docs[reqIndex]['membersNum'],
                   profilePic: _user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
                   admin: snapshot.data.docs[reqIndex]['admin'],
@@ -152,11 +150,12 @@ class _HomeState extends State<Home> {
                   color: Colors.white,
                 ),
                 onPressed: () {
-                  showSearch(context: context, delegate: Search(
-                    uid: _user.uid,
-                    userName: _userName,
-                    profilePic: _user.photoURL
-                  ));
+                  showSearch(
+                      context: context,
+                      delegate: Search(
+                          uid: _user.uid,
+                          userName: _userName,
+                          profilePic: _user.photoURL));
                 },
               ),
             ],
@@ -180,6 +179,7 @@ class _HomeState extends State<Home> {
                   Container(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Container(
@@ -192,10 +192,8 @@ class _HomeState extends State<Home> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: 250,
-                        ),
                         Container(
+                          padding: const EdgeInsets.only(right: 25),
                           child: Text(
                             '마감시간',
                             style: TextStyle(
@@ -213,7 +211,7 @@ class _HomeState extends State<Home> {
                     ),
                   ),
                   SizedBox(
-                    height: 30,//하드코딩을 해서 고쳐야 할 소지가 있다.
+                    height: 30, //하드코딩을 해서 고쳐야 할 소지가 있다.
                   )
                 ],
               ),
