@@ -25,8 +25,16 @@ class DatabaseService {
   }
 
   // create group
-  Future createGroup(String userName, String groupName, String title,
-      String body, String datetime, int max_person, Timestamp create_time) async {
+  Future createGroup(
+    String userName,
+    String groupName,
+    String title,
+    String body,
+    String datetime,
+    int max_person,
+    String subcategory,
+    Timestamp create_time,
+  ) async {
     DocumentReference groupDocRef = await groupCollection.add({
       'groupName': groupName,
       'groupIcon': '',
@@ -35,6 +43,7 @@ class DatabaseService {
       'membersNum': 1,
       //'messages': ,
       'groupId': '',
+      'subcategory': subcategory,
       'recentMessage': '채팅방이 생성되었습니다.',
       'recentMessageSender': '',
       'title': title,
@@ -44,7 +53,7 @@ class DatabaseService {
       'create_time': create_time,
       'category': '공동 구매',
       'isdeleted': false,
-      'deletePermit' : 0
+      'deletePermit': 0
     });
 
     await groupDocRef.update({
@@ -126,7 +135,7 @@ class DatabaseService {
         'members': FieldValue.arrayRemove([uid + '_' + userName]),
         'membersNum': FieldValue.increment(-1)
       });
-      print('currentNum: '+membersNum.toString());
+      print('currentNum: ' + membersNum.toString());
       if (membersNum <= 1) {
         desertRef.ref().child(groupId + '/').listAll().then((value) {
           value.items.forEach((element) {
@@ -145,7 +154,7 @@ class DatabaseService {
     }
   }
 
-  Future DeleteChat(String groupId, String groupName, String userName)async{
+  Future DeleteChat(String groupId, String groupName, String userName) async {
     DocumentReference userDocRef = userCollection.doc(uid);
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
 
@@ -163,9 +172,7 @@ class DatabaseService {
       }
     });
     await groupDocRef.delete();
-
   }
-
 
   // has user joined the group
   Future<bool> isUserJoined(

@@ -18,7 +18,6 @@ import 'package:link_ver1/services/database_service.dart';
 import 'message.dart';
 import '../shared/constants.dart';
 
-
 class PostBuyTogether extends StatefulWidget {
   @override
   _PostBuyTogether createState() => _PostBuyTogether();
@@ -366,7 +365,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                   body,
                                                   datetime,
                                                   max_person,
-                                              create_time_s);
+                                                  _category,
+                                                  create_time_s);
                                         });
                                         for (String p in path) {
                                           uploadFile(
