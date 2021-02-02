@@ -87,7 +87,7 @@ class DatabaseService {
         });
 
         await groupDocRef.update({
-          'members': FieldValue.arrayUnion([uid + '_' + userName]),
+          'members': FieldValue.arrayUnion([uid + '_' + userName + '`'+DateTime.now().toString()]),
           'membersNum': FieldValue.increment(1)
         });
         print(groupId + " " + groupName + " " + userName);
@@ -222,6 +222,7 @@ class DatabaseService {
         .collection('groups')
         .doc(groupId)
         .collection('messages')
+        //.where(field)
         .orderBy('time', descending: true)
         .snapshots();
   }

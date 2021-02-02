@@ -100,7 +100,7 @@ print(widget.deletePermit);
             onPressed: () async {
               await DatabaseService(uid: widget.uid)
                   .JoinChat(widget.groupId, widget.groupName, widget.userName);
-
+              await DatabaseService(uid: widget.uid).sendMessage(widget.groupId, widget.userName+' 님이 입장하셨습니다', 'system_in');
               Navigator.push(
                   context,
                   MaterialPageRoute(
