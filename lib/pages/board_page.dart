@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -12,6 +13,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
+import 'package:toast/toast.dart';
 
 import 'EditPage.dart';
 
@@ -30,6 +32,7 @@ class BoardPage extends StatefulWidget {
   final String profilePic;
   final Widget groupMembers;
   final int deletePermit;
+  final String admin;
 
   BoardPage({
     this.title,
@@ -45,7 +48,8 @@ class BoardPage extends StatefulWidget {
     this.userName,
     this.uid,
     this.profilePic,
-    this.deletePermit
+    this.deletePermit,
+    this.admin
   });
   @override
   _BoardPageState createState() => _BoardPageState();
@@ -106,6 +110,7 @@ print(widget.deletePermit);
                             groupName: widget.groupName,
                             groupMembers: widget.groupMembers,
                             profilePic: widget.profilePic,
+
                           )));
             },
           )
@@ -219,6 +224,7 @@ print(widget.deletePermit);
             SizedBox(
               height: 10,
             ),
+            widget.admin == widget.userName ?
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -280,10 +286,6 @@ print(widget.deletePermit);
                          });
                          DatabaseService(uid:widget.uid).DeleteChat(widget.groupId, widget.groupName, widget.userName);
 
-                        print('글 삭제!');
-                        //예상치 못한 난관...
-                        //해당 상태에서는
-
                       }),
                 ) :     SizedBox(
                   //width: double.infinity,
@@ -297,16 +299,12 @@ print(widget.deletePermit);
                           style:
                           TextStyle(color: Colors.white, fontSize: 16.0)),
                       onPressed: ()  {
-                        print('글 삭제!');
-                        //예상치 못한 난관...
-                        //해당 상태에서는 Groups Collection에서 Members데이터를 받아와서
-                        //foreach문으로 해당 OutChat를 실행시켜주면 될 듯 한데...
 
-
+                        Fluttertoast.showToast(msg: '거래가 완료되지 않았습니다!');
                       }),
                 ),
               ],
-            ),
+            ) : Row(),
           ],
         ),
       ),

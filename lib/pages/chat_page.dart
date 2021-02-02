@@ -35,6 +35,7 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
+
   User _user;
   String _userName;
   //String profilePic;
@@ -222,8 +223,8 @@ class _ChatPageState extends State<ChatPage> {
     // });
     _user = await FirebaseAuth.instance.currentUser;
 
-    await groups.doc(widget.groupId).get().then((value){
-      admin = value.data()['admin'];
+    await groups.doc(widget.groupId).get().then((value) async {
+      admin = await value.data()['admin'];
     });
     await HelperFunctions.getUserdeletePermitSharedPreference(widget.groupId).then(
         (bool val)async{
@@ -250,6 +251,8 @@ class _ChatPageState extends State<ChatPage> {
   //채팅방 화면 빌드
   @override
   Widget build(BuildContext context) {
+    print( ' ' + _userName);
+
     Color basic = Color.fromARGB(250, 247, 162, 144);
     return Scaffold(
       appBar: AppBar(
