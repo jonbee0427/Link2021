@@ -21,25 +21,24 @@ class BoardTile extends StatelessWidget {
   final String admin;
   final DateTime enteringTime;
 
-  BoardTile({
-    this.title,
-    this.category,
-    this.subcategory,
-    this.time_limit,
-    this.body,
-    this.create_time,
-    this.max_person,
-    this.current_person,
-    this.groupId,
-    this.groupMembers,
-    this.groupName,
-    this.userName,
-    this.uid,
-    this.profilePic,
-    this.deletePermit,
-    this.admin,
-    this.enteringTime
-  });
+  BoardTile(
+      {this.title,
+      this.category,
+      this.subcategory,
+      this.time_limit,
+      this.body,
+      this.create_time,
+      this.max_person,
+      this.current_person,
+      this.groupId,
+      this.groupMembers,
+      this.groupName,
+      this.userName,
+      this.uid,
+      this.profilePic,
+      this.deletePermit,
+      this.admin,
+      this.enteringTime});
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +61,9 @@ class BoardTile extends StatelessWidget {
                       groupName: groupName,
                       userName: userName,
                       uid: uid,
-<<<<<<< HEAD
-                  profilePic: profilePic,
-                  deletePermit: deletePermit,
-                  admin: admin,
-                  enteringTime: enteringTime
-=======
                       profilePic: profilePic,
                       deletePermit: deletePermit,
                       admin: admin,
->>>>>>> EJ
                     )));
       },
       child: Column(
