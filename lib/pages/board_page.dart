@@ -20,6 +20,7 @@ import 'EditPage.dart';
 class BoardPage extends StatefulWidget {
   final String title;
   final String category;
+  final String subcategory;
   final String time_limit;
   final String body;
   final Timestamp create_time;
@@ -38,6 +39,7 @@ class BoardPage extends StatefulWidget {
   BoardPage(
       {this.title,
       this.category,
+      this.subcategory,
       this.time_limit,
       this.body,
       this.create_time,
@@ -84,7 +86,6 @@ class _BoardPageState extends State<BoardPage> {
   Widget build(BuildContext context) {
     print(context);
     print(widget.current_person);
-
     print(widget.deletePermit);
 
     // print_test();
@@ -110,17 +111,15 @@ class _BoardPageState extends State<BoardPage> {
                             groupName: widget.groupName,
                             groupMembers: widget.groupMembers,
                             profilePic: widget.profilePic,
-                        enteringTime: widget.enteringTime,
+                            enteringTime: widget.enteringTime,
                           )));
             },
           )
         ],
       ),
-      body: Container(
-        //카테고리,제목,마감시간 text 컨테이너와 getBoard()가 Column으로 묶여있다
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+      body: ListView(
+        children: <Widget>[
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Container(
               margin: const EdgeInsets.only(top: 30, left: 25),
               child: Text(
@@ -196,7 +195,9 @@ class _BoardPageState extends State<BoardPage> {
             ),
             Container(
               width: MediaQuery.of(context).size.width * 0.875,
-              height: MediaQuery.of(context).size.height * 0.4,
+              //height: MediaQuery.of(context).size.height * 0.9,
+              constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.width * 0.9),
               margin: const EdgeInsets.only(
                   top: 30, left: 25, right: 15, bottom: 10),
               padding: const EdgeInsets.only(
@@ -207,120 +208,117 @@ class _BoardPageState extends State<BoardPage> {
                   Radius.circular(40),
                 ),
               ),
-              child: Container(
-                child: SingleChildScrollView(
-                  //mainAxisAlignment: MainAxisAlignment.start,
-                  child: Text(
-                    '내용 : ' + widget.body,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                    overflow: TextOverflow.visible,
+              child: Flexible(
+                //mainAxisAlignment: MainAxisAlignment.start,
+                child: Text(
+                  '내용 : ' + widget.body,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
                   ),
+                  overflow: TextOverflow.visible,
                 ),
               ),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            widget.admin == widget.userName
-                ? Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        //width: double.infinity,
-                        height: 50.0,
-                        child: RaisedButton(
-                            elevation: 0.0,
-                            color: Colors.pink[300],
-                            // Color.fromARGB(300, 247, 162, 144),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30.0)),
-                            child: Text('게시글 수정',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16.0)),
-                            onPressed: () {
-                              print('글 수정!');
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => EditPage(
-                                        title: widget.title,
-                                        category: widget.category,
-                                        time_limit: widget.time_limit,
-                                        body: widget.body,
-                                        create_time: widget.create_time,
-                                        max_person: widget.max_person,
-                                        groupId: widget.groupId,
-                                        groupName: widget.groupName,
-                                        userName: widget.userName,
-                                      )));
-                            }),
-                      ),
-                      SizedBox(
-                        width: 20,
-                      ),
-                      widget.current_person - 1 == widget.deletePermit
-                          ? SizedBox(
-                              //width: double.infinity,
-                              height: 50.0,
-                              child: RaisedButton(
-                                  elevation: 0.0,
-                                  color: Colors.pink[300],
-                                  // Color.fromARGB(300, 247, 162, 144),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(30.0)),
-                                  child: Text('게시글 삭제',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16.0)),
-                                  onPressed: () async {
-                                    DocumentReference currentDoc =
-                                        await FirebaseFirestore.instance
-                                            .collection('groups')
-                                            .doc(widget.groupId);
-                                    await currentDoc.get().then((value) {
-                                      List<dynamic> currentMembers =
-                                          value.get('members');
-                                      currentMembers.forEach((element) async {
-                                        String userId = _destructureId(element);
-                                        String userName =
-                                            _destructureName(element);
-                                        await DatabaseService(uid: userId)
-                                            .OutChat(widget.groupId,
-                                                widget.groupName, userName,
-                                          widget.enteringTime.toString()
-                                        );
-                                      });
+          ]),
+          SizedBox(
+            height: 10,
+          ),
+          widget.admin == widget.userName
+              ? Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      //width: double.infinity,
+                      height: 50.0,
+                      child: RaisedButton(
+                          elevation: 0.0,
+                          color: Colors.pink[300],
+                          // Color.fromARGB(300, 247, 162, 144),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0)),
+                          child: Text('게시글 수정',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 16.0)),
+                          onPressed: () {
+                            print('글 수정!');
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EditPage(
+                                      title: widget.title,
+                                      category: widget.category,
+                                      time_limit: widget.time_limit,
+                                      body: widget.body,
+                                      create_time: widget.create_time,
+                                      max_person: widget.max_person,
+                                      groupId: widget.groupId,
+                                      groupName: widget.groupName,
+                                      userName: widget.userName,
+                                    )));
+                          }),
+                    ),
+                    SizedBox(
+                      width: 20,
+                    ),
+                    widget.current_person - 1 == widget.deletePermit
+                        ? SizedBox(
+                            //width: double.infinity,
+                            height: 50.0,
+                            child: RaisedButton(
+                                elevation: 0.0,
+                                color: Colors.pink[300],
+                                // Color.fromARGB(300, 247, 162, 144),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0)),
+                                child: Text('게시글 삭제',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16.0)),
+                                onPressed: () async {
+                                  DocumentReference currentDoc =
+                                      await FirebaseFirestore.instance
+                                          .collection('groups')
+                                          .doc(widget.groupId);
+                                  await currentDoc.get().then((value) {
+                                    List<dynamic> currentMembers =
+                                        value.get('members');
+                                    currentMembers.forEach((element) async {
+                                      String userId = _destructureId(element);
+                                      String userName =
+                                          _destructureName(element);
+                                      await DatabaseService(uid: userId)
+                                          .OutChat(
+                                              widget.groupId,
+                                              widget.groupName,
+                                              userName,
+                                              widget.enteringTime.toString());
                                     });
-                                    DatabaseService(uid: widget.uid).DeleteChat(
-                                        widget.groupId,
-                                        widget.groupName,
-                                        widget.userName);
-                                  }),
-                            )
-                          : SizedBox(
-                              //width: double.infinity,
-                              height: 50.0,
-                              child: RaisedButton(
-                                  elevation: 0.0,
-                                  color: Colors.grey,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(30.0)),
-                                  child: Text('게시글 삭제',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16.0)),
-                                  onPressed: () {
-                                    Fluttertoast.showToast(
-                                        msg: '거래가 완료되지 않았습니다!');
-                                  }),
-                            ),
-                    ],
-                  )
-                : Row(),
-          ],
-        ),
+                                  });
+                                  DatabaseService(uid: widget.uid).DeleteChat(
+                                      widget.groupId,
+                                      widget.groupName,
+                                      widget.userName);
+                                }),
+                          )
+                        : SizedBox(
+                            //width: double.infinity,
+                            height: 50.0,
+                            child: RaisedButton(
+                                elevation: 0.0,
+                                color: Colors.grey,
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(30.0)),
+                                child: Text('게시글 삭제',
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 16.0)),
+                                onPressed: () {
+                                  Fluttertoast.showToast(
+                                      msg: '거래가 완료되지 않았습니다!');
+                                }),
+                          ),
+                  ],
+                )
+              : Row(),
+        ],
       ),
     );
   }

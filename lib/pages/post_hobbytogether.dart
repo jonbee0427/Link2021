@@ -1,8 +1,21 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:dropdown_formfield/dropdown_formfield.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:flutter_swiper/flutter_swiper.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:toast/toast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:link_ver1/helper/helper_functions.dart';
+import 'package:link_ver1/services/auth_service.dart';
+import 'package:link_ver1/services/database_service.dart';
+import 'package:link_ver1/services/database_service.dart';
+import 'message.dart';
 import '../shared/constants.dart';
 
 class PostHobbyTogether extends StatefulWidget {
@@ -10,13 +23,67 @@ class PostHobbyTogether extends StatefulWidget {
   _PostHobbyTogether createState() => _PostHobbyTogether();
 }
 
+List<String> images = [];
+List<String> path = [];
+User _user;
+String _groupName;
+String _userName = '';
+String _email = '';
+Stream _groups;
+CollectionReference chats;
+int maxpicture = 0;
+
 class _PostHobbyTogether extends State<PostHobbyTogether> {
+  @override
+  void initState() {
+    super.initState();
+    _getUserAuthAndJoinedGroups();
+    maxpicture = 0;
+    images = [];
+    path = [];
+  }
+
   final _formKey = GlobalKey<FormState>();
-  CollectionReference writing =
-      FirebaseFirestore.instance.collection('writing');
+  CollectionReference groups = FirebaseFirestore.instance.collection('groups');
   String title;
   String body, datetime;
   int max_person;
+  String category = '취미 생활';
+  String subcategory;
+  final AuthService _auth = AuthService();
+
+  Future getImage() async {
+    ImagePicker imagePicker = ImagePicker();
+    PickedFile image = await imagePicker.getImage(source: ImageSource.gallery);
+    if (image != null && maxpicture <= 7) {
+      setState(() {
+        path.add(image.path);
+        images.add(image.path);
+        maxpicture++;
+      });
+      //uploadFile(path);
+
+    } else {
+      Fluttertoast.showToast(msg: 'no more images');
+      print('no more picture');
+    }
+  }
+
+  Future uploadFile(String path, String groupname, int createtime) async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = FirebaseStorage.instance
+        .ref()
+        .child('$groupname$createtime/' + fileName);
+    UploadTask uploadTask = reference.putFile(File(path));
+    TaskSnapshot taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then((downloadURL) {
+      setState(() {
+        //_sendMessage('image', path: downloadURL);
+      });
+    }, onError: (err) {
+      Fluttertoast.showToast(msg: 'This File is not an image');
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +102,7 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
               padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 20.0),
               children: <Widget>[
                 Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text("게시글 작성",
@@ -59,6 +126,7 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                       onChanged: (val) {
                         setState(() {
                           title = val;
+                          _groupName = val;
                         });
                       },
                     ),
@@ -129,6 +197,48 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                     SizedBox(
                       height: 10,
                     ),
+                    DropDownFormField(
+                      titleText: '세부 카테고리',
+                      hintText: '선택하세요',
+                      value: subcategory,
+                      onSaved: (value) {
+                        setState(() {
+                          subcategory = value;
+                        });
+                      },
+                      onChanged: (value) {
+                        setState(() {
+                          subcategory = value;
+                        });
+                      },
+                      dataSource: [
+                        {
+                          "display": "운동",
+                          "value": "운동",
+                        },
+                        {
+                          "display": "독서",
+                          "value": "독서",
+                        },
+                        {
+                          "display": "보드게임",
+                          "value": "보드게임",
+                        },
+                        {
+                          "display": "그림",
+                          "value": "그림",
+                        },
+                        {
+                          "display": "기타",
+                          "value": "기타",
+                        },
+                      ],
+                      textField: 'display',
+                      valueField: 'value',
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     TextFormField(
                       cursorColor: Colors.black,
                       maxLines: 20,
@@ -147,6 +257,52 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                         });
                       },
                     ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50.0,
+                      child: RaisedButton(
+                          elevation: 0.0,
+                          color: Colors.blueAccent[200],
+                          // Color.fromARGB(300, 247, 162, 144),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30.0)),
+                          child: Text('이미지 업로드',
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 16.0)),
+                          onPressed: () {
+                            print('이미지 업로드 시작!');
+                            getImage();
+                          }),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    SizedBox(
+                      child: maxpicture != 0
+                          ? Container(
+                              width: 400,
+                              height: 350,
+                              child: maxpicture != 0
+                                  ? Swiper(
+                                      key: UniqueKey(),
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Image.asset(
+                                          images[index],
+                                        );
+                                      },
+                                      itemCount: images.length,
+                                      autoplayDisableOnInteraction: true,
+                                      pagination: SwiperPagination(),
+                                      control: SwiperControl(),
+                                    )
+                                  : null,
+                            )
+                          : null,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Row(
                       children: [
                         Flexible(
@@ -164,6 +320,7 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                                         color: Colors.white, fontSize: 16.0)),
                                 onPressed: () {
                                   print('글 작성 취소!');
+                                  Navigator.of(context).pop();
                                 }),
                           ),
                         ),
@@ -183,24 +340,32 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                                 child: Text('작성 완료',
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16.0)),
-                                onPressed: () {
-                                  var create_time = new DateTime.now();
+                                onPressed: () async {
+                                  var create_time =
+                                      new DateTime.now().millisecondsSinceEpoch;
+                                  var create_time_s = new Timestamp.now();
                                   if (_formKey.currentState.validate()) {
                                     if (datetime == null) datetime = '없음';
-                                    writing.add(
-                                      {
-                                        'title': title,
-                                        'body': body,
-                                        'time_limit': datetime,
-                                        'max_person': max_person,
-                                        'create_time': create_time,
-                                        'category': '취미'
-                                      },
-                                    ).then((value) {
-                                      print('writing added');
-                                      Navigator.of(context).pop();
-                                    }).catchError(
-                                        (value) => print('failed to add'));
+                                    await HelperFunctions
+                                            .getUserNameSharedPreference()
+                                        .then((val) {
+                                      DatabaseService(uid: _user.uid)
+                                          .createGroup(
+                                              val,
+                                              _groupName,
+                                              title,
+                                              body,
+                                              datetime,
+                                              max_person,
+                                              subcategory,
+                                              category,
+                                              create_time_s);
+                                    });
+                                    for (String p in path) {
+                                      uploadFile(p, _groupName, create_time);
+                                      print(p);
+                                    }
+                                    Navigator.of(context).pop();
                                   }
                                 }),
                           ),
@@ -213,5 +378,27 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
             ),
           ),
         ));
+  }
+
+  _getUserAuthAndJoinedGroups() async {
+    _user = await FirebaseAuth.instance.currentUser;
+    await HelperFunctions.getUserNameSharedPreference().then((value) {
+      setState(() {
+        _userName = value;
+      });
+    });
+    DatabaseService(uid: _user.uid).getUserGroups().then((snapshots) {
+      // print(snapshots);
+      setState(() {
+        _groups = snapshots;
+      });
+    });
+    await HelperFunctions.getUserEmailSharedPreference().then((value) {
+      setState(() {
+        _email = value;
+      });
+    });
+
+    chats = await FirebaseFirestore.instance.collection('groups');
   }
 }

@@ -53,15 +53,15 @@ class DatabaseService {
 
   // create group
   Future createGroup(
-    String userName,
-    String groupName,
-    String title,
-    String body,
-    String datetime,
-    int max_person,
-    String subcategory,
-    Timestamp create_time,
-  ) async {
+      String userName,
+      String groupName,
+      String title,
+      String body,
+      String datetime,
+      int max_person,
+      String subcategory,
+      String category,
+      Timestamp create_time) async {
     DocumentReference groupDocRef = await groupCollection.add({
       'groupName': groupName,
       'groupIcon': '',
@@ -78,7 +78,7 @@ class DatabaseService {
       'time_limit': datetime,
       'max_person': max_person,
       'create_time': create_time,
-      'category': '공동 구매',
+      'category': category,
       'isdeleted': false,
       'deletePermit': 0
     });
