@@ -18,7 +18,6 @@ import 'package:link_ver1/services/database_service.dart';
 import 'message.dart';
 import '../shared/constants.dart';
 
-
 class PostBuyTogether extends StatefulWidget {
   @override
   _PostBuyTogether createState() => _PostBuyTogether();
@@ -49,7 +48,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   String title;
   String body, datetime;
   int max_person;
-  String _category;
+  String category = '공동 구매';
+  String subcategory;
   final AuthService _auth = AuthService();
 
   Future getImage() async {
@@ -204,16 +204,16 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                         ),
                         DropDownFormField(
                           titleText: '세부 카테고리',
-                          hintText: '선택하지 않아도 됩니다.',
-                          value: _category,
+                          hintText: '선택하세요',
+                          value: subcategory,
                           onSaved: (value) {
                             setState(() {
-                              _category = value;
+                              subcategory = value;
                             });
                           },
                           onChanged: (value) {
                             setState(() {
-                              _category = value;
+                              subcategory = value;
                             });
                           },
                           dataSource: [
@@ -366,7 +366,9 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                   body,
                                                   datetime,
                                                   max_person,
-                                              create_time_s);
+                                                  subcategory,
+                                                  category,
+                                                  create_time_s);
                                         });
                                         for (String p in path) {
                                           uploadFile(
