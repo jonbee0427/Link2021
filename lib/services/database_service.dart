@@ -24,6 +24,33 @@ class DatabaseService {
     });
   }
 
+  String _destructureEnteringTime(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('`') + 1);
+  }
+  Future updateGroupName(
+      String uid,
+      String newGroupName,
+      String groupId,
+      )async{
+    DocumentReference membersDocRec = await FirebaseFirestore.instance.collection('MyUsers').doc(uid);
+    DocumentReference userDocRef = userCollection.doc(uid);
+    DocumentSnapshot userDocSnapshot = await userDocRef.get();
+    List<dynamic> groups = await userDocSnapshot.data()['groups'];
+    int index = 0;
+    groups.forEach((element) {
+      if(element.contains(groupId)){
+        String enteringTime = _destructureEnteringTime(element);
+        groups[index] = groupId+'_'+newGroupName+'`'+enteringTime;
+      }
+      index++;
+    });
+    membersDocRec.update({
+      'groups' : groups
+    });
+  }
+
   // create group
   Future createGroup(
     String userName,
