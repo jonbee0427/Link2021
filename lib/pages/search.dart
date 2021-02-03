@@ -180,14 +180,17 @@ class Search extends SearchDelegate<String> {
                                           body: a['body'],
                                           create_time: a['create_time'],
                                           max_person: a['max_person'],
-                                          current_person: a['current_person'],
+                                          current_person: a['membersNum'],
                                           groupId: a['groupId'],
-                                          groupName: a['groupName'],
-                                          profilePic: profilePic,
-                                          uid: uid,
                                           groupMembers:
                                               getGroupMembers(a['groupId']),
+                                          groupName: a['groupName'],
                                           userName: userName,
+                                          uid: uid,
+                                          profilePic: profilePic,
+                                          deletePermit: a['deletePermit'],
+                                          admin: a['admin'],
+
                                           //userName: a['userName'],
                                           // uid: a['uid'],
                                         )
