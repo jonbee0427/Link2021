@@ -33,24 +33,25 @@ class BoardPage extends StatefulWidget {
   final Widget groupMembers;
   final int deletePermit;
   final String admin;
+  final DateTime enteringTime;
 
-  BoardPage({
-    this.title,
-    this.category,
-    this.time_limit,
-    this.body,
-    this.create_time,
-    this.max_person,
-    this.current_person,
-    this.groupId,
-    this.groupMembers,
-    this.groupName,
-    this.userName,
-    this.uid,
-    this.profilePic,
-    this.deletePermit,
-    this.admin
-  });
+  BoardPage(
+      {this.title,
+      this.category,
+      this.time_limit,
+      this.body,
+      this.create_time,
+      this.max_person,
+      this.current_person,
+      this.groupId,
+      this.groupMembers,
+      this.groupName,
+      this.userName,
+      this.uid,
+      this.profilePic,
+      this.deletePermit,
+      this.admin,
+      this.enteringTime});
   @override
   _BoardPageState createState() => _BoardPageState();
 }
@@ -79,13 +80,12 @@ class _BoardPageState extends State<BoardPage> {
     return res.substring(res.indexOf('_') + 1);
   }
 
-
   @override
   Widget build(BuildContext context) {
     print(context);
-print(widget.current_person);
+    print(widget.current_person);
 
-print(widget.deletePermit);
+    print(widget.deletePermit);
 
     // print_test();
     return Scaffold(
@@ -110,7 +110,7 @@ print(widget.deletePermit);
                             groupName: widget.groupName,
                             groupMembers: widget.groupMembers,
                             profilePic: widget.profilePic,
-
+                        enteringTime: widget.enteringTime,
                           )));
             },
           )
@@ -224,87 +224,101 @@ print(widget.deletePermit);
             SizedBox(
               height: 10,
             ),
-            widget.admin == widget.userName ?
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  //width: double.infinity,
-                  height: 50.0,
-                  child: RaisedButton(
-                      elevation: 0.0,
-                      color: Colors.pink[300],
-                      // Color.fromARGB(300, 247, 162, 144),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
-                      child: Text('게시글 수정',
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 16.0)),
-                      onPressed: () {
-                        print('글 수정!');
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EditPage(
-                                  title: widget.title,
-                                  category: widget.category,
-                                  time_limit: widget.time_limit,
-                                  body: widget.body,
-                                  create_time: widget.create_time,
-                                  max_person: widget.max_person,
-                                  groupId: widget.groupId,
-                                  groupName: widget.groupName,
-                                  userName: widget.userName,
-                                )));
-                      }),
-                ),
-                SizedBox(
-                  width: 20,
-                ),
-                widget.current_person-1 == widget.deletePermit ?
-                SizedBox(
-                  //width: double.infinity,
-                  height: 50.0,
-                  child: RaisedButton(
-                      elevation: 0.0,
-                      color: Colors.pink[300],
-                      // Color.fromARGB(300, 247, 162, 144),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
-                      child: Text('게시글 삭제',
-                          style:
-                              TextStyle(color: Colors.white, fontSize: 16.0)),
-                      onPressed: ()async {
-
-                        DocumentReference currentDoc = await FirebaseFirestore.instance.collection('groups').doc(widget.groupId);
-                         await currentDoc.get().then((value){
-                           List<dynamic> currentMembers  = value.get('members');
-                           currentMembers.forEach((element) async {
-                             String userId = _destructureId(element);
-                             String userName = _destructureName(element);
-                            await DatabaseService(uid: userId).OutChat(widget.groupId, widget.groupName, userName);
-                           });
-                         });
-                         DatabaseService(uid:widget.uid).DeleteChat(widget.groupId, widget.groupName, widget.userName);
-
-                      }),
-                ) :     SizedBox(
-                  //width: double.infinity,
-                  height: 50.0,
-                  child: RaisedButton(
-                      elevation: 0.0,
-                      color: Colors.grey,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
-                      child: Text('게시글 삭제',
-                          style:
-                          TextStyle(color: Colors.white, fontSize: 16.0)),
-                      onPressed: ()  {
-
-                        Fluttertoast.showToast(msg: '거래가 완료되지 않았습니다!');
-                      }),
-                ),
-              ],
-            ) : Row(),
+            widget.admin == widget.userName
+                ? Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        //width: double.infinity,
+                        height: 50.0,
+                        child: RaisedButton(
+                            elevation: 0.0,
+                            color: Colors.pink[300],
+                            // Color.fromARGB(300, 247, 162, 144),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30.0)),
+                            child: Text('게시글 수정',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16.0)),
+                            onPressed: () {
+                              print('글 수정!');
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => EditPage(
+                                        title: widget.title,
+                                        category: widget.category,
+                                        time_limit: widget.time_limit,
+                                        body: widget.body,
+                                        create_time: widget.create_time,
+                                        max_person: widget.max_person,
+                                        groupId: widget.groupId,
+                                        groupName: widget.groupName,
+                                        userName: widget.userName,
+                                      )));
+                            }),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      widget.current_person - 1 == widget.deletePermit
+                          ? SizedBox(
+                              //width: double.infinity,
+                              height: 50.0,
+                              child: RaisedButton(
+                                  elevation: 0.0,
+                                  color: Colors.pink[300],
+                                  // Color.fromARGB(300, 247, 162, 144),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0)),
+                                  child: Text('게시글 삭제',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16.0)),
+                                  onPressed: () async {
+                                    DocumentReference currentDoc =
+                                        await FirebaseFirestore.instance
+                                            .collection('groups')
+                                            .doc(widget.groupId);
+                                    await currentDoc.get().then((value) {
+                                      List<dynamic> currentMembers =
+                                          value.get('members');
+                                      currentMembers.forEach((element) async {
+                                        String userId = _destructureId(element);
+                                        String userName =
+                                            _destructureName(element);
+                                        await DatabaseService(uid: userId)
+                                            .OutChat(widget.groupId,
+                                                widget.groupName, userName,
+                                          widget.enteringTime.toString()
+                                        );
+                                      });
+                                    });
+                                    DatabaseService(uid: widget.uid).DeleteChat(
+                                        widget.groupId,
+                                        widget.groupName,
+                                        widget.userName);
+                                  }),
+                            )
+                          : SizedBox(
+                              //width: double.infinity,
+                              height: 50.0,
+                              child: RaisedButton(
+                                  elevation: 0.0,
+                                  color: Colors.grey,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          BorderRadius.circular(30.0)),
+                                  child: Text('게시글 삭제',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16.0)),
+                                  onPressed: () {
+                                    Fluttertoast.showToast(
+                                        msg: '거래가 완료되지 않았습니다!');
+                                  }),
+                            ),
+                    ],
+                  )
+                : Row(),
           ],
         ),
       ),

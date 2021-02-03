@@ -18,6 +18,7 @@ class BoardTile extends StatelessWidget {
   final String profilePic;
   final int deletePermit;
   final String admin;
+  final DateTime enteringTime;
 
   BoardTile({
     this.title,
@@ -34,7 +35,8 @@ class BoardTile extends StatelessWidget {
     this.uid,
     this.profilePic,
     this.deletePermit,
-    this.admin
+    this.admin,
+    this.enteringTime
   });
 
   @override
@@ -61,6 +63,7 @@ class BoardTile extends StatelessWidget {
                   profilePic: profilePic,
                   deletePermit: deletePermit,
                   admin: admin,
+                  enteringTime: enteringTime
                     )));
       },
       child: Column(
