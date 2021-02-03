@@ -63,12 +63,12 @@ class _RegisterPageState extends State<RegisterPage> {
           await HelperFunctions.getUserNameSharedPreference().then((value) {
             print("Full Name: $value");
           });
-
+          Navigator.of(context).pop();
           Navigator.of(context).push(
               MaterialPageRoute(builder: (context) => VerificationPage()));
         } else {
           setState(() {
-            error = 'Error while registering the user!';
+            error = '이미 해당 학번으로 계정이 존재합니다.';
             _isLoading = false;
           });
         }
@@ -146,7 +146,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             style: TextStyle(color: Colors.white),
                             decoration: textInputDecoration.copyWith(
                                 labelText: 'Password'),
-                            //validator: (val) => val.length < 6 ? 'Password not strong enough' : null,
+                            validator: (val) => val.length < 6
+                                ? '비밀번호가 너무 쉽습니다. 6글자 이상으로 해주세요.'
+                                : null,
                             obscureText: true,
                             onChanged: (val) {
                               setState(() {

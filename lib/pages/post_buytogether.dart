@@ -8,7 +8,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:toast/toast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -30,6 +30,8 @@ String _groupName;
 String _userName = '';
 String _email = '';
 Stream _groups;
+bool timeiscorrect = false;
+bool usingtimepicker = true;
 CollectionReference chats;
 int maxpicture = 0;
 
@@ -64,7 +66,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
       //uploadFile(path);
 
     } else {
-      Fluttertoast.showToast(msg: 'no more images');
+      Toast.show('no more images.', context,
+          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
       print('no more picture');
     }
   }
@@ -81,7 +84,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
         //_sendMessage('image', path: downloadURL);
       });
     }, onError: (err) {
-      Fluttertoast.showToast(msg: 'This File is not an image');
+      Toast.show('the file is not a image.', context,
+          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     });
   }
 
@@ -126,8 +130,11 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                           maxLength: 50,
                           decoration:
                               textInputDecoration.copyWith(labelText: '게시글 제목'),
-                          validator: (val) =>
-                              val.length < 2 ? '2글자 이상 입력해주세요' : null,
+                          validator: (val) => val.length < 2
+                              ? '2글자 이상 입력해주세요'
+                              : (val.contains('_')
+                                  ? '특수문자 \'_\'를 사용하지 말아주세요.'
+                                  : null),
                           onChanged: (val) {
                             setState(() {
                               title = val;
@@ -145,36 +152,22 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                         ),
                         Row(
                           children: [
-                            Flexible(
-                              flex: 4,
-                              child: DateTimePicker(
-                                decoration: textInputDecoration,
-                                type: DateTimePickerType.dateTimeSeparate,
-                                dateMask: 'd MMM, yyyy',
-                                //initialValue: DateTime.now().toString(),
-                                firstDate: DateTime(2000),
-                                lastDate: DateTime(2100),
-                                // icon: Icon(Icons.event),
-                                dateLabelText: 'Date',
-                                timeLabelText: "Hour",
-                                selectableDayPredicate: (date) {
-                                  // Disable weekend days to select from the calendar
-                                  // if (date.weekday == 6 || date.weekday == 7) {
-                                  //   return false;
-                                  // }
-                                  return true;
-                                },
-                                onChanged: (val) {
-                                  setState(() {
-                                    datetime = val;
-                                    print('1');
-                                  });
-                                },
-                                validator: (val) {
-                                  print('2');
-                                  return null;
-                                },
-                              ),
+                            Checkbox(
+                              value: usingtimepicker, //처음엔 false
+                              onChanged: (value) {
+                                //value가 false -> 클릭하면 true로 변경됨(두개 중 하나니까)
+                                setState(() {
+                                  usingtimepicker = value; //true가 들어감.
+                                });
+                              },
+                            ),
+                            Text(
+                              '마감시간을 사용한다',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  letterSpacing: 1.0,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold),
                             ),
                             SizedBox(
                               width: 10,
@@ -199,6 +192,44 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                             ),
                           ],
                         ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        usingtimepicker == true
+                            ? DateTimePicker(
+                                decoration: textInputDecoration,
+                                type: DateTimePickerType.dateTimeSeparate,
+                                dateMask: 'd MMM, yyyy',
+                                //initialValue: DateTime.now().toString(),
+                                firstDate: DateTime(2000),
+                                lastDate: DateTime(2100),
+                                // icon: Icon(Icons.event),
+                                dateLabelText: 'Date',
+                                timeLabelText: "Hour",
+                                selectableDayPredicate: (date) {
+                                  // Disable weekend days to select from the calendar
+                                  // if (date.weekday == 6 || date.weekday == 7) {
+                                  //   return false;
+                                  // }
+                                  return true;
+                                },
+                                onChanged: (val) {
+                                  setState(() {
+                                    datetime = val;
+                                    print('1');
+                                  });
+                                },
+                                validator: (val) {
+                                  if (val.compareTo(DateTime.now().toString()) >
+                                      0) {
+                                    timeiscorrect = true;
+                                    print(val
+                                        .compareTo(DateTime.now().toString()));
+                                  } else
+                                    timeiscorrect = false;
+                                },
+                              )
+                            : SizedBox(),
                         SizedBox(
                           height: 10,
                         ),
@@ -354,28 +385,52 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                           .millisecondsSinceEpoch;
                                       var create_time_s = new Timestamp.now();
                                       if (_formKey.currentState.validate()) {
-                                        if (datetime == null) datetime = '없음';
-                                        await HelperFunctions
-                                                .getUserNameSharedPreference()
-                                            .then((val) {
-                                          DatabaseService(uid: _user.uid)
-                                              .createGroup(
-                                                  val,
-                                                  _groupName,
-                                                  title,
-                                                  body,
-                                                  datetime,
-                                                  max_person,
-                                                  subcategory,
-                                                  category,
-                                                  create_time_s);
-                                        });
-                                        for (String p in path) {
-                                          uploadFile(
-                                              p, _groupName, create_time);
-                                          print(p);
+                                        if (usingtimepicker =
+                                            false || timeiscorrect == true) {
+                                          if (subcategory != null) {
+                                            if (datetime != null) {
+                                              //datetime = '없음';
+                                              await HelperFunctions
+                                                      .getUserNameSharedPreference()
+                                                  .then((val) {
+                                                DatabaseService(uid: _user.uid)
+                                                    .createGroup(
+                                                        val,
+                                                        _groupName,
+                                                        title,
+                                                        body,
+                                                        datetime,
+                                                        max_person,
+                                                        subcategory,
+                                                        category,
+                                                        create_time_s);
+                                              });
+                                              for (String p in path) {
+                                                uploadFile(
+                                                    p, _groupName, create_time);
+                                                print(p);
+                                              }
+                                              Navigator.of(context).pop();
+                                            } else {
+                                              Toast.show(
+                                                  '마감시간을 입력해주세요.', context,
+                                                  duration: Toast.LENGTH_LONG,
+                                                  gravity: Toast.BOTTOM);
+                                            }
+                                          } else {
+                                            Toast.show(
+                                                '서브 카테고리를 입력해주세요.', context,
+                                                duration: Toast.LENGTH_LONG,
+                                                gravity: Toast.BOTTOM);
+                                          }
+                                        } else {
+                                          Toast.show(
+                                              '마감시간은 현재 시간보다 나중으로 입력해주세요.',
+                                              context,
+                                              duration: Toast.LENGTH_LONG,
+                                              gravity: Toast.BOTTOM);
+                                          usingtimepicker = true;
                                         }
-                                        Navigator.of(context).pop();
                                       }
                                     }),
                               ),
