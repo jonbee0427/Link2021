@@ -6,36 +6,37 @@ import 'package:link_ver1/services/database_service.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-
   // create user object based on FirebaseUser
   MyUser _userFromFirebaseUser(User user) {
     return (user != null) ? MyUser(uid: user.uid) : null;
   }
 
-
   // sign in with email and password
   Future signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
       User user = result.user;
       return _userFromFirebaseUser(user);
-    } catch(e) {
+    } catch (e) {
       print(e.toString());
       return null;
     }
   }
 
-
   // register with email and password
-  Future registerWithEmailAndPassword(String fullName, String email, String password) async {
+  Future registerWithEmailAndPassword(
+      String fullName, String email, String password) async {
     try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
       User user = result.user;
 
       // Create a new document for the user with uid
-      await DatabaseService(uid: user.uid).updateUserData(fullName, email, password);
+      await DatabaseService(uid: user.uid)
+          .updateUserData(fullName, email, password);
       return _userFromFirebaseUser(user);
-    } catch(e) {
+    } catch (e) {
       print(e.toString());
       return null;
     }
@@ -60,7 +61,7 @@ class AuthService {
           print("Full Name: $value");
         });
       });
-    } catch(e) {
+    } catch (e) {
       print(e.toString());
       return null;
     }
