@@ -22,13 +22,15 @@ class ChatPage extends StatefulWidget {
   final String groupName;
   final Widget groupMembers;
   final String profilePic;
+  final DateTime enteringTime;
 
   ChatPage(
       {this.groupId,
       this.userName,
       this.groupName,
       this.groupMembers,
-      this.profilePic});
+      this.profilePic,
+      this.enteringTime});
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -204,7 +206,7 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    DatabaseService().getChats(widget.groupId).then((val) {
+    DatabaseService().getChats(widget.groupId, widget.enteringTime).then((val) {
       // print(val);
       setState(() {
         _chats = val;
@@ -251,7 +253,6 @@ class _ChatPageState extends State<ChatPage> {
   //채팅방 화면 빌드
   @override
   Widget build(BuildContext context) {
-    print( ' ' + _userName);
 
     Color basic = Color.fromARGB(250, 247, 162, 144);
     return Scaffold(
@@ -333,7 +334,9 @@ class _ChatPageState extends State<ChatPage> {
                                   DatabaseService(uid: _user.uid).OutChat(
                                       widget.groupId,
                                       widget.groupName,
-                                      widget.userName);
+                                      widget.userName,
+                                      widget.enteringTime.toString()
+                                  );
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                   Navigator.pop(context);

@@ -48,8 +48,10 @@ class EditPage extends StatefulWidget {
 
 List<String> images = [];
 List<String> path = [];
+List<dynamic> members;
 User _user;
 String _groupName;
+
 String _userName = '';
 String _email = '';
 Stream _groups;
@@ -352,11 +354,23 @@ class _EditPage extends State<EditPage> {
                                           'max_person': widget.max_person,
                                           'category': widget.category,
                                         }).then((value) {
+                                          members.forEach((element) {
+                                            String membersId = _destructureId(element);
+                                            DatabaseService(uid: membersId).updateGroupName(membersId, widget.title, widget.groupId);
+                                          });
+
                                           print('updated');
                                           Navigator.of(context).pop();
                                           Navigator.of(context).pop();
                                         }).catchError(
                                             (value) => print('failed to add'));
+                                        //사용자들을 가져온다.
+                                        //그리고 그 사용자들의 uid를 추출한다.
+                                        //해당 사용자의 document로 간 다음.
+                                        //데이터추출 후에 해당 필드에 맞는 값을 발견한다면. 
+                                        //그 필드만 업데이트 하는것인데. 
+
+
                                       }
                                     }),
                               ),
@@ -369,6 +383,16 @@ class _EditPage extends State<EditPage> {
                 ),
               ),
             )));
+  }
+
+  String _destructureId(String res) {
+    // print(res.substring(0, res.indexOf('_')));
+    return res.substring(0, res.indexOf('_'));
+  }
+
+  String _destructureName(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('_') + 1);
   }
 
   _getUserAuthAndJoinedGroups() async {
@@ -391,5 +415,8 @@ class _EditPage extends State<EditPage> {
     });
 
     chats = await FirebaseFirestore.instance.collection('groups');
+    await chats.doc(widget.groupId).get().then((value) {
+      members = value.get('members');
+    });
   }
 }

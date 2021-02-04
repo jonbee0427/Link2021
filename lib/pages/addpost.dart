@@ -44,7 +44,7 @@ class _PostState extends State<Post> {
         // ],
       ),
       body: Container(
-        color: Color.fromARGB(150, 247, 162, 144),
+        color: Colors.white,
         child: ListView(
           children: <Widget>[
             Center(
@@ -55,11 +55,6 @@ class _PostState extends State<Post> {
                   SizedBox(
                     height: 20,
                   ),
-                  Text("카테고리 선택",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 45.0,
-                          fontWeight: FontWeight.bold)),
                   SizedBox(
                     height: 30,
                   ),
@@ -72,22 +67,31 @@ class _PostState extends State<Post> {
                         child: SizedBox(
                           width: double.infinity,
                           height: 150.0,
-                          child: RaisedButton(
-
-                              elevation: 0.0,
-                              color: Colors.blue[200],
-                              // Color.fromARGB(300, 247, 162, 144),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Color.fromARGB(250, 247, 162, 144),
+                                  width: 3),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(40),
                               ),
-                              child: Text('공동 구매',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 30.0)),
-                              onPressed: () {
-                                print('buy');
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => PostBuyTogether()));
-                              }),
+                            ),
+                            child: RaisedButton(
+                                elevation: 0.0,
+                                color: Colors.white,
+                                // Color.fromARGB(300, 247, 162, 144),
+                                // shape: RoundedRectangleBorder(
+                                //   borderRadius: BorderRadius.circular(30.0),
+                                // ),
+                                child: Text('공동 구매',
+                                    style: TextStyle(
+                                        color: Colors.black, fontSize: 30.0)),
+                                onPressed: () {
+                                  print('buy');
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => PostBuyTogether()));
+                                }),
+                          ),
                         ),
                       ),
                       SizedBox(

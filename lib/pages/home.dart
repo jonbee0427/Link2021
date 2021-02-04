@@ -19,8 +19,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String title, body, time_limit, create_time;
   int max_person;
-  Stream _boards;
   Stream _groups;
+  Stream _study;
+  Stream _hobby;
   User _user;
   String _userName = '';
   Color priority = Color.fromARGB(250, 247, 162, 144);
@@ -32,7 +33,18 @@ class _HomeState extends State<Home> {
   void initState() {
     super.initState();
     //_boards = FirebaseFirestore.instance.collection('writing').snapshots();
-    _groups = FirebaseFirestore.instance.collection('groups').snapshots();
+    _groups = FirebaseFirestore.instance
+        .collection('groups')
+        .where('category', isEqualTo: '공동 구매')
+        .snapshots();
+    _study = FirebaseFirestore.instance
+        .collection('groups')
+        .where('category', isEqualTo: '스터디')
+        .snapshots();
+    _hobby = FirebaseFirestore.instance
+        .collection('groups')
+        .where('category', isEqualTo: '취미 생활')
+        .snapshots();
     _getUserAuthAndJoinedGroups();
   }
 
@@ -59,6 +71,16 @@ class _HomeState extends State<Home> {
 
   _getRecentStream(String groupId) async {
     recent = chats.doc(groupId).snapshots();
+  }
+
+  String _destructureEnteringTime(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('`') + 1);
+  }
+
+  DateTime convertDateFromString(String strDate) {
+    return DateTime.parse(strDate);
   }
 
   Widget getGroupMembers(String groupId) {
@@ -110,12 +132,99 @@ class _HomeState extends State<Home> {
                   body: snapshot.data.docs[reqIndex]['body'],
                   time_limit: snapshot.data.docs[reqIndex]['time_limit'],
                   category: snapshot.data.docs[reqIndex]['category'],
+                  subcategory: snapshot.data.docs[reqIndex]['subcategory'],
                   uid: _user.uid,
                   max_person: snapshot.data.docs[reqIndex]['max_person'],
                   current_person: snapshot.data.docs[reqIndex]['membersNum'],
                   profilePic: _user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
                   admin: snapshot.data.docs[reqIndex]['admin'],
+                  //enteringTime: _destructureEnteringTime(snapshot.data.do),
+                );
+              },
+              separatorBuilder: (context, index) {
+                return Divider(
+                  color: priority,
+                  thickness: 1.0,
+                );
+              },
+            );
+          } else {
+            return Text('error');
+          }
+        });
+  }
+
+  Widget getStudy() {
+    return StreamBuilder(
+        stream: _study,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.separated(
+              itemCount: snapshot.data.size,
+              itemBuilder: (context, index) {
+                //itemBuilder : 게시글 하나하나,  index : 순서
+                int reqIndex = snapshot.data.docs.length - index - 1;
+                return BoardTile(
+                  userName: _userName,
+                  groupId: snapshot.data.docs[reqIndex]['groupId'],
+                  groupMembers:
+                      getGroupMembers(snapshot.data.docs[reqIndex]['groupId']),
+                  groupName: snapshot.data.docs[reqIndex]['groupName'],
+                  title: snapshot.data.docs[reqIndex]['title'],
+                  body: snapshot.data.docs[reqIndex]['body'],
+                  time_limit: snapshot.data.docs[reqIndex]['time_limit'],
+                  category: snapshot.data.docs[reqIndex]['category'],
+                  subcategory: snapshot.data.docs[reqIndex]['subcategory'],
+                  uid: _user.uid,
+                  max_person: snapshot.data.docs[reqIndex]['max_person'],
+                  current_person: snapshot.data.docs[reqIndex]['membersNum'],
+                  profilePic: _user.photoURL,
+                  deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
+                  admin: snapshot.data.docs[reqIndex]['admin'],
+                );
+              },
+              separatorBuilder: (context, index) {
+                return Divider(
+                  color: priority,
+                  thickness: 1.0,
+                );
+              },
+            );
+          } else {
+            return Text('error');
+          }
+        });
+  }
+
+  Widget getHobby() {
+    return StreamBuilder(
+        stream: _hobby,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.separated(
+              itemCount: snapshot.data.size,
+              itemBuilder: (context, index) {
+                //itemBuilder : 게시글 하나하나,  index : 순서
+                int reqIndex = snapshot.data.docs.length - index - 1;
+                return BoardTile(
+                  userName: _userName,
+                  groupId: snapshot.data.docs[reqIndex]['groupId'],
+                  groupMembers:
+                      getGroupMembers(snapshot.data.docs[reqIndex]['groupId']),
+                  groupName: snapshot.data.docs[reqIndex]['groupName'],
+                  title: snapshot.data.docs[reqIndex]['title'],
+                  body: snapshot.data.docs[reqIndex]['body'],
+                  time_limit: snapshot.data.docs[reqIndex]['time_limit'],
+                  category: snapshot.data.docs[reqIndex]['category'],
+                  subcategory: snapshot.data.docs[reqIndex]['subcategory'],
+                  uid: _user.uid,
+                  max_person: snapshot.data.docs[reqIndex]['max_person'],
+                  current_person: snapshot.data.docs[reqIndex]['membersNum'],
+                  profilePic: _user.photoURL,
+                  deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
+                  admin: snapshot.data.docs[reqIndex]['admin'],
+                  // enteringTime : convertDateFromString(_destructureEnteringTime(snapshot.data['groups'][reqIndex]))
                 );
               },
               separatorBuilder: (context, index) {
@@ -173,7 +282,7 @@ class _HomeState extends State<Home> {
           ),
           body: TabBarView(
             children: [
-              //카테고리,제목,마감시간 text 컨테이너와 getBoard()가 Column으로 묶여있다
+              //group purchase
               Column(
                 children: [
                   Container(
@@ -181,28 +290,6 @@ class _HomeState extends State<Home> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.only(left: 25),
-                          child: Text(
-                            '제목',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(right: 25),
-                          child: Text(
-                            '마감시간',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                   Container(
@@ -210,26 +297,35 @@ class _HomeState extends State<Home> {
                       child: getBoard(),
                     ),
                   ),
-                  SizedBox(
-                    height: 30, //하드코딩을 해서 고쳐야 할 소지가 있다.
-                  )
                 ],
               ),
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  "스터디",
-                  style: TextStyle(fontSize: 30, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
+
+              //study
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 8),
+                  ),
+                  Container(
+                    child: Expanded(
+                      child: getStudy(),
+                    ),
+                  ),
+                ],
               ),
-              Container(
-                alignment: Alignment.center,
-                child: Text(
-                  "운동",
-                  style: TextStyle(fontSize: 30, color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
+
+              //hobby
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.only(bottom: 8),
+                  ),
+                  Container(
+                    child: Expanded(
+                      child: getHobby(),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

@@ -142,21 +142,24 @@ class _ChatState extends State<Chat> {
   }
 
   Widget getGroupMembers(String groupId) {
+    print('_getRecentStream : ' +groupId + '  -----');
     _getRecentStream(groupId);
     return StreamBuilder(
       stream: recent,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          print(snapshot.data['members'].length);
           return ListView.builder(
             padding: EdgeInsets.only(top: 0),
             shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index) {
+              print('숫자 : ' + _destructureNameFromGroups(snapshot.data['members'][index]));
               return ListTile(
                 title: Row(children: [
-                  Text(_destructureName(snapshot.data['members'][index])),
+                  Text(_destructureNameFromGroups(snapshot.data['members'][index])),
                   snapshot.data['admin'] ==
-                          _destructureName(snapshot.data['members'][index])
+                          _destructureNameFromGroups(snapshot.data['members'][index])
                       ? Text(' (방장)')
                       : Text(''),
                 ]),
@@ -164,6 +167,7 @@ class _ChatState extends State<Chat> {
             },
           );
         } else {
+          print('ERROR');
           return Text('noOne');
         }
       },
@@ -171,6 +175,7 @@ class _ChatState extends State<Chat> {
   }
 
   _getRecentStream(String groupId) async {
+    print('_getRecentStream : ' + groupId);
     recent = chats.doc(groupId).snapshots();
   }
 
@@ -200,6 +205,7 @@ class _ChatState extends State<Chat> {
                           _destructureId(snapshot.data['groups'][reqIndex])),
                       recentTime: getRecentTime(
                           _destructureId(snapshot.data['groups'][reqIndex])),
+                      enteringTime : convertDateFromString(_destructureEnteringTime(snapshot.data['groups'][reqIndex]))
                     );
                   });
             } else {
@@ -245,7 +251,29 @@ class _ChatState extends State<Chat> {
 
   String _destructureName(String res) {
     // print(res.substring(res.indexOf('_') + 1));
+   // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('_') + 1,res.indexOf('`'));
+    //return res.substring(res.indexOf('_') + 1);
+
+  }
+
+  String _destructureNameFromGroups(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    //return res.substring(res.indexOf('_') + 1,res.indexOf('`'));
     return res.substring(res.indexOf('_') + 1);
+
+  }
+
+  String _destructureEnteringTime(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('`') + 1);
+  }
+
+  DateTime convertDateFromString(String strDate){
+   return DateTime.parse(strDate);
+
   }
 
   //사라질 기능
