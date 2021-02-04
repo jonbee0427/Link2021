@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -28,6 +29,7 @@ class _ChatState extends State<Chat> {
   CollectionReference chats;
   Stream recent;
   String recentTimeString;
+  int selectedPage = 0;
 
   // initState
   @override
@@ -142,7 +144,7 @@ class _ChatState extends State<Chat> {
   }
 
   Widget getGroupMembers(String groupId) {
-    print('_getRecentStream : ' +groupId + '  -----');
+    print('_getRecentStream : ' + groupId + '  -----');
     _getRecentStream(groupId);
     return StreamBuilder(
       stream: recent,
@@ -154,12 +156,15 @@ class _ChatState extends State<Chat> {
             shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index) {
-              print('숫자 : ' + _destructureNameFromGroups(snapshot.data['members'][index]));
+              print('숫자 : ' +
+                  _destructureNameFromGroups(snapshot.data['members'][index]));
               return ListTile(
                 title: Row(children: [
-                  Text(_destructureNameFromGroups(snapshot.data['members'][index])),
+                  Text(_destructureNameFromGroups(
+                      snapshot.data['members'][index])),
                   snapshot.data['admin'] ==
-                          _destructureNameFromGroups(snapshot.data['members'][index])
+                          _destructureNameFromGroups(
+                              snapshot.data['members'][index])
                       ? Text(' (방장)')
                       : Text(''),
                 ]),
@@ -193,20 +198,21 @@ class _ChatState extends State<Chat> {
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
-                      profilePic: snapshot.data['profilePic'],
-                      userName: snapshot.data['name'],
-                      groupId:
-                          _destructureId(snapshot.data['groups'][reqIndex]),
-                      groupName:
-                          _destructureName(snapshot.data['groups'][reqIndex]),
-                      recentMsg: getRecent(
-                          _destructureId(snapshot.data['groups'][reqIndex])),
-                      groupMembers: getGroupMembers(
-                          _destructureId(snapshot.data['groups'][reqIndex])),
-                      recentTime: getRecentTime(
-                          _destructureId(snapshot.data['groups'][reqIndex])),
-                      enteringTime : convertDateFromString(_destructureEnteringTime(snapshot.data['groups'][reqIndex]))
-                    );
+                        profilePic: snapshot.data['profilePic'],
+                        userName: snapshot.data['name'],
+                        groupId:
+                            _destructureId(snapshot.data['groups'][reqIndex]),
+                        groupName:
+                            _destructureName(snapshot.data['groups'][reqIndex]),
+                        recentMsg: getRecent(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
+                        groupMembers: getGroupMembers(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
+                        recentTime: getRecentTime(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
+                        enteringTime: convertDateFromString(
+                            _destructureEnteringTime(
+                                snapshot.data['groups'][reqIndex])));
                   });
             } else {
               return noGroupWidget();
@@ -251,10 +257,9 @@ class _ChatState extends State<Chat> {
 
   String _destructureName(String res) {
     // print(res.substring(res.indexOf('_') + 1));
-   // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
-    return res.substring(res.indexOf('_') + 1,res.indexOf('`'));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('_') + 1, res.indexOf('`'));
     //return res.substring(res.indexOf('_') + 1);
-
   }
 
   String _destructureNameFromGroups(String res) {
@@ -262,7 +267,6 @@ class _ChatState extends State<Chat> {
     // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
     //return res.substring(res.indexOf('_') + 1,res.indexOf('`'));
     return res.substring(res.indexOf('_') + 1);
-
   }
 
   String _destructureEnteringTime(String res) {
@@ -271,9 +275,8 @@ class _ChatState extends State<Chat> {
     return res.substring(res.indexOf('`') + 1);
   }
 
-  DateTime convertDateFromString(String strDate){
-   return DateTime.parse(strDate);
-
+  DateTime convertDateFromString(String strDate) {
+    return DateTime.parse(strDate);
   }
 
   //사라질 기능
@@ -332,11 +335,12 @@ class _ChatState extends State<Chat> {
               color: Colors.white,
             ),
             onPressed: () {
-              showSearch(context: context, delegate: Search(
-                  uid: _user.uid,
-                  userName: _userName,
-                  profilePic: _user.photoURL
-              ));
+              showSearch(
+                  context: context,
+                  delegate: Search(
+                      uid: _user.uid,
+                      userName: _userName,
+                      profilePic: _user.photoURL));
             },
           )
         ],
@@ -350,6 +354,26 @@ class _ChatState extends State<Chat> {
         backgroundColor: Colors.grey[700],
         elevation: 0.0,
       ),
+      /*
+      bottomNavigationBar: ConvexAppBar(
+        backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+        items: [
+          TabItem(
+            icon: Icons.home,
+            title: '홈',
+          ),
+          TabItem(icon: Icons.textsms, title: '채팅'),
+          TabItem(icon: Icons.add, title: '추가'),
+          TabItem(icon: Icons.notifications, title: '알림'),
+          TabItem(icon: Icons.person, title: '프로필'),
+        ],
+        //initialActiveIndex: 0, //optional, default as 0
+        onTap: (int i) {
+          setState(() {
+            selectedPage = i;
+          });
+        },
+      ),*/
     );
   }
 }

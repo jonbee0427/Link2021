@@ -63,27 +63,26 @@ class _BoardPageState extends State<BoardPage> {
   User user;
   Color priority = Color.fromARGB(250, 247, 162, 144);
   var downloadUrl;
-
+  Stream _postPic;
+  String postPic;
+  CollectionReference myUsers =
+      FirebaseFirestore.instance.collection('MyUsers');
   @override
   initState() {
     super.initState();
     initalizeUser();
+    initialize();
+    //fileDownload(widget.groupName, widget.admin);
   }
 
   initalizeUser() async {
     user = await FirebaseAuth.instance.currentUser;
   }
 
-  Future getImage(String groupname, String admin) async {
-    final _storage = FirebaseStorage.instance;
-    int index = 0;
-    await _storage.ref().child('$groupname$admin/').listAll().then((value) {
-      value.items.forEach((element) {
-        print('dsfsfsdfsdf' + element.toString());
-        imageName[index] = element.toString();
-      });
-    });
-  }
+  DocumentReference myDoc;
+  DocumentReference postRef;
+  List<dynamic> myGroup;
+  String inEnteringTime;
 
   String _destructureId(String res) {
     // print(res.substring(0, res.indexOf('_')));
@@ -95,13 +94,72 @@ class _BoardPageState extends State<BoardPage> {
     return res.substring(res.indexOf('_') + 1);
   }
 
+  String _destructureEnteringTime(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('`') + 1);
+  }
+
+  DateTime convertDateFromString(String strDate) {
+    return DateTime.parse(strDate);
+  }
+
+  initialize() async {
+    myDoc =
+        await FirebaseFirestore.instance.collection('MyUsers').doc(widget.uid);
+    await myDoc.get().then((value) {
+      myGroup = value.get('groups');
+    });
+
+    myGroup.forEach((element) {
+      if (element.contains(widget.groupId)) {
+        inEnteringTime = _destructureEnteringTime(element);
+        print('Entering TIme : ' + inEnteringTime);
+      }
+    });
+
+    //_postPic = FirebaseFirestore.instance.collection('MyUsers').snapshots();
+    await myUsers.doc(widget.uid).get().then((value) async {
+      postPic = await value.data()['postPic'];
+      print('post pic is : ' + postPic);
+    });
+  }
+
+  /*
+
+  await myUsers.doc(widget.uid).get().then((value) async {
+      admin = await value.data()['admin'];
+    });
+
+
+    postRef = await FirebaseFirestore.instance
+        .collection('MyUsers')
+        .doc(widget.uid)
+        .get()
+        .then((DocumentSnapshot ds) => postPic = ds.data["postPic"]);
+  Widget getPostPic() {
+    return StreamBuilder(
+        stream: _postPic,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            postPic = snapshot.data['postPic'];
+            print('getting post picture : ' + postPic);
+          } else {
+            return Text('error');
+          }
+        });
+  }
+  */
+
   @override
   Widget build(BuildContext context) {
-    print(context);
-    print(widget.current_person);
-    print(widget.deletePermit);
-    getImage(widget.groupName, widget.admin);
+    //print(context);
+    //print(widget.current_person);
+    //print(widget.deletePermit);
+    //getImage(widget.groupName, widget.admin);
+
     // print_test();
+    //getPostPic();
     return Scaffold(
       appBar: AppBar(
         title: Text('게시글 상세 정보'),
@@ -114,7 +172,7 @@ class _BoardPageState extends State<BoardPage> {
             onPressed: () async {
               await DatabaseService(uid: widget.uid)
                   .JoinChat(widget.groupId, widget.groupName, widget.userName);
-
+              await initialize();
               Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -124,7 +182,7 @@ class _BoardPageState extends State<BoardPage> {
                             groupName: widget.groupName,
                             groupMembers: widget.groupMembers,
                             profilePic: widget.profilePic,
-                            enteringTime: widget.enteringTime,
+                            enteringTime: convertDateFromString(inEnteringTime),
                           )));
             },
           )
@@ -221,7 +279,7 @@ class _BoardPageState extends State<BoardPage> {
                   Radius.circular(40),
                 ),
               ),
-              child: Flexible(
+              child: Container(
                 //mainAxisAlignment: MainAxisAlignment.start,
                 child: Text(
                   '내용 : ' + widget.body,

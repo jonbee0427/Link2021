@@ -141,6 +141,7 @@ class _HomeState extends State<Home> {
                   profilePic: _user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
                   admin: snapshot.data.docs[reqIndex]['admin'],
+                  //enteringTime: _destructureEnteringTime(snapshot.data.do),
                 );
               },
               separatorBuilder: (context, index) {
@@ -329,6 +330,26 @@ class _HomeState extends State<Home> {
               ),
             ],
           ),
+          /*
+            bottomNavigationBar: ConvexAppBar(
+              backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+              items: [
+                TabItem(
+                  icon: Icons.home,
+                  title: '홈',
+                ),
+                TabItem(icon: Icons.textsms, title: '채팅'),
+                TabItem(icon: Icons.add, title: '추가'),
+                TabItem(icon: Icons.notifications, title: '알림'),
+                TabItem(icon: Icons.person, title: '프로필'),
+              ],
+              //initialActiveIndex: 0, //optional, default as 0
+              onTap: (int i) {
+                setState(() {
+                  selectedPage = i;
+                });
+              },
+            )*/
         ),
       ),
     );

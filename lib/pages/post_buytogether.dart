@@ -53,6 +53,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   String category = '공동 구매';
   String subcategory;
   final AuthService _auth = AuthService();
+  String imageUrl = '';
 
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
@@ -79,13 +80,26 @@ class _PostBuyTogether extends State<PostBuyTogether> {
         .child('$groupname$_userName/' + fileName);
     UploadTask uploadTask = reference.putFile(File(path));
     TaskSnapshot taskSnapshot = await uploadTask;
+    var downloadUrl = await taskSnapshot.ref.getDownloadURL();
     taskSnapshot.ref.getDownloadURL().then((downloadURL) {
       setState(() {
-        //_sendMessage('image', path: downloadURL);
+        //_sendMessage('image', path: downloadURL)
       });
     }, onError: (err) {
       Toast.show('the file is not a image.', context,
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    });
+
+    imageUrl = downloadUrl;
+    var firebaseUser = await FirebaseAuth.instance.currentUser;
+    //firebaseUser.updateProfile(photoURL: imageUrl);
+    FirebaseFirestore.instance
+        .collection("MyUsers")
+        .doc(firebaseUser.uid)
+        .update({
+      "postPic": imageUrl.toString(),
+    }).then((_) {
+      print("field (postPic) updated success!");
     });
   }
 

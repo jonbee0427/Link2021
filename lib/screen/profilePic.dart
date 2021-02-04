@@ -69,7 +69,7 @@ class _ProfilePicState extends State<ProfilePic> {
         .update({
       "profilePic": imageUrl.toString(),
     }).then((_) {
-      print("success!");
+      print("field (profilePic) updated success!");
     });
   }
 
