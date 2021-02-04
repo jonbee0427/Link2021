@@ -138,12 +138,28 @@ class BoardTile extends StatelessWidget {
                       width: 50,
                     ),
                   ),
-                  Container(
-                    child: time_limit == null || time_limit == ""
-                        ? Text('시간없음')
-                        : Text(
-                            time_limit,
-                          ),
+                  Column(
+                    children: [
+                      Container(
+                        child: time_limit == null || time_limit == ""
+                            ? Text('시간없음')
+                            : Text(
+                                time_limit,
+                              ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: max_person == current_person
+                            ? Text(
+                                '인원 마감',
+                                style: TextStyle(
+                                    color: Colors.redAccent, fontSize: 20),
+                              )
+                            : SizedBox(),
+                      ),
+                    ],
                   ),
                 ],
               ),

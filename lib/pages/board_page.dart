@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -67,12 +68,31 @@ class _BoardPageState extends State<BoardPage> {
   String postPic;
   CollectionReference myUsers =
       FirebaseFirestore.instance.collection('MyUsers');
+  List<dynamic> imageList = new List();
   @override
   initState() {
     super.initState();
     initalizeUser();
     initialize();
+    getImageFromStore();
     //fileDownload(widget.groupName, widget.admin);
+  }
+
+  getImageFromStore() async {
+    String path = widget.groupId + '/board/';
+    Reference storage = FirebaseStorage.instance.ref().child(path);
+    print('Current Group : ' + path);
+    storage.listAll().then((value) async {
+      int index = 0;
+      value.items.forEach((element) async {
+        //print('in foreach!!!!!');
+        await element.getDownloadURL().then((value) {
+          print('Current value  : ' + value);
+          imageList.add(value);
+        });
+      });
+    });
+    //print('과연 지금 길이는....' + imageList.length.toString());
   }
 
   initalizeUser() async {
@@ -118,11 +138,13 @@ class _BoardPageState extends State<BoardPage> {
       }
     });
 
+/*
     //_postPic = FirebaseFirestore.instance.collection('MyUsers').snapshots();
     await myUsers.doc(widget.uid).get().then((value) async {
       postPic = await value.data()['postPic'];
       print('post pic is : ' + postPic);
     });
+    */
   }
 
   /*
@@ -153,10 +175,9 @@ class _BoardPageState extends State<BoardPage> {
 
   @override
   Widget build(BuildContext context) {
-    //print(context);
-    //print(widget.current_person);
-    //print(widget.deletePermit);
-    //getImage(widget.groupName, widget.admin);
+    print(context);
+    print(widget.current_person);
+    print(widget.deletePermit);
 
     // print_test();
     //getPostPic();
@@ -170,20 +191,26 @@ class _BoardPageState extends State<BoardPage> {
           IconButton(
             icon: Icon(Icons.near_me_outlined),
             onPressed: () async {
-              await DatabaseService(uid: widget.uid)
-                  .JoinChat(widget.groupId, widget.groupName, widget.userName);
-              await initialize();
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChatPage(
-                            groupId: widget.groupId,
-                            userName: widget.userName,
-                            groupName: widget.groupName,
-                            groupMembers: widget.groupMembers,
-                            profilePic: widget.profilePic,
-                            enteringTime: convertDateFromString(inEnteringTime),
-                          )));
+              if (widget.max_person != widget.current_person) {
+                await DatabaseService(uid: widget.uid).JoinChat(
+                    widget.groupId, widget.groupName, widget.userName);
+
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                              groupId: widget.groupId,
+                              userName: widget.userName,
+                              groupName: widget.groupName,
+                              groupMembers: widget.groupMembers,
+                              profilePic: widget.profilePic,
+                              enteringTime:
+                                  convertDateFromString(inEnteringTime),
+                            )));
+              } else {
+                Toast.show('최대 인원이 되어 더 이상 입장할 수 없습니다.', context,
+                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+              }
             },
           )
         ],
@@ -294,16 +321,47 @@ class _BoardPageState extends State<BoardPage> {
           ]),
           /*
           SizedBox(
-            height: 10,
-            child: Stack(
-              children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(downloadUrl),
-                  backgroundColor: Colors.white,
-                ),
-              ],
-            ),
+            child: maxpicture != 0
+                ? Container(
+                    width: 400,
+                    height: 350,
+                    child: maxpicture != 0
+                        ? Swiper(
+                            key: UniqueKey(),
+                            itemBuilder: (BuildContext context, int index) {
+                              return Image.network(imageList[0]);
+                            },
+                            itemCount: imageList.length,
+                            autoplayDisableOnInteraction: true,
+                            pagination: SwiperPagination(),
+                            control: SwiperControl(),
+                          )
+                        : null,
+                  )
+                : null,
           ),*/
+          imageList.length != 0
+              ? SizedBox(
+                  height: 100,
+                  width: 100,
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(imageList[0]),
+                        backgroundColor: Colors.white,
+                      ),
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(imageList[1]),
+                        backgroundColor: Colors.white,
+                      ),
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(imageList[2]),
+                        backgroundColor: Colors.white,
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
           widget.admin == widget.userName
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -391,8 +449,9 @@ class _BoardPageState extends State<BoardPage> {
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16.0)),
                                 onPressed: () {
-                                  Fluttertoast.showToast(
-                                      msg: '거래가 완료되지 않았습니다!');
+                                  Toast.show('거래가 완료되지 않았습니다.', context,
+                                      duration: Toast.LENGTH_LONG,
+                                      gravity: Toast.BOTTOM);
                                 }),
                           ),
                   ],

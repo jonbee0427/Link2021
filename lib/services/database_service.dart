@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -51,6 +53,23 @@ class DatabaseService {
     membersDocRec.update({'groups': groups});
   }
 
+  Future uploadFile(String path, String groupDocRefid) async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = FirebaseStorage.instance
+        .ref()
+        .child('${groupDocRefid}/' + 'board/' + fileName);
+    UploadTask uploadTask = reference.putFile(File(path));
+    TaskSnapshot taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then((downloadURL) {
+      // setState(() {
+      //   //_sendMessage('image', path: downloadURL);
+      // });
+    }, onError: (err) {
+      // Toast.show('the file is not a image.', context,
+      //     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+    });
+  }
+
   // create group
   Future createGroup(
       String userName,
@@ -61,7 +80,8 @@ class DatabaseService {
       int max_person,
       String subcategory,
       String category,
-      Timestamp create_time) async {
+      Timestamp create_time,
+      List<String> path) async {
     DocumentReference groupDocRef = await groupCollection.add({
       'groupName': groupName,
       'groupIcon': '',
@@ -85,8 +105,12 @@ class DatabaseService {
 
     await groupDocRef.update({
       'members': FieldValue.arrayUnion([uid + '_' + userName]),
-      'groupId': groupDocRef.id
+      'groupId': groupDocRef.id,
     });
+    for (String p in path) {
+      print(groupDocRef.id);
+      uploadFile(p, groupDocRef.id);
+    }
 
     DocumentReference userDocRef = userCollection.doc(uid);
     return await userDocRef.update({

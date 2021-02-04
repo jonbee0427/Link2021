@@ -7,7 +7,7 @@ class Profile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+        backgroundColor: Colors.blue,
         appBar: AppBar(
           title: Text("LINK"),
           centerTitle: true,
