@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -60,6 +60,9 @@ class BoardPage extends StatefulWidget {
 
 class _BoardPageState extends State<BoardPage> {
   Color priority = Color.fromARGB(250, 247, 162, 144);
+  DocumentReference myDoc;
+  List<dynamic> myGroup;
+  String inEnteringTime;
 
   // void print_test() {
   //   print('title : ' + widget.title);
@@ -82,6 +85,38 @@ class _BoardPageState extends State<BoardPage> {
     return res.substring(res.indexOf('_') + 1);
   }
 
+  String _destructureEnteringTime(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('`') + 1);
+  }
+
+  DateTime convertDateFromString(String strDate) {
+    return DateTime.parse(strDate);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initialize();
+  }
+
+  initialize() async {
+    myDoc =
+        await FirebaseFirestore.instance.collection('MyUsers').doc(widget.uid);
+    await myDoc.get().then((value) {
+      myGroup = value.get('groups');
+    });
+
+    myGroup.forEach((element) {
+      if (element.contains(widget.groupId)) {
+        inEnteringTime = _destructureEnteringTime(element);
+        print('Entering TIme : ' + inEnteringTime);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print(context);
@@ -99,20 +134,26 @@ class _BoardPageState extends State<BoardPage> {
           IconButton(
             icon: Icon(Icons.near_me_outlined),
             onPressed: () async {
-              await DatabaseService(uid: widget.uid)
-                  .JoinChat(widget.groupId, widget.groupName, widget.userName);
+              if (widget.max_person != widget.current_person) {
+                await DatabaseService(uid: widget.uid).JoinChat(
+                    widget.groupId, widget.groupName, widget.userName);
 
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChatPage(
-                            groupId: widget.groupId,
-                            userName: widget.userName,
-                            groupName: widget.groupName,
-                            groupMembers: widget.groupMembers,
-                            profilePic: widget.profilePic,
-                            enteringTime: widget.enteringTime,
-                          )));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                              groupId: widget.groupId,
+                              userName: widget.userName,
+                              groupName: widget.groupName,
+                              groupMembers: widget.groupMembers,
+                              profilePic: widget.profilePic,
+                              enteringTime:
+                                  convertDateFromString(inEnteringTime),
+                            )));
+              } else {
+                Toast.show('최대 인원이 되어 더 이상 입장할 수 없습니다.', context,
+                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+              }
             },
           )
         ],
@@ -311,8 +352,9 @@ class _BoardPageState extends State<BoardPage> {
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16.0)),
                                 onPressed: () {
-                                  Fluttertoast.showToast(
-                                      msg: '거래가 완료되지 않았습니다!');
+                                  Toast.show('거래가 완료되지 않았습니다.', context,
+                                      duration: Toast.LENGTH_LONG,
+                                      gravity: Toast.BOTTOM);
                                 }),
                           ),
                   ],

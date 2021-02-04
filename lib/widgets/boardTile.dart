@@ -48,23 +48,23 @@ class BoardTile extends StatelessWidget {
             context,
             MaterialPageRoute(
                 builder: (context) => BoardPage(
-                      title: title,
-                      category: category,
-                      subcategory: subcategory,
-                      time_limit: time_limit,
-                      body: body,
-                      create_time: create_time,
-                      max_person: max_person,
-                      current_person: current_person,
-                      groupId: groupId,
-                      groupMembers: groupMembers,
-                      groupName: groupName,
-                      userName: userName,
-                      uid: uid,
-                      profilePic: profilePic,
-                      deletePermit: deletePermit,
-                      admin: admin,
-                    )));
+                    title: title,
+                    category: category,
+                    subcategory: subcategory,
+                    time_limit: time_limit,
+                    body: body,
+                    create_time: create_time,
+                    max_person: max_person,
+                    current_person: current_person,
+                    groupId: groupId,
+                    groupMembers: groupMembers,
+                    groupName: groupName,
+                    userName: userName,
+                    uid: uid,
+                    profilePic: profilePic,
+                    deletePermit: deletePermit,
+                    admin: admin,
+                    enteringTime: enteringTime)));
       },
       child: Column(
         children: [
@@ -138,12 +138,28 @@ class BoardTile extends StatelessWidget {
                       width: 50,
                     ),
                   ),
-                  Container(
-                    child: time_limit == null || time_limit == ""
-                        ? Text('시간없음')
-                        : Text(
-                            time_limit,
-                          ),
+                  Column(
+                    children: [
+                      Container(
+                        child: time_limit == null || time_limit == ""
+                            ? Text('시간없음')
+                            : Text(
+                                time_limit,
+                              ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        child: max_person == current_person
+                            ? Text(
+                                '인원 마감',
+                                style: TextStyle(
+                                    color: Colors.redAccent, fontSize: 20),
+                              )
+                            : SizedBox(),
+                      ),
+                    ],
                   ),
                 ],
               ),
