@@ -31,7 +31,7 @@ String _userName = '';
 String _email = '';
 Stream _groups;
 bool timeiscorrect = false;
-bool usingtimepicker;
+bool usingtimepicker = false;
 CollectionReference chats;
 int maxpicture = 0;
 
@@ -104,7 +104,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
             body: Form(
               key: _formKey,
               child: Container(
-                color: Color.fromARGB(250, 247, 162, 144),
+                color: Colors.white,
                 child: ListView(
                   controller: new ScrollController(),
                   padding:
@@ -114,14 +114,6 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("게시글 작성",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold)),
-                        SizedBox(
-                          height: 10,
-                        ),
                         TextFormField(
                           cursorColor: Colors.black,
                           style: TextStyle(
@@ -144,7 +136,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                         ),
                         Text("마감시간",
                             style: TextStyle(
-                                color: Colors.white,
+                                color: Colors.black,
                                 fontSize: 15.0,
                                 fontWeight: FontWeight.bold)),
                         SizedBox(
@@ -152,26 +144,6 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                         ),
                         Row(
                           children: [
-                            Checkbox(
-                              value: usingtimepicker, //처음엔 false
-                              onChanged: (value) {
-                                //value가 false -> 클릭하면 true로 변경됨(두개 중 하나니까)
-                                setState(() {
-                                  usingtimepicker = value; //true가 들어감.
-                                });
-                              },
-                            ),
-                            Text(
-                              '마감시간을 사용한다',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  letterSpacing: 1.0,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
                             Flexible(
                               flex: 2,
                               child: TextFormField(
@@ -190,6 +162,29 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 },
                               ),
                             ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              '마감시간을 사용한다',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  letterSpacing: 1.0,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Checkbox(
+                              value: usingtimepicker, //처음엔 false
+                              onChanged: (value) {
+                                //value가 false -> 클릭하면 true로 변경됨(두개 중 하나니까)
+                                setState(() {
+                                  usingtimepicker = value; //true가 들어감.
+                                });
+                              },
+                            ),
+                            // SizedBox(
+                            //   width: 30,
+                            // ),
                           ],
                         ),
                         SizedBox(
@@ -234,6 +229,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                         DropDownFormField(
                           titleText: '세부 카테고리',
                           hintText: '선택하지 않아도 됩니다.',
+                          filled: false,
                           value: _category,
                           onSaved: (value) {
                             setState(() {
@@ -296,7 +292,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                           height: 50.0,
                           child: RaisedButton(
                               elevation: 0.0,
-                              color: Colors.blueAccent[200],
+                              color: Color.fromARGB(250, 247, 162, 144),
                               // Color.fromARGB(300, 247, 162, 144),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0)),
@@ -345,8 +341,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 height: 50.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
-                                    // Color.fromARGB(300, 247, 162, 144),
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),
@@ -369,8 +364,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 height: 50.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
-                                    // Color.fromARGB(300, 247, 162, 144),
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),
