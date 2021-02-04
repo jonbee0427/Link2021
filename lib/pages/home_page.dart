@@ -49,11 +49,15 @@ class _HomePageState extends State<HomePage> {
       //         Icons.search,
       //         color: Colors.white,
       //       ),
-      //       onPressed: () {
-      //         showSearch(context: context, delegate: Search());
+      //      onPressed: () {
+      //         showSearch(                      context: context,
+      //                 delegate: Search(
+      //                     uid: _user.uid,
+      //                     userName: _userName,
+      //                     profilePic: _user.photoURL));
       //       },
-      //     )
-      //   ],
+      //      )
+      //    ],
       // ),
       body: _pageOptions[selectedPage],
       bottomNavigationBar: selectedPage == 0 ||

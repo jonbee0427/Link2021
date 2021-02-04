@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Group Chats',
+      title: 'LINK',
       theme: ThemeData(
         appBarTheme: AppBarTheme(
           color: Color.fromARGB(250, 247, 162, 144),
