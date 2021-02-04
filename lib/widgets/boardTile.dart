@@ -19,7 +19,6 @@ class BoardTile extends StatelessWidget {
   final String profilePic;
   final int deletePermit;
   final String admin;
-  final DateTime enteringTime;
 
   BoardTile(
       {this.title,
@@ -37,8 +36,7 @@ class BoardTile extends StatelessWidget {
       this.uid,
       this.profilePic,
       this.deletePermit,
-      this.admin,
-      this.enteringTime});
+      this.admin,});
 
   @override
   Widget build(BuildContext context) {
@@ -63,8 +61,7 @@ class BoardTile extends StatelessWidget {
                     uid: uid,
                     profilePic: profilePic,
                     deletePermit: deletePermit,
-                    admin: admin,
-                    enteringTime: enteringTime)));
+                    admin: admin,)));
       },
       child: Column(
         children: [

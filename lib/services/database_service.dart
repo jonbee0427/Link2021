@@ -146,7 +146,7 @@ class DatabaseService {
 
   // toggling the user group join
   Future OutChat(String groupId, String groupName, String userName, String enteringTime) async {
-    print(groupId + ' ' + groupName);
+    print(groupId + ' ' + groupName + ' '+ enteringTime);
 
     DocumentReference userDocRef = userCollection.doc(uid);
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
@@ -157,9 +157,19 @@ class DatabaseService {
 
     int membersNum = await groupDocSnapshot.data()['membersNum'];
     List<dynamic> groups = await userDocSnapshot.data()['groups'];
-    if (groups.contains(groupId + '_' + groupName+'`'+enteringTime)) {
+    if(enteringTime == ""){
+    int index = 0;
+    for(int i = 0; i < groups.length; i++){
+      if(groups[i].contains(groupId+'_'+groupName)){
+        groups.removeAt(i);
+      }
+    }
+
+    print("after");
+    print(groups);
+
       await userDocRef.update({
-        'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
+        'groups': groups
       });
 
       await groupDocRef.update({
@@ -179,9 +189,34 @@ class DatabaseService {
           }
         });
         await groupDocRef.delete();
+      }}else{
+      if (groups.contains(groupId + '_' + groupName+'`'+enteringTime)) {
+        await userDocRef.update({
+          'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
+        });
+
+        await groupDocRef.update({
+          'members': FieldValue.arrayRemove([uid + '_' + userName]),
+          'membersNum': FieldValue.increment(-1)
+        });
+        print('currentNum: ' + membersNum.toString());
+        if (membersNum <= 1) {
+          desertRef.ref().child(groupId + '/').listAll().then((value) {
+            value.items.forEach((element) {
+              element.delete();
+            });
+          });
+          await groupDocRef.collection('messages').get().then((snapshot) {
+            for (DocumentSnapshot ds in snapshot.docs) {
+              ds.reference.delete();
+            }
+          });
+          await groupDocRef.delete();
+        }
+      }else{
+        Fluttertoast.showToast(msg: '속해있는 채팅방이 아닙니다!');
       }
-    }else{
-      Fluttertoast.showToast(msg: '속해있는 채팅방이 아닙니다!');
+
     }
 
   }

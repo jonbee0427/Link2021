@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -96,10 +98,10 @@ class _BoardPageState extends State<BoardPage> {
 
 
   @override
-  void initState() {
+  void initState()  {
     // TODO: implement initState
     super.initState();
-    initialize();
+     initialize();
   }
 
   initialize ()async{
@@ -108,9 +110,9 @@ class _BoardPageState extends State<BoardPage> {
       myGroup = value.get('groups');
     });
 
-    myGroup.forEach((element) {
+    myGroup.forEach((element) async {
       if(element.contains(widget.groupId)){
-        inEnteringTime = _destructureEnteringTime(element);
+        inEnteringTime =  _destructureEnteringTime(element);
         print('Entering TIme : ' + inEnteringTime);
       }
     });
@@ -118,10 +120,14 @@ class _BoardPageState extends State<BoardPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(context);
-    print(widget.current_person);
-    print(widget.deletePermit);
+    print(widget.title + "  "  +   widget.category + "  " + widget.subcategory);
+    print(widget.time_limit + "  "  +   widget.body + "  " + widget.create_time.toString());//create_time null
+    print(widget.max_person.toString() + "  "  +   widget.current_person.toString() + "  " + widget.userName);
+    print(widget.userName + "  "  +   widget.groupId + "  " + widget.groupName);
+    print(widget.uid + "  "  +   widget.profilePic + "  " + widget.deletePermit.toString());
+    print(widget.admin + "  "  +   widget.enteringTime.toString() );//enteringTime null
 
+  //  print('Entering TIme : ' + convertDateFromString(widget.enteringTime.toString()).toString());
 
     // print_test();
     return Scaffold(
@@ -136,6 +142,7 @@ class _BoardPageState extends State<BoardPage> {
             onPressed: () async {
               await DatabaseService(uid: widget.uid)
                   .JoinChat(widget.groupId, widget.groupName, widget.userName);
+              await initialize();
 
               Navigator.push(
                   context,
@@ -146,7 +153,7 @@ class _BoardPageState extends State<BoardPage> {
                             groupName: widget.groupName,
                             groupMembers: widget.groupMembers,
                             profilePic: widget.profilePic,
-                            enteringTime: convertDateFromString(inEnteringTime),
+                            enteringTime:  convertDateFromString(inEnteringTime),
                           )));
             },
           )
@@ -320,18 +327,22 @@ class _BoardPageState extends State<BoardPage> {
                                       String userId = _destructureId(element);
                                       String userName =
                                           _destructureName(element);
+                                      await initialize();
+                                      print('삭제예정 ID : ' + userId);
                                       await DatabaseService(uid: userId)
                                           .OutChat(
                                               widget.groupId,
                                               widget.groupName,
                                               userName,
-                                              widget.enteringTime.toString());
+                                              "");
                                     });
                                   });
                                   DatabaseService(uid: widget.uid).DeleteChat(
                                       widget.groupId,
                                       widget.groupName,
                                       widget.userName);
+                                  Navigator.pop(context);
+
                                 }),
                           )
                         : SizedBox(
