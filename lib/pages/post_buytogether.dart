@@ -134,14 +134,14 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                             });
                           },
                         ),
-                        Text("마감시간",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold)),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        // Text("마감시간",
+                        //     style: TextStyle(
+                        //         color: Colors.black,
+                        //         fontSize: 15.0,
+                        //         fontWeight: FontWeight.bold)),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
                         Row(
                           children: [
                             Flexible(
@@ -175,6 +175,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                             ),
                             Checkbox(
                               value: usingtimepicker, //처음엔 false
+                              activeColor: Color.fromARGB(250, 247, 162, 144),
                               onChanged: (value) {
                                 //value가 false -> 클릭하면 true로 변경됨(두개 중 하나니까)
                                 setState(() {
