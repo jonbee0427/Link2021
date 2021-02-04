@@ -19,49 +19,46 @@ class BoardTile extends StatelessWidget {
   final int deletePermit;
   final String admin;
 
-  BoardTile({
-    this.title,
-    this.category,
-    this.time_limit,
-    this.body,
-    this.create_time,
-    this.max_person,
-    this.current_person,
-    this.groupId,
-    this.groupMembers,
-    this.groupName,
-    this.userName,
-    this.uid,
-    this.profilePic,
-    this.deletePermit,
-    this.admin
-  });
+  BoardTile(
+      {this.title,
+      this.category,
+      this.time_limit,
+      this.body,
+      this.create_time,
+      this.max_person,
+      this.current_person,
+      this.groupId,
+      this.groupMembers,
+      this.groupName,
+      this.userName,
+      this.uid,
+      this.profilePic,
+      this.deletePermit,
+      this.admin});
 
   @override
   Widget build(BuildContext context) {
     //print(groupId);
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => BoardPage(
-                      title: title,
-                      category: category,
-                      time_limit: time_limit,
-                      body: body,
-                      create_time: create_time,
-                      max_person: max_person,
-                      current_person: current_person,
-                      groupId: groupId,
-                      groupMembers: groupMembers,
-                      groupName: groupName,
-                      userName: userName,
-                      uid: uid,
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => BoardPage(
+                  title: title,
+                  category: category,
+                  time_limit: time_limit,
+                  body: body,
+                  create_time: create_time,
+                  max_person: max_person,
+                  current_person: current_person,
+                  groupId: groupId,
+                  groupMembers: groupMembers,
+                  groupName: groupName,
+                  userName: userName,
+                  uid: uid,
                   profilePic: profilePic,
                   deletePermit: deletePermit,
                   admin: admin,
-                    )));
+                )));
       },
       child: Column(
         children: [
@@ -92,7 +89,8 @@ class BoardTile extends StatelessWidget {
                                               0.6),
                                   child: Text(
                                     title,
-                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
