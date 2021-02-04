@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
       //   ],
       // ),
       body: _pageOptions[selectedPage],
+      /*
       bottomNavigationBar: ConvexAppBar(
         backgroundColor: const Color.fromARGB(250, 247, 162, 144),
         items: [
@@ -74,7 +75,7 @@ class _HomePageState extends State<HomePage> {
             selectedPage = i;
           });
         },
-      ),
+      ),*/
     );
   }
 }

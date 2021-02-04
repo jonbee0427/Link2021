@@ -59,19 +59,32 @@ class BoardPage extends StatefulWidget {
 }
 
 class _BoardPageState extends State<BoardPage> {
+  List<dynamic> imageName;
+  User user;
   Color priority = Color.fromARGB(250, 247, 162, 144);
+  var downloadUrl;
 
-  // void print_test() {
-  //   print('title : ' + widget.title);
-  //   print('category : ' + widget.category);
-  //   print('time limit : ' + widget.time_limit);
-  //   print('body : ' + widget.body);
-  //   //print('create time : ' + widget.create_time);
-  //   print('max person : ' + widget.max_person.toString());
-  //   print('group id : ' + widget.groupId);
-  //   print('group name : ' + widget.groupName);
-  //   print('user name : ' + widget.userName);
-  // }
+  @override
+  initState() {
+    super.initState();
+    initalizeUser();
+  }
+
+  initalizeUser() async {
+    user = await FirebaseAuth.instance.currentUser;
+  }
+
+  Future getImage(String groupname, String admin) async {
+    final _storage = FirebaseStorage.instance;
+    int index = 0;
+    await _storage.ref().child('$groupname$admin/').listAll().then((value) {
+      value.items.forEach((element) {
+        print('dsfsfsdfsdf' + element.toString());
+        imageName[index] = element.toString();
+      });
+    });
+  }
+
   String _destructureId(String res) {
     // print(res.substring(0, res.indexOf('_')));
     return res.substring(0, res.indexOf('_'));
@@ -87,7 +100,7 @@ class _BoardPageState extends State<BoardPage> {
     print(context);
     print(widget.current_person);
     print(widget.deletePermit);
-
+    getImage(widget.groupName, widget.admin);
     // print_test();
     return Scaffold(
       appBar: AppBar(
@@ -221,9 +234,18 @@ class _BoardPageState extends State<BoardPage> {
               ),
             ),
           ]),
+          /*
           SizedBox(
             height: 10,
-          ),
+            child: Stack(
+              children: [
+                CircleAvatar(
+                  backgroundImage: NetworkImage(downloadUrl),
+                  backgroundColor: Colors.white,
+                ),
+              ],
+            ),
+          ),*/
           widget.admin == widget.userName
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,

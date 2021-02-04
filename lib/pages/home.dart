@@ -1,3 +1,4 @@
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -27,6 +28,7 @@ class _HomeState extends State<Home> {
   Color priority = Color.fromARGB(250, 247, 162, 144);
   CollectionReference chats;
   Stream recent;
+  int selectedPage = 0;
 
   // initState
   @override
@@ -72,18 +74,16 @@ class _HomeState extends State<Home> {
   _getRecentStream(String groupId) async {
     recent = chats.doc(groupId).snapshots();
   }
+
   String _destructureEnteringTime(String res) {
     // print(res.substring(res.indexOf('_') + 1));
     // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
     return res.substring(res.indexOf('`') + 1);
   }
 
-  DateTime convertDateFromString(String strDate){
+  DateTime convertDateFromString(String strDate) {
     return DateTime.parse(strDate);
-
   }
-
-
 
   Widget getGroupMembers(String groupId) {
     _getRecentStream(groupId);
@@ -225,7 +225,7 @@ class _HomeState extends State<Home> {
                   profilePic: _user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
                   admin: snapshot.data.docs[reqIndex]['admin'],
-                   // enteringTime : convertDateFromString(_destructureEnteringTime(snapshot.data['groups'][reqIndex]))
+                  // enteringTime : convertDateFromString(_destructureEnteringTime(snapshot.data['groups'][reqIndex]))
                 );
               },
               separatorBuilder: (context, index) {
