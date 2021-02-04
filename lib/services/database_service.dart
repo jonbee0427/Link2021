@@ -107,7 +107,7 @@ class DatabaseService {
     print(membersNum);
     //List<dynamic> groups = await userDocSnapshot.data()['groups'];
     bool isInit = false;
-
+    String now = DateTime.now().toString();
     //int membersNum = await groupDocSnapshot.data()['membersNum'];
     try {
       print('Hello');
@@ -121,7 +121,7 @@ class DatabaseService {
         Fluttertoast.showToast(msg: '이미 들어가있습니다');
       }else{
         await userDocRef.update({
-          'groups': FieldValue.arrayUnion([groupId + '_' + groupName+ '`' + DateTime.now().toString()])
+          'groups': FieldValue.arrayUnion([groupId + '_' + groupName+ '`' +now])
         });
 
         await groupDocRef.update({
@@ -133,7 +133,7 @@ class DatabaseService {
     } catch (e) {
       print('Error Here');
       await userDocRef.update({
-        'groups': FieldValue.arrayUnion([groupId + '_' + groupName+'`'+DateTime.now().toString()])
+        'groups': FieldValue.arrayUnion([groupId + '_' + groupName+'`'+now])
       });
 
       print(e.toString());

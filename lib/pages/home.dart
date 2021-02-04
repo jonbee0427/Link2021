@@ -141,6 +141,7 @@ class _HomeState extends State<Home> {
                   profilePic: _user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
                   admin: snapshot.data.docs[reqIndex]['admin'],
+                  //enteringTime: _destructureEnteringTime(snapshot.data.do),
                 );
               },
               separatorBuilder: (context, index) {

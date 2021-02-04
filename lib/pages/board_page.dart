@@ -60,6 +60,9 @@ class BoardPage extends StatefulWidget {
 
 class _BoardPageState extends State<BoardPage> {
   Color priority = Color.fromARGB(250, 247, 162, 144);
+  DocumentReference myDoc;
+  List<dynamic> myGroup;
+  String inEnteringTime;
 
   // void print_test() {
   //   print('title : ' + widget.title);
@@ -82,11 +85,43 @@ class _BoardPageState extends State<BoardPage> {
     return res.substring(res.indexOf('_') + 1);
   }
 
+  String _destructureEnteringTime(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+     print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('`') + 1);
+  }
+  DateTime convertDateFromString(String strDate){
+    return DateTime.parse(strDate);
+  }
+
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    initialize();
+  }
+
+  initialize ()async{
+    myDoc = await FirebaseFirestore.instance.collection('MyUsers').doc(widget.uid);
+    await myDoc.get().then((value){
+      myGroup = value.get('groups');
+    });
+
+    myGroup.forEach((element) {
+      if(element.contains(widget.groupId)){
+        inEnteringTime = _destructureEnteringTime(element);
+        print('Entering TIme : ' + inEnteringTime);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     print(context);
     print(widget.current_person);
     print(widget.deletePermit);
+
 
     // print_test();
     return Scaffold(
@@ -111,7 +146,7 @@ class _BoardPageState extends State<BoardPage> {
                             groupName: widget.groupName,
                             groupMembers: widget.groupMembers,
                             profilePic: widget.profilePic,
-                            enteringTime: widget.enteringTime,
+                            enteringTime: convertDateFromString(inEnteringTime),
                           )));
             },
           )
