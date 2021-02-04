@@ -190,9 +190,6 @@ class Search extends SearchDelegate<String> {
                                           profilePic: profilePic,
                                           deletePermit: a['deletePermit'],
                                           admin: a['admin'],
-
-                                          //userName: a['userName'],
-                                          // uid: a['uid'],
                                         )
                                     //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
                                     ));
