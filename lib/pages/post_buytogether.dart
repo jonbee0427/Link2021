@@ -390,15 +390,17 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                 .then((val) {
                                               DatabaseService(uid: _user.uid)
                                                   .createGroup(
-                                                      val,
-                                                      _groupName,
-                                                      title,
-                                                      body,
-                                                      datetime,
-                                                      max_person,
-                                                      _category,
-                                                      category,
-                                                      create_time_s);
+                                                val,
+                                                _groupName,
+                                                title,
+                                                body,
+                                                datetime,
+                                                max_person,
+                                                _category,
+                                                category,
+                                                create_time_s,
+                                                path,
+                                              );
                                             });
                                             for (String p in path) {
                                               uploadFile(

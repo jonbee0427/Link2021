@@ -72,23 +72,6 @@ class _PostStudyTogether extends State<PostStudyTogether> {
     }
   }
 
-  Future uploadFile(String path, String groupname, int createtime) async {
-    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-    Reference reference = FirebaseStorage.instance
-        .ref()
-        .child('$groupname$createtime/' + fileName);
-    UploadTask uploadTask = reference.putFile(File(path));
-    TaskSnapshot taskSnapshot = await uploadTask;
-    taskSnapshot.ref.getDownloadURL().then((downloadURL) {
-      setState(() {
-        //_sendMessage('image', path: downloadURL);
-      });
-    }, onError: (err) {
-      Toast.show('the file is not a image.', context,
-          duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     DateTime _selectedDateTime = DateTime.now();
@@ -394,13 +377,10 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                                                       max_person,
                                                       _category,
                                                       category,
-                                                      create_time_s);
+                                                      create_time_s,
+                                                      path);
                                             });
-                                            for (String p in path) {
-                                              uploadFile(
-                                                  p, _groupName, create_time);
-                                              print(p);
-                                            }
+
                                             Navigator.of(context).pop();
 
                                             // } else {
