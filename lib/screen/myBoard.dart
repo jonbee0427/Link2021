@@ -97,6 +97,7 @@ class _myBoardState extends State<myBoard> {
                   current_person: snapshot.data.docs[reqIndex]['membersNum'],
                   profilePic: user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
+                  admin: snapshot.data.docs[reqIndex]['admin'],
                 );
               },
               separatorBuilder: (context, index) {

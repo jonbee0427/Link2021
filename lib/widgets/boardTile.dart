@@ -151,7 +151,7 @@ class BoardTile extends StatelessWidget {
                         height: 10,
                       ),
                       Container(
-                        child: max_person == current_person
+                        child: max_person <= current_person
                             ? Text(
                                 '인원 마감',
                                 style: TextStyle(

@@ -225,6 +225,11 @@ class DatabaseService {
         element.delete();
       });
     });
+    desertRef.ref().child(groupId + '/board/').listAll().then((value) {
+      value.items.forEach((element) {
+        element.delete();
+      });
+    });
     await groupDocRef.collection('messages').get().then((snapshot) {
       for (DocumentSnapshot ds in snapshot.docs) {
         ds.reference.delete();
