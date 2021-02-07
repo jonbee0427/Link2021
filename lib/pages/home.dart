@@ -72,18 +72,16 @@ class _HomeState extends State<Home> {
   _getRecentStream(String groupId) async {
     recent = chats.doc(groupId).snapshots();
   }
+
   String _destructureEnteringTime(String res) {
     // print(res.substring(res.indexOf('_') + 1));
     // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
     return res.substring(res.indexOf('`') + 1);
   }
 
-  DateTime convertDateFromString(String strDate){
+  DateTime convertDateFromString(String strDate) {
     return DateTime.parse(strDate);
-
   }
-
-
 
   Widget getGroupMembers(String groupId) {
     _getRecentStream(groupId);
@@ -227,7 +225,7 @@ class _HomeState extends State<Home> {
                   profilePic: _user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
                   admin: snapshot.data.docs[reqIndex]['admin'],
-                   // enteringTime : convertDateFromString(_destructureEnteringTime(snapshot.data['groups'][reqIndex]))
+                  // enteringTime : convertDateFromString(_destructureEnteringTime(snapshot.data['groups'][reqIndex]))
                 );
               },
               separatorBuilder: (context, index) {
@@ -245,92 +243,90 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: DefaultTabController(
-        length: 3,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("LINK"),
-            centerTitle: true,
-            backgroundColor: const Color.fromARGB(250, 247, 162, 144),
-            elevation: 10.0,
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(
-                  Icons.search,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  showSearch(
-                      context: context,
-                      delegate: Search(
-                          uid: _user.uid,
-                          userName: _userName,
-                          profilePic: _user.photoURL));
-                },
+    return DefaultTabController(
+      length: 3,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("LINK"),
+          centerTitle: true,
+          backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+          elevation: 10.0,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.search,
+                color: Colors.white,
               ),
+              onPressed: () {
+                showSearch(
+                    context: context,
+                    delegate: Search(
+                        uid: _user.uid,
+                        userName: _userName,
+                        profilePic: _user.photoURL));
+              },
+            ),
+          ],
+          bottom: TabBar(
+            indicatorColor: Colors.white,
+            // fromARGB(250, 247, 162, 144),
+            labelColor: Colors.white,
+            // Color.fromARGB(250, 247, 162, 144),
+            tabs: [
+              Tab(icon: Icon(Icons.local_grocery_store_outlined)),
+              Tab(icon: Icon(Icons.school_outlined)),
+              Tab(icon: Icon(Icons.directions_bike_outlined)),
             ],
-            bottom: TabBar(
-              indicatorColor: Colors.white,
-              // fromARGB(250, 247, 162, 144),
-              labelColor: Colors.white,
-              // Color.fromARGB(250, 247, 162, 144),
-              tabs: [
-                Tab(icon: Icon(Icons.local_grocery_store_outlined)),
-                Tab(icon: Icon(Icons.school_outlined)),
-                Tab(icon: Icon(Icons.directions_bike_outlined)),
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            //group purchase
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                ),
+                Container(
+                  child: Expanded(
+                    child: getBoard(),
+                  ),
+                ),
               ],
             ),
-          ),
-          body: TabBarView(
-            children: [
-              //group purchase
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                    ),
-                  ),
-                  Container(
-                    child: Expanded(
-                      child: getBoard(),
-                    ),
-                  ),
-                ],
-              ),
 
-              //study
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 8),
+            //study
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                ),
+                Container(
+                  child: Expanded(
+                    child: getStudy(),
                   ),
-                  Container(
-                    child: Expanded(
-                      child: getStudy(),
-                    ),
-                  ),
-                ],
-              ),
+                ),
+              ],
+            ),
 
-              //hobby
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 8),
+            //hobby
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                ),
+                Container(
+                  child: Expanded(
+                    child: getHobby(),
                   ),
-                  Container(
-                    child: Expanded(
-                      child: getHobby(),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

@@ -180,16 +180,16 @@ class Search extends SearchDelegate<String> {
                                           body: a['body'],
                                           create_time: a['create_time'],
                                           max_person: a['max_person'],
-                                          current_person: a['current_person'],
+                                          current_person: a['membersNum'],
                                           groupId: a['groupId'],
-                                          groupName: a['groupName'],
-                                          profilePic: profilePic,
-                                          uid: uid,
                                           groupMembers:
                                               getGroupMembers(a['groupId']),
+                                          groupName: a['groupName'],
                                           userName: userName,
-                                          //userName: a['userName'],
-                                          // uid: a['uid'],
+                                          uid: uid,
+                                          profilePic: profilePic,
+                                          deletePermit: a['deletePermit'],
+                                          admin: a['admin'],
                                         )
                                     //게시물 CRUD 상세 페이지가 구현되면 그것으로 대치해야 됨
                                     ));

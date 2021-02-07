@@ -89,13 +89,13 @@ class _BoardPageState extends State<BoardPage> {
 
   String _destructureEnteringTime(String res) {
     // print(res.substring(res.indexOf('_') + 1));
-     print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
     return res.substring(res.indexOf('`') + 1);
   }
-  DateTime convertDateFromString(String strDate){
+
+  DateTime convertDateFromString(String strDate) {
     return DateTime.parse(strDate);
   }
-
 
   @override
   void initState()  {
@@ -104,15 +104,22 @@ class _BoardPageState extends State<BoardPage> {
      initialize();
   }
 
-  initialize ()async{
-    myDoc = await FirebaseFirestore.instance.collection('MyUsers').doc(widget.uid);
-    await myDoc.get().then((value){
+  initialize() async {
+    myDoc =
+        await FirebaseFirestore.instance.collection('MyUsers').doc(widget.uid);
+    await myDoc.get().then((value) {
       myGroup = value.get('groups');
     });
 
+<<<<<<< HEAD
     myGroup.forEach((element) async {
       if(element.contains(widget.groupId)){
         inEnteringTime =  _destructureEnteringTime(element);
+=======
+    myGroup.forEach((element) {
+      if (element.contains(widget.groupId)) {
+        inEnteringTime = _destructureEnteringTime(element);
+>>>>>>> JH
         print('Entering TIme : ' + inEnteringTime);
       }
     });
@@ -127,8 +134,11 @@ class _BoardPageState extends State<BoardPage> {
     print(widget.uid + "  "  +   widget.profilePic + "  " + widget.deletePermit.toString());
     print(widget.admin + "  "  +   widget.enteringTime.toString() );//enteringTime null
 
+<<<<<<< HEAD
   //  print('Entering TIme : ' + convertDateFromString(widget.enteringTime.toString()).toString());
 
+=======
+>>>>>>> JH
     // print_test();
     return Scaffold(
       appBar: AppBar(
@@ -366,6 +376,7 @@ class _BoardPageState extends State<BoardPage> {
               : Row(),
         ],
       ),
+      bottomNavigationBar: null,
     );
   }
 }
