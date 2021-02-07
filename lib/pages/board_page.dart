@@ -302,7 +302,7 @@ class _BoardPageState extends State<BoardPage> {
                     SizedBox(
                       width: 20,
                     ),
-                    widget.current_person - 1 == widget.deletePermit
+                    widget.current_person - 1 == widget.deletePermit || widget.category != '공동 구매'
                         ? SizedBox(
                             //width: double.infinity,
                             height: 50.0,

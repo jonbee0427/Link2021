@@ -40,6 +40,12 @@ class BoardTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+     print(title + "  "  +   category + "  " + subcategory);
+     print(time_limit + "  "  +   body + "  " + create_time.toString());//create_time null
+     print(max_person.toString() + "  "  +   current_person.toString() + "  " + userName);
+     print(userName + "  "  +   groupId + "  " + groupName);
+     print(uid + "  "  +   profilePic + "  " + deletePermit.toString());
+     print(admin + "  "   );//enteringTime null
     return GestureDetector(
       onTap: () {
         Navigator.push(

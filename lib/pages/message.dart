@@ -122,6 +122,7 @@ class _ChatState extends State<Chat> {
     );
   }
 
+
   Widget getRecentTime(String groupId) {
     _getRecentStream(groupId);
     final form = new DateFormat('Md').add_Hm();

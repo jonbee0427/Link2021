@@ -53,6 +53,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   String category = '공동 구매';
   String subcategory;
   final AuthService _auth = AuthService();
+  String groupId;
 
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
@@ -392,8 +393,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                               //datetime = '없음';
                                               await HelperFunctions
                                                       .getUserNameSharedPreference()
-                                                  .then((val) {
-                                                DatabaseService(uid: _user.uid)
+                                                  .then((val) async{
+                                              await DatabaseService(uid: _user.uid)
                                                     .createGroup(
                                                         val,
                                                         _groupName,
@@ -404,6 +405,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                         subcategory,
                                                         category,
                                                         create_time_s);
+
+
                                               });
                                               for (String p in path) {
                                                 uploadFile(

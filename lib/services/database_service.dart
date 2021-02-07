@@ -23,7 +23,13 @@ class DatabaseService {
       'account': ''
     });
   }
+  String _destructureName(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('_') + 1,res.indexOf('`'));
+    //return res.substring(res.indexOf('_') + 1);
 
+  }
   String _destructureEnteringTime(String res) {
     // print(res.substring(res.indexOf('_') + 1));
     // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
@@ -35,9 +41,8 @@ class DatabaseService {
       String groupId,
       )async{
     DocumentReference membersDocRec = await FirebaseFirestore.instance.collection('MyUsers').doc(uid);
-    DocumentReference userDocRef = userCollection.doc(uid);
-    DocumentSnapshot userDocSnapshot = await userDocRef.get();
-    List<dynamic> groups = await userDocSnapshot.data()['groups'];
+    DocumentSnapshot memberDocSnapshot = await membersDocRec.get();
+    List<dynamic> groups = await memberDocSnapshot.data()['groups'];
     int index = 0;
     groups.forEach((element) {
       if(element.contains(groupId)){
@@ -145,7 +150,11 @@ class DatabaseService {
   }
 
   // toggling the user group join
-  Future OutChat(String groupId, String groupName, String userName, String enteringTime) async {
+  Future OutChat(String groupId, String groupName, String userName, String enteringTime, {bool isAdmin}) async {
+    print('isAdmin : ' + isAdmin.toString());
+
+    print('OutChat 정보');
+    print(uid + "_" + userName);
     print(groupId + ' ' + groupName + ' '+ enteringTime);
 
     DocumentReference userDocRef = userCollection.doc(uid);
@@ -157,7 +166,8 @@ class DatabaseService {
 
     int membersNum = await groupDocSnapshot.data()['membersNum'];
     List<dynamic> groups = await userDocSnapshot.data()['groups'];
-    if(enteringTime == ""){
+    List<dynamic> groupsMembers = await groupDocSnapshot.data()['members'];
+    if(enteringTime == ""){//BoardPage에서 호출되는 OutChat.
     int index = 0;
     for(int i = 0; i < groups.length; i++){
       if(groups[i].contains(groupId+'_'+groupName)){
@@ -189,17 +199,8 @@ class DatabaseService {
           }
         });
         await groupDocRef.delete();
-      }}else{
+      }}else{//ChatPage에서 호출되는 OutChat.
       if (groups.contains(groupId + '_' + groupName+'`'+enteringTime)) {
-        await userDocRef.update({
-          'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
-        });
-
-        await groupDocRef.update({
-          'members': FieldValue.arrayRemove([uid + '_' + userName]),
-          'membersNum': FieldValue.increment(-1)
-        });
-        print('currentNum: ' + membersNum.toString());
         if (membersNum <= 1) {
           desertRef.ref().child(groupId + '/').listAll().then((value) {
             value.items.forEach((element) {
@@ -212,6 +213,46 @@ class DatabaseService {
             }
           });
           await groupDocRef.delete();
+
+          await userDocRef.update({
+            'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
+          });
+
+          await groupDocRef.update({
+            'members': FieldValue.arrayRemove([uid + '_' + userName]),
+            'membersNum': FieldValue.increment(-1)
+          });
+        }
+        else{
+          if(isAdmin == true){
+            print('이부분이 맞긴 한데...? ');
+            print('현재 uid : ' + uid + 'name : ' + userName);
+            groupsMembers.removeAt(0);
+            print('지금부터 멤버 출력');
+            print(groupsMembers);
+            await userDocRef.update({
+              'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
+            });
+
+            await groupDocRef.update({
+              'members': FieldValue.arrayRemove([uid + '_' + userName]),
+              'membersNum': FieldValue.increment(-1),
+              'admin' : groupsMembers[0].substring(groupsMembers[0].indexOf('_') + 1)
+            });
+            print('currentNum: ' + membersNum.toString());
+          }
+          else{
+            await userDocRef.update({
+              'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
+            });
+
+            await groupDocRef.update({
+              'members': FieldValue.arrayRemove([uid + '_' + userName]),
+              'membersNum': FieldValue.increment(-1)
+            });
+            print('currentNum: ' + membersNum.toString());
+          }
+
         }
       }else{
         Fluttertoast.showToast(msg: '속해있는 채팅방이 아닙니다!');

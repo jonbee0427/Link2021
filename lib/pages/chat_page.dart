@@ -30,7 +30,8 @@ class ChatPage extends StatefulWidget {
       this.groupName,
       this.groupMembers,
       this.profilePic,
-      this.enteringTime});
+      this.enteringTime,
+      });
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -38,6 +39,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
 
+  String category;
   User _user;
   String _userName;
   //String profilePic;
@@ -213,8 +215,16 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _getCurrentUserNameAndUid();
+    _getCategory();
   }
 
+  _getCategory()async{
+    await FirebaseFirestore.instance.collection('groups').doc(widget.groupId).get().then((value){
+      category = value.data()['category'];
+    });
+
+    print("groups Category : " + category);
+  }
   _getCurrentUserNameAndUid() async {
     await HelperFunctions.getUserNameSharedPreference().then((value) {
       _userName = value;
@@ -335,7 +345,8 @@ class _ChatPageState extends State<ChatPage> {
                                       widget.groupId,
                                       widget.groupName,
                                       widget.userName,
-                                      widget.enteringTime.toString()
+                                      widget.enteringTime.toString(),
+                                   isAdmin: admin == _userName
                                   );
                                   Navigator.pop(context);
                                   Navigator.pop(context);
@@ -348,7 +359,7 @@ class _ChatPageState extends State<ChatPage> {
                         });
                   },
                 ),
-                    admin == _userName ?
+                    admin == _userName || category != '공동 구매'?
                         Container():
                 Container(
                   child: Row(
