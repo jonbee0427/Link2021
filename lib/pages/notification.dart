@@ -25,13 +25,32 @@ class Alarm extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Center(
-              child: Text(
-            "주원 메롱 Page",
-            style: TextStyle(fontSize: 20),
-          ))
+          defaultScreen(),
         ],
       ),
     );
   }
+}
+
+//알림페이지 초기 화면
+Container defaultScreen() {
+  return Container(
+    alignment: Alignment.center,
+    child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(
+          Icons.notifications,
+          size: 100,
+          color: const Color.fromARGB(110, 247, 162, 144),
+        ),
+        Text(
+          "준비중",
+          style:
+              TextStyle(fontSize: 20, color: const Color.fromARGB(75, 0, 0, 0)),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    ),
+  );
 }
