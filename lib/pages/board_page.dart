@@ -16,6 +16,7 @@ import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:toast/toast.dart';
 
 import 'EditPage.dart';
+import 'fullImageScreen.dart';
 
 class BoardPage extends StatefulWidget {
   final String title;
@@ -325,34 +326,53 @@ class _BoardPageState extends State<BoardPage> {
           ),
           imageList.length != 0
               ? SizedBox(
-                  child: imageList.length != 0
-                      ? Container(
-                          width: 400,
-                          height: 350,
-                          child: imageList.length != 0
-                              ? Swiper(
-                                  key: UniqueKey(),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Image.network(imageList[index]);
-                                  },
-                                  itemCount: imageList.length,
-                                  autoplayDisableOnInteraction: true,
-                                  scrollDirection: Axis.horizontal,
-                                  pagination: new SwiperPagination(
-                                    alignment: Alignment.bottomCenter,
-                                    builder: new DotSwiperPaginationBuilder(
-                                        color: Colors.grey,
-                                        activeColor: priority),
-                                  ),
-                                  control: new SwiperControl(
-                                    color: priority,
-                                  ),
-                                )
-                              : null,
-                        )
-                      : null,
+                  height: 200,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: imageList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FullScreenPage(
+                                        Url: imageList[index],
+                                      )));
+                        },
+                        child: Container(
+                          height: 200,
+                          width: 200,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                              image: DecorationImage(
+                                  image: NetworkImage(imageList[index]))),
+                        ),
+                      );
+                    },
+                  ),
                 )
+              // ? SizedBox(
+              //     child: imageList.length != 0
+              //         ? Container(
+              //             width: 400,
+              //             height: 350,
+              //             child: imageList.length != 0
+              //                 ? Swiper(
+              //                     key: UniqueKey(),
+              //                     itemBuilder:
+              //                         (BuildContext context, int index) {
+              //                       return Image.network(imageList[index]);
+              //                     },
+              //                     itemCount: imageList.length,
+              //                     autoplayDisableOnInteraction: true,
+              //                     pagination: SwiperPagination(),
+              //                     control: SwiperControl(),
+              //                   )
+              //                 : null,
+              //           )
+              //         : null,
+              //   )
               : Container(),
           SizedBox(
             height: 20,
