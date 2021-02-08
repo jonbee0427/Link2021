@@ -97,21 +97,7 @@ class _ChatState extends State<Chat> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 15,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.04,
-                      decoration: BoxDecoration(
-                        color: Colors.pink,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '10',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  )
+
                 ]),
               );
             }
