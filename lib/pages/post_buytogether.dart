@@ -53,6 +53,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   String _category;
   String category = '공동 구매';
   final AuthService _auth = AuthService();
+  String groupId;
 
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();

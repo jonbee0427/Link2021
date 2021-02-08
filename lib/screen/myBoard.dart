@@ -92,12 +92,14 @@ class _myBoardState extends State<myBoard> {
                   body: snapshot.data.docs[reqIndex]['body'],
                   time_limit: snapshot.data.docs[reqIndex]['time_limit'],
                   category: snapshot.data.docs[reqIndex]['category'],
+                  subcategory: snapshot.data.docs[reqIndex]['subcategory'],
                   uid: user.uid,
                   max_person: snapshot.data.docs[reqIndex]['max_person'],
                   current_person: snapshot.data.docs[reqIndex]['membersNum'],
                   profilePic: user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
                   admin: snapshot.data.docs[reqIndex]['admin'],
+                  create_time: snapshot.data.docs[reqIndex]['create_time'],
                 );
               },
               separatorBuilder: (context, index) {

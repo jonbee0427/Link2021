@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -109,7 +111,7 @@ class _BoardPageState extends State<BoardPage> {
       myGroup = value.get('groups');
     });
 
-    myGroup.forEach((element) {
+    myGroup.forEach((element) async {
       if (element.contains(widget.groupId)) {
         inEnteringTime = _destructureEnteringTime(element);
         print('Entering TIme : ' + inEnteringTime);
@@ -119,6 +121,26 @@ class _BoardPageState extends State<BoardPage> {
 
   @override
   Widget build(BuildContext context) {
+    // print(widget.title + "  " + widget.category + "  " + widget.subcategory);
+    // print(widget.time_limit +
+    //     "  " +
+    //     widget.body +
+    //     "  " +
+    //     widget.create_time.toString()); //create_time null
+    // print(widget.max_person.toString() +
+    //     "  " +
+    //     widget.current_person.toString() +
+    //     "  " +
+    //     widget.userName);
+    // print(widget.userName + "  " + widget.groupId + "  " + widget.groupName);
+    // print(widget.uid +
+    //     "  " +
+    //     widget.profilePic +
+    //     "  " +
+    //     widget.deletePermit.toString());
+    // print(widget.admin +
+    //     "  " +
+    //     widget.enteringTime.toString()); //enteringTime null
     print(context);
     print(widget.current_person);
     print(widget.deletePermit);
@@ -137,6 +159,7 @@ class _BoardPageState extends State<BoardPage> {
               if (widget.max_person != widget.current_person) {
                 await DatabaseService(uid: widget.uid).JoinChat(
                     widget.groupId, widget.groupName, widget.userName);
+                await initialize();
 
                 Navigator.push(
                     context,
@@ -149,6 +172,8 @@ class _BoardPageState extends State<BoardPage> {
                               profilePic: widget.profilePic,
                               enteringTime:
                                   convertDateFromString(inEnteringTime),
+                              admin: widget.admin,
+                              category: widget.category,
                             )));
               } else {
                 Toast.show('최대 인원이 되어 더 이상 입장할 수 없습니다.', context,
@@ -301,7 +326,8 @@ class _BoardPageState extends State<BoardPage> {
                     SizedBox(
                       width: 20,
                     ),
-                    widget.current_person - 1 == widget.deletePermit
+                    widget.current_person - 1 == widget.deletePermit ||
+                            widget.category != '공동 구매'
                         ? SizedBox(
                             //width: double.infinity,
                             height: 50.0,
@@ -326,18 +352,18 @@ class _BoardPageState extends State<BoardPage> {
                                       String userId = _destructureId(element);
                                       String userName =
                                           _destructureName(element);
+                                      await initialize();
+                                      print('삭제예정 ID : ' + userId);
                                       await DatabaseService(uid: userId)
-                                          .OutChat(
-                                              widget.groupId,
-                                              widget.groupName,
-                                              userName,
-                                              widget.enteringTime.toString());
+                                          .OutChat(widget.groupId,
+                                              widget.groupName, userName, "");
                                     });
                                   });
                                   DatabaseService(uid: widget.uid).DeleteChat(
                                       widget.groupId,
                                       widget.groupName,
                                       widget.userName);
+                                  Navigator.pop(context);
                                 }),
                           )
                         : SizedBox(
@@ -362,6 +388,7 @@ class _BoardPageState extends State<BoardPage> {
               : Row(),
         ],
       ),
+      bottomNavigationBar: null,
     );
   }
 }

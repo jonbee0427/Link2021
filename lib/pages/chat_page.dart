@@ -23,6 +23,8 @@ class ChatPage extends StatefulWidget {
   final Widget groupMembers;
   final String profilePic;
   final DateTime enteringTime;
+  final String admin;
+  final String category;
 
   ChatPage(
       {this.groupId,
@@ -30,7 +32,10 @@ class ChatPage extends StatefulWidget {
       this.groupName,
       this.groupMembers,
       this.profilePic,
-      this.enteringTime});
+      this.enteringTime,
+        this.admin,
+        this.category
+      });
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -38,6 +43,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
 
+  String category;
   User _user;
   String _userName;
   //String profilePic;
@@ -213,8 +219,27 @@ class _ChatPageState extends State<ChatPage> {
       });
     });
     _getCurrentUserNameAndUid();
+    _getCategory();
+    if(admin == null) {
+      print('entering');
+      //print('Checking admin : ' + admin);
+      admin = widget.admin;
+      category = widget.category;
+    print(admin);
+    }
+    //print('admin : ' + admin);
+    //print( ' UserName : ' + _userName );
+    print( ' category : ' + category);
+    print('CurrentCondition : ' + admin == _userName || category != '공동 구매');
+
   }
 
+  _getCategory()async{
+    await FirebaseFirestore.instance.collection('groups').doc(widget.groupId).get().then((value){
+      category = value.data()['category'];
+    });
+
+  }
   _getCurrentUserNameAndUid() async {
     await HelperFunctions.getUserNameSharedPreference().then((value) {
       _userName = value;
@@ -239,6 +264,8 @@ class _ChatPageState extends State<ChatPage> {
           }
         }
     );
+
+
   }
 
   _joinValueInGroup(
@@ -253,6 +280,7 @@ class _ChatPageState extends State<ChatPage> {
   //채팅방 화면 빌드
   @override
   Widget build(BuildContext context) {
+
 
     Color basic = Color.fromARGB(250, 247, 162, 144);
     return Scaffold(
@@ -335,7 +363,8 @@ class _ChatPageState extends State<ChatPage> {
                                       widget.groupId,
                                       widget.groupName,
                                       widget.userName,
-                                      widget.enteringTime.toString()
+                                      widget.enteringTime.toString(),
+                                   isAdmin: admin == _userName
                                   );
                                   Navigator.pop(context);
                                   Navigator.pop(context);
@@ -348,7 +377,7 @@ class _ChatPageState extends State<ChatPage> {
                         });
                   },
                 ),
-                    admin == _userName ?
+                    admin == _userName || category != '공동 구매'?
                         Container():
                 Container(
                   child: Row(
