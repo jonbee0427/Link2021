@@ -115,7 +115,7 @@ class _SignInPageState extends State<SignInPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        Text("H-Link",
+                        Text("한동모아",
                             style: TextStyle(
                                 color: Color.fromARGB(250, 247, 162, 144),
                                 fontSize: 40.0,

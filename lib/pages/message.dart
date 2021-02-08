@@ -97,21 +97,7 @@ class _ChatState extends State<Chat> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 15,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.04,
-                      decoration: BoxDecoration(
-                        color: Colors.pink,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '10',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  )
+
                 ]),
               );
             }
@@ -166,7 +152,10 @@ class _ChatState extends State<Chat> {
   }
 
   Widget getGroupMembers(String groupId) {
+<<<<<<< HEAD
     print('_getRecentStream : ' + groupId + '  -----');
+=======
+>>>>>>> a3b325299db91c8c7dc4478facd879a6f1666873
     _getRecentStream(groupId);
     return StreamBuilder(
       stream: recent,
@@ -367,6 +356,7 @@ class _ChatState extends State<Chat> {
         ],
       ),
       body: groupsList(),
+<<<<<<< HEAD
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           _popupDialog(context);
@@ -395,6 +385,16 @@ class _ChatState extends State<Chat> {
           });
         },
       ),*/
+=======
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _popupDialog(context);
+      //   },
+      //   child: Icon(Icons.add, color: Colors.white, size: 30.0),
+      //   backgroundColor: Colors.grey[700],
+      //   elevation: 0.0,
+      // ),
+>>>>>>> a3b325299db91c8c7dc4478facd879a6f1666873
     );
   }
 }

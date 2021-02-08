@@ -31,7 +31,7 @@ String _userName = '';
 String _email = '';
 Stream _groups;
 bool timeiscorrect = false;
-bool usingtimepicker = false;
+bool usingtimepicker = true;
 CollectionReference chats;
 int maxpicture = 0;
 
@@ -43,6 +43,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
     maxpicture = 0;
     images = [];
     path = [];
+    usingtimepicker = true;
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -54,6 +55,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   String category = '공동 구매';
   final AuthService _auth = AuthService();
   String groupId;
+
+  Color priority = Color.fromARGB(250, 247, 162, 144);
 
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
@@ -326,8 +329,16 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                           },
                                           itemCount: images.length,
                                           autoplayDisableOnInteraction: true,
-                                          pagination: SwiperPagination(),
-                                          control: SwiperControl(),
+                                          pagination: new SwiperPagination(
+                                            alignment: Alignment.bottomCenter,
+                                            builder:
+                                                new DotSwiperPaginationBuilder(
+                                                    color: Colors.grey,
+                                                    activeColor: priority),
+                                          ),
+                                          control: new SwiperControl(
+                                            color: priority,
+                                          ),
                                         )
                                       : null,
                                 )
@@ -380,8 +391,9 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                           .millisecondsSinceEpoch;
                                       var create_time_s = new Timestamp.now();
                                       if (_formKey.currentState.validate()) {
-                                        if (usingtimepicker =
-                                            true || timeiscorrect == true) {
+                                        print(usingtimepicker.toString());
+                                        if (usingtimepicker == false ||
+                                            timeiscorrect == true) {
                                           if (_category != null) {
                                             if (datetime == null) {
                                               datetime = '시간 없음';
@@ -425,7 +437,6 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                               context,
                                               duration: Toast.LENGTH_LONG,
                                               gravity: Toast.BOTTOM);
-                                          usingtimepicker = false;
                                         }
                                       }
                                     }),

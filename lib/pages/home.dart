@@ -314,6 +314,7 @@ class _HomeState extends State<Home> {
             ],
           ),
 
+<<<<<<< HEAD
           //hobby
           Column(
             children: [
@@ -348,6 +349,23 @@ class _HomeState extends State<Home> {
                 });
               },
             )*/
+=======
+            //hobby
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                ),
+                Container(
+                  child: Expanded(
+                    child: getHobby(),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+>>>>>>> a3b325299db91c8c7dc4478facd879a6f1666873
       ),
     );
   }
