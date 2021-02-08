@@ -322,7 +322,7 @@ class _BoardPageState extends State<BoardPage> {
               width: MediaQuery.of(context).size.width * 0.875,
               //height: MediaQuery.of(context).size.height * 0.9,
               constraints: BoxConstraints(
-                  minHeight: MediaQuery.of(context).size.width * 0.9),
+                  minHeight: MediaQuery.of(context).size.width * 0.4),
               margin: const EdgeInsets.only(
                   top: 30, left: 25, right: 15, bottom: 10),
               padding: const EdgeInsets.only(
@@ -347,10 +347,11 @@ class _BoardPageState extends State<BoardPage> {
             ),
           ]),
           SizedBox(
-            height: 20,
+            height: 10,
           ),
           imageList.length != 0
-              ? SizedBox(
+              ? Container(
+            margin: EdgeInsets.only(left: 25),
                   height: 200,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
@@ -366,10 +367,12 @@ class _BoardPageState extends State<BoardPage> {
                                       )));
                         },
                         child: Container(
-                          height: 200,
-                          width: 200,
+                          margin: EdgeInsets.only(right: 10),
+                          height: 150,
+                          width: 150,
                           decoration: BoxDecoration(
-                              border: Border.all(color: Colors.black),
+                            borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              border: Border.all(color: Color.fromARGB(250, 247, 162, 144)),
                               image: DecorationImage(
                                   image: NetworkImage(imageList[index]))),
                         ),
