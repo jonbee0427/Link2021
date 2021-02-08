@@ -22,13 +22,19 @@ class ChatPage extends StatefulWidget {
   final String groupName;
   final Widget groupMembers;
   final String profilePic;
+  final DateTime enteringTime;
+  final String admin;
+  final String category;
 
-  ChatPage(
-      {this.groupId,
+  ChatPage({this.groupId,
       this.userName,
       this.groupName,
       this.groupMembers,
-      this.profilePic});
+      this.profilePic,
+      this.enteringTime,
+        this.admin,
+        this.category
+      });
 
   @override
   _ChatPageState createState() => _ChatPageState();
@@ -36,6 +42,7 @@ class ChatPage extends StatefulWidget {
 
 class _ChatPageState extends State<ChatPage> {
 
+  String category;
   User _user;
   String _userName;
   //String profilePic;
@@ -204,15 +211,34 @@ class _ChatPageState extends State<ChatPage> {
   @override
   void initState() {
     super.initState();
-    DatabaseService().getChats(widget.groupId).then((val) {
+    DatabaseService().getChats(widget.groupId, widget.enteringTime).then((val) {
       // print(val);
       setState(() {
         _chats = val;
       });
     });
     _getCurrentUserNameAndUid();
+    _getCategory();
+    if(admin == null) {
+      print('entering');
+      //print('Checking admin : ' + admin);
+      admin = widget.admin;
+      category = widget.category;
+    print(admin);
+    }
+    //print('admin : ' + admin);
+    //print( ' UserName : ' + _userName );
+    //print( ' category : ' + category);
+    //print('CurrentCondition : ' + admin == _userName || category != '공동 구매');
+
   }
 
+  _getCategory()async{
+    await FirebaseFirestore.instance.collection('groups').doc(widget.groupId).get().then((value){
+      category = value.data()['category'];
+    });
+
+  }
   _getCurrentUserNameAndUid() async {
     await HelperFunctions.getUserNameSharedPreference().then((value) {
       _userName = value;
@@ -237,6 +263,8 @@ class _ChatPageState extends State<ChatPage> {
           }
         }
     );
+
+
   }
 
   _joinValueInGroup(
@@ -251,7 +279,7 @@ class _ChatPageState extends State<ChatPage> {
   //채팅방 화면 빌드
   @override
   Widget build(BuildContext context) {
-    print( ' ' + _userName);
+
 
     Color basic = Color.fromARGB(250, 247, 162, 144);
     return Scaffold(
@@ -333,7 +361,10 @@ class _ChatPageState extends State<ChatPage> {
                                   DatabaseService(uid: _user.uid).OutChat(
                                       widget.groupId,
                                       widget.groupName,
-                                      widget.userName);
+                                      widget.userName,
+                                      widget.enteringTime.toString(),
+                                   isAdmin: admin == _userName
+                                  );
                                   Navigator.pop(context);
                                   Navigator.pop(context);
                                   Navigator.pop(context);
@@ -345,7 +376,7 @@ class _ChatPageState extends State<ChatPage> {
                         });
                   },
                 ),
-                    admin == _userName ?
+                    admin == _userName || category != '공동 구매'?
                         Container():
                 Container(
                   child: Row(

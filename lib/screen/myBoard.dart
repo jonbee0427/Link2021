@@ -18,26 +18,22 @@ class _myBoardState extends State<myBoard> {
   User user;
   final Color primary = Color.fromARGB(250, 247, 162, 144);
 
-  
   @override
   void initState() {
     // TODO: implement initState
     getMyWriting();
     super.initState();
-
   }
 
-  getMyWriting()async{
-
-     await HelperFunctions.getUserNameSharedPreference().then((value) {
+  getMyWriting() async {
+    await HelperFunctions.getUserNameSharedPreference().then((value) {
       setState(() {
         userName = value;
       });
     });
     user = await FirebaseAuth.instance.currentUser;
     myBoard = await FirebaseFirestore.instance.collection('groups');
-    _myBoard = await myBoard.where('admin', isEqualTo : userName ).snapshots();
-
+    _myBoard = await myBoard.where('admin', isEqualTo: userName).snapshots();
   }
 
   String _destructureName(String res) {
@@ -62,7 +58,7 @@ class _myBoardState extends State<myBoard> {
                 title: Row(children: [
                   Text(_destructureName(snapshot.data['members'][index])),
                   snapshot.data['admin'] ==
-                      _destructureName(snapshot.data['members'][index])
+                          _destructureName(snapshot.data['members'][index])
                       ? Text(' (방장)')
                       : Text(''),
                 ]),
@@ -89,18 +85,21 @@ class _myBoardState extends State<myBoard> {
                 return BoardTile(
                   userName: userName,
                   groupId: snapshot.data.docs[reqIndex]['groupId'],
-                  groupMembers: getGroupMembers(snapshot.data.docs[reqIndex]['groupId']),
+                  groupMembers:
+                      getGroupMembers(snapshot.data.docs[reqIndex]['groupId']),
                   groupName: snapshot.data.docs[reqIndex]['groupName'],
                   title: snapshot.data.docs[reqIndex]['title'],
                   body: snapshot.data.docs[reqIndex]['body'],
                   time_limit: snapshot.data.docs[reqIndex]['time_limit'],
                   category: snapshot.data.docs[reqIndex]['category'],
+                  subcategory: snapshot.data.docs[reqIndex]['subcategory'],
                   uid: user.uid,
                   max_person: snapshot.data.docs[reqIndex]['max_person'],
-                  current_person: snapshot.data.docs[reqIndex]
-                  ['membersNum'],
+                  current_person: snapshot.data.docs[reqIndex]['membersNum'],
                   profilePic: user.photoURL,
                   deletePermit: snapshot.data.docs[reqIndex]['deletePermit'],
+                  admin: snapshot.data.docs[reqIndex]['admin'],
+                  create_time: snapshot.data.docs[reqIndex]['create_time'],
                 );
               },
               separatorBuilder: (context, index) {
@@ -131,11 +130,12 @@ class _myBoardState extends State<myBoard> {
               color: Colors.white,
             ),
             onPressed: () {
-              showSearch(context: context, delegate: Search(
-                  uid: user.uid,
-                  userName: userName,
-                  profilePic: user.photoURL
-              ));
+              showSearch(
+                  context: context,
+                  delegate: Search(
+                      uid: user.uid,
+                      userName: userName,
+                      profilePic: user.photoURL));
             },
           )
         ],

@@ -49,32 +49,42 @@ class _HomePageState extends State<HomePage> {
       //         Icons.search,
       //         color: Colors.white,
       //       ),
-      //       onPressed: () {
-      //         showSearch(context: context, delegate: Search());
+      //      onPressed: () {
+      //         showSearch(                      context: context,
+      //                 delegate: Search(
+      //                     uid: _user.uid,
+      //                     userName: _userName,
+      //                     profilePic: _user.photoURL));
       //       },
-      //     )
-      //   ],
+      //      )
+      //    ],
       // ),
       body: _pageOptions[selectedPage],
-      bottomNavigationBar: ConvexAppBar(
-        backgroundColor: const Color.fromARGB(250, 247, 162, 144),
-        items: [
-          TabItem(
-            icon: Icons.home,
-            title: '홈',
-          ),
-          TabItem(icon: Icons.textsms, title: '채팅'),
-          TabItem(icon: Icons.add, title: '추가'),
-          TabItem(icon: Icons.notifications, title: '알림'),
-          TabItem(icon: Icons.person, title: '프로필'),
-        ],
-        initialActiveIndex: 0, //optional, default as 0
-        onTap: (int i) {
-          setState(() {
-            selectedPage = i;
-          });
-        },
-      ),
+      bottomNavigationBar: selectedPage == 0 ||
+              selectedPage == 1 ||
+              selectedPage == 2 ||
+              selectedPage == 3 ||
+              selectedPage == 4
+          ? ConvexAppBar(
+              backgroundColor: const Color.fromARGB(250, 247, 162, 144),
+              items: [
+                TabItem(
+                  icon: Icons.home,
+                  title: '홈',
+                ),
+                TabItem(icon: Icons.textsms, title: '채팅'),
+                TabItem(icon: Icons.add, title: '추가'),
+                TabItem(icon: Icons.notifications, title: '알림'),
+                TabItem(icon: Icons.person, title: '프로필'),
+              ],
+              initialActiveIndex: 0, //optional, default as 0
+              onTap: (int i) {
+                setState(() {
+                  selectedPage = i;
+                });
+              },
+            )
+          : null,
     );
   }
 }

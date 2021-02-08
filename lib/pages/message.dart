@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,8 @@ import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/widgets/group_tile.dart';
 import 'package:async/async.dart';
 import 'package:intl/intl.dart';
+
+//RecentMessageTime이 enteringTime보다 빠를 경우에는 null. 그렇지 않다면 recentMessage 전달.
 
 class Chat extends StatefulWidget {
   @override
@@ -28,6 +31,7 @@ class _ChatState extends State<Chat> {
   CollectionReference chats;
   Stream recent;
   String recentTimeString;
+  int selectedPage = 0;
 
   // initState
   @override
@@ -42,22 +46,20 @@ class _ChatState extends State<Chat> {
 
   Widget noGroupWidget() {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 25.0),
         child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            GestureDetector(
-                onTap: () {
-                  _popupDialog(context);
-                },
-                child: Icon(Icons.add_circle,
-                    color: Colors.grey[700], size: 75.0)),
-            SizedBox(height: 20.0),
+          children: [
             Text(
-                "You've not joined any group, tap on the 'add' icon to create a group or search for groups by tapping on the search button below."),
+              "사람들과 함께 새로운 활동을 해보세요! :)",
+              style: TextStyle(fontSize: 15),
+            ),
           ],
-        ));
+        )
+      ],
+    ));
   }
 
   Widget getRecent(String groupId) {
@@ -95,35 +97,39 @@ class _ChatState extends State<Chat> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    flex: 15,
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: MediaQuery.of(context).size.height * 0.04,
-                      decoration: BoxDecoration(
-                        color: Colors.pink,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        '10',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  )
+
                 ]),
               );
             }
           } catch (e) {
-            return Text('nothing');
+            return Text(' ');
           }
         }
-        return Text('nothing');
+        return Text('');
       },
     );
   }
 
+// Future<Timestamp>getEnteringTime(String groupId) async{
+//   String enteringTime;
+//   DateTime enteringTimeDate;
+//   Timestamp enteringTimeDateStamp;
+//   await FirebaseFirestore.instance.collection('MyUsers').doc(_user.uid).get().then((value) async {
+//     List<dynamic> myGroup =await value.data()['groups'];
+//     myGroup.forEach((element) async {
+//       if(element.contains(groupId)){
+//         enteringTime = await _destructureEnteringTime(element);
+//         enteringTimeDate = await convertDateFromString(enteringTime);
+//         enteringTimeDateStamp = await Timestamp.fromDate(enteringTimeDate);
+//         print('DateTime to Timestamp' + enteringTimeDateStamp.toString());
+//       }
+//     });
+//   });
+//   return enteringTimeDateStamp;
+// }
   Widget getRecentTime(String groupId) {
     _getRecentStream(groupId);
+    Timestamp enteringTimeDateStamp;
     final form = new DateFormat('Md').add_Hm();
     return StreamBuilder(
       stream: recent,
@@ -131,12 +137,16 @@ class _ChatState extends State<Chat> {
         if (snapshot.hasData) {
           try {
             Timestamp recentTime = snapshot.data['recentMessageTime'];
+            // getEnteringTime(groupId).then((value){
+            //   enteringTimeDateStamp =  value;
+            // });
             return Text(form.format(recentTime.toDate()));
           } catch (e) {
-            return Text(' ');
+            print(e.toString());
+            return Text('');
           }
         }
-        return Text('nothing');
+        return Text(' ');
       },
     );
   }
@@ -147,16 +157,21 @@ class _ChatState extends State<Chat> {
       stream: recent,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          print(snapshot.data['members'].length);
           return ListView.builder(
             padding: EdgeInsets.only(top: 0),
             shrinkWrap: true,
             itemCount: snapshot.data['members'].length,
             itemBuilder: (context, index) {
+              print('숫자 : ' +
+                  _destructureNameFromGroups(snapshot.data['members'][index]));
               return ListTile(
                 title: Row(children: [
-                  Text(_destructureName(snapshot.data['members'][index])),
+                  Text(_destructureNameFromGroups(
+                      snapshot.data['members'][index])),
                   snapshot.data['admin'] ==
-                          _destructureName(snapshot.data['members'][index])
+                          _destructureNameFromGroups(
+                              snapshot.data['members'][index])
                       ? Text(' (방장)')
                       : Text(''),
                 ]),
@@ -164,6 +179,7 @@ class _ChatState extends State<Chat> {
             },
           );
         } else {
+          print('ERROR');
           return Text('noOne');
         }
       },
@@ -188,19 +204,21 @@ class _ChatState extends State<Chat> {
                   itemBuilder: (context, index) {
                     int reqIndex = snapshot.data['groups'].length - index - 1;
                     return GroupTile(
-                      profilePic: snapshot.data['profilePic'],
-                      userName: snapshot.data['name'],
-                      groupId:
-                          _destructureId(snapshot.data['groups'][reqIndex]),
-                      groupName:
-                          _destructureName(snapshot.data['groups'][reqIndex]),
-                      recentMsg: getRecent(
-                          _destructureId(snapshot.data['groups'][reqIndex])),
-                      groupMembers: getGroupMembers(
-                          _destructureId(snapshot.data['groups'][reqIndex])),
-                      recentTime: getRecentTime(
-                          _destructureId(snapshot.data['groups'][reqIndex])),
-                    );
+                        profilePic: snapshot.data['profilePic'],
+                        userName: snapshot.data['name'],
+                        groupId:
+                            _destructureId(snapshot.data['groups'][reqIndex]),
+                        groupName:
+                            _destructureName(snapshot.data['groups'][reqIndex]),
+                        recentMsg: getRecent(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
+                        groupMembers: getGroupMembers(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
+                        recentTime: getRecentTime(
+                            _destructureId(snapshot.data['groups'][reqIndex])),
+                        enteringTime: convertDateFromString(
+                            _destructureEnteringTime(
+                                snapshot.data['groups'][reqIndex])));
                   });
             } else {
               return noGroupWidget();
@@ -245,7 +263,26 @@ class _ChatState extends State<Chat> {
 
   String _destructureName(String res) {
     // print(res.substring(res.indexOf('_') + 1));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('_') + 1, res.indexOf('`'));
+    //return res.substring(res.indexOf('_') + 1);
+  }
+
+  String _destructureNameFromGroups(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    //return res.substring(res.indexOf('_') + 1,res.indexOf('`'));
     return res.substring(res.indexOf('_') + 1);
+  }
+
+  String _destructureEnteringTime(String res) {
+    // print(res.substring(res.indexOf('_') + 1));
+    // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
+    return res.substring(res.indexOf('`') + 1);
+  }
+
+  DateTime convertDateFromString(String strDate) {
+    return DateTime.parse(strDate);
   }
 
   //사라질 기능
@@ -304,24 +341,25 @@ class _ChatState extends State<Chat> {
               color: Colors.white,
             ),
             onPressed: () {
-              showSearch(context: context, delegate: Search(
-                  uid: _user.uid,
-                  userName: _userName,
-                  profilePic: _user.photoURL
-              ));
+              showSearch(
+                  context: context,
+                  delegate: Search(
+                      uid: _user.uid,
+                      userName: _userName,
+                      profilePic: _user.photoURL));
             },
           )
         ],
       ),
       body: groupsList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _popupDialog(context);
-        },
-        child: Icon(Icons.add, color: Colors.white, size: 30.0),
-        backgroundColor: Colors.grey[700],
-        elevation: 0.0,
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _popupDialog(context);
+      //   },
+      //   child: Icon(Icons.add, color: Colors.white, size: 30.0),
+      //   backgroundColor: Colors.grey[700],
+      //   elevation: 0.0,
+      // ),
     );
   }
 }

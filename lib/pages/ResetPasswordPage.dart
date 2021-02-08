@@ -87,7 +87,7 @@ class _ResetPasswordPage extends State<ResetPasswordPage> {
             body: Form(
                 key: _formKey,
                 child: Container(
-                  color: Color.fromARGB(250, 247, 162, 144),
+                  color: Colors.white,
                   child: ListView(
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
@@ -98,13 +98,13 @@ class _ResetPasswordPage extends State<ResetPasswordPage> {
                         children: <Widget>[
                           Text("H-links",
                               style: TextStyle(
-                                  color: Colors.white,
+                                  color: Colors.black,
                                   fontSize: 45.0,
                                   fontWeight: FontWeight.bold)),
                           SizedBox(height: 30.0),
                           Text("비밀번호 재설정",
                               style: TextStyle(
-                                  color: Colors.white, fontSize: 25.0)),
+                                  color: Colors.black, fontSize: 25.0)),
                           SizedBox(height: 50.0),
 
                           // TextFormField(
@@ -143,7 +143,7 @@ class _ResetPasswordPage extends State<ResetPasswordPage> {
                             height: 50.0,
                             child: RaisedButton(
                                 elevation: 0.0,
-                                color: Colors.pink[300],
+                                color: Color.fromARGB(250, 247, 162, 144),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30.0)),
                                 child: Text('비밀번호 재설정 이메일 보내기',

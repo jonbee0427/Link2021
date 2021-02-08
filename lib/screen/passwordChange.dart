@@ -21,7 +21,10 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
   }
 
   String value = '';
-  Map data;
+  String password;
+  String email;
+  String newpassword;
+  //Map data;
 
   final pwController = TextEditingController();
 
@@ -30,7 +33,7 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
   Widget _buildPassword() {
     String labelText;
     if (widget.password == null) {
-      labelText = '비밀번호';
+      labelText = '학번';
     } else {
       labelText = '비밀번호 : ' + widget.password;
     }
@@ -51,14 +54,14 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
       maxLength: 16,
       validator: (String value) {
         if (value.isEmpty) {
-          return '비밀번호를 입력하세요';
+          return '학번을 입력하세요';
         }
 
         return null;
       },
       onSaved: (String value) {
-        widget.password = value;
-        data['password'] = widget.password;
+        email = value;
+        //data['password'] = widget.password;
       },
     );
   }
@@ -66,9 +69,9 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
   Widget _buildPassword2() {
     String textPassword;
     if (widget.password == null) {
-      textPassword = '비밀번호 확인';
+      textPassword = '현재 비밀번호';
     } else {
-      textPassword = '비밀번호 확인 : ' + widget.password;
+      textPassword = '현재 비밀번호 : ' + widget.password;
     }
     return TextFormField(
       decoration: InputDecoration(
@@ -93,8 +96,8 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
         return null;
       },
       onSaved: (String value) {
-        widget.password = value;
-        data['password'] = widget.password;
+        password = value;
+        //data['password'] = widget.password;
       },
     );
   }
@@ -128,17 +131,21 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
         return null;
       },
       onSaved: (String value) {
-        widget.password = value;
-        data['password'] = widget.password;
+        newpassword = value;
+        //data['password'] = widget.password;
       },
     );
   }
 
-  updatePassword() async {
+  updatePassword(String password, String email, String newPassword) async {
     var firebaseUser = await FirebaseAuth.instance.currentUser;
-    var newPassword = widget.password;
-
-    firebaseUser.updatePassword(newPassword);
+    EmailAuthCredential credential = EmailAuthProvider.credential(
+        email: email + '@handong.edu', password: password);
+    await FirebaseAuth.instance.currentUser
+        .reauthenticateWithCredential(credential);
+    firebaseUser
+        .updatePassword(newPassword)
+        .then((value) => Navigator.of(context).pop());
   }
 
   @override
@@ -177,7 +184,8 @@ class _PasswordChangeScreenState extends State<PasswordChangeScreen> {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
                     }
-                    updatePassword();
+                    print(password);
+                    updatePassword(password, email, newpassword);
                   },
                 )
               ],

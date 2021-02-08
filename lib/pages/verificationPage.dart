@@ -31,7 +31,7 @@ class _VerificationPageState extends State<VerificationPage> {
 
   _onVerification() async {
     User user = FirebaseAuth.instance.currentUser;
-     await user.sendEmailVerification();
+    await user.sendEmailVerification();
     Toast.show('회원가입이 성공적으로 되었습니다.\n한동메일을 확인하여 이메일 인증을 한 후 로그인 하십시오', context,
         duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     Navigator.of(context).pushReplacement(MaterialPageRoute(
@@ -50,7 +50,7 @@ class _VerificationPageState extends State<VerificationPage> {
       ),
       body: Form(
           child: Container(
-        color: Color.fromARGB(250, 247, 162, 144),
+        color: Colors.white,
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
           children: <Widget>[
@@ -60,17 +60,17 @@ class _VerificationPageState extends State<VerificationPage> {
               children: <Widget>[
                 Text("H-link",
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Colors.black,
                         fontSize: 45.0,
                         fontWeight: FontWeight.bold)),
                 SizedBox(height: 30.0),
                 Text("Varification Page",
-                    style: TextStyle(color: Colors.white, fontSize: 25.0)),
+                    style: TextStyle(color: Colors.black, fontSize: 25.0)),
                 SizedBox(height: 120.0),
                 Text.rich(
                   TextSpan(
                     text: "send varification email by pressing the button ",
-                    style: TextStyle(color: Colors.white, fontSize: 20.0),
+                    style: TextStyle(color: Colors.black, fontSize: 20.0),
                   ),
                 ),
                 SizedBox(height: 40.0),
@@ -79,7 +79,7 @@ class _VerificationPageState extends State<VerificationPage> {
                   height: 50.0,
                   child: RaisedButton(
                       elevation: 0.0,
-                      color: Colors.pink[300],
+                      color: Color.fromARGB(250, 247, 162, 144),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)),
                       child: Text('send varification email',
