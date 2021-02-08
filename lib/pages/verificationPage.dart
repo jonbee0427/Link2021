@@ -64,12 +64,12 @@ class _VerificationPageState extends State<VerificationPage> {
                         fontSize: 45.0,
                         fontWeight: FontWeight.bold)),
                 SizedBox(height: 30.0),
-                Text("Varification Page",
+                Text("Verification Page",
                     style: TextStyle(color: Colors.black, fontSize: 25.0)),
                 SizedBox(height: 120.0),
                 Text.rich(
                   TextSpan(
-                    text: "send varification email by pressing the button ",
+                    text: "send verification email by pressing the button ",
                     style: TextStyle(color: Colors.black, fontSize: 20.0),
                   ),
                 ),
@@ -82,7 +82,7 @@ class _VerificationPageState extends State<VerificationPage> {
                       color: Color.fromARGB(250, 247, 162, 144),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30.0)),
-                      child: Text('send varification email',
+                      child: Text('send verification email',
                           style:
                               TextStyle(color: Colors.white, fontSize: 16.0)),
                       onPressed: () {
