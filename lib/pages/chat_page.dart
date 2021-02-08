@@ -26,8 +26,7 @@ class ChatPage extends StatefulWidget {
   final String admin;
   final String category;
 
-  ChatPage(
-      {this.groupId,
+  ChatPage({this.groupId,
       this.userName,
       this.groupName,
       this.groupMembers,
@@ -229,8 +228,8 @@ class _ChatPageState extends State<ChatPage> {
     }
     //print('admin : ' + admin);
     //print( ' UserName : ' + _userName );
-    print( ' category : ' + category);
-    print('CurrentCondition : ' + admin == _userName || category != '공동 구매');
+    //print( ' category : ' + category);
+    //print('CurrentCondition : ' + admin == _userName || category != '공동 구매');
 
   }
 
