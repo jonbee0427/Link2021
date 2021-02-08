@@ -88,7 +88,9 @@ class _BoardPageState extends State<BoardPage> {
         //print('in foreach!!!!!');
         await element.getDownloadURL().then((value) {
           print('Current value  : ' + value);
-          imageList.add(value);
+          setState(() {
+            imageList.add(value);
+          });
         });
       });
     });
