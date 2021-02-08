@@ -281,75 +281,40 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
-        body: TabBarView(children: [
-          //group purchase
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        body: TabBarView(
+          children: [
+            //group purchase
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
                 ),
-              ),
-              Container(
-                child: Expanded(
-                  child: getBoard(),
+                Container(
+                  child: Expanded(
+                    child: getBoard(),
+                  ),
                 ),
-              ),
-            ],
-          ),
-
-          //study
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(bottom: 8),
-              ),
-              Container(
-                child: Expanded(
-                  child: getStudy(),
-                ),
-              ),
-            ],
-          ),
-
-<<<<<<< HEAD
-          //hobby
-          Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(bottom: 8),
-              ),
-              Container(
-                child: Expanded(
-                  child: getHobby(),
-                ),
-              )
-            ],
-          ),
-        ]),
-        /*
-            bottomNavigationBar: ConvexAppBar(
-              backgroundColor: const Color.fromARGB(250, 247, 162, 144),
-              items: [
-                TabItem(
-                  icon: Icons.home,
-                  title: '홈',
-                ),
-                TabItem(icon: Icons.textsms, title: '채팅'),
-                TabItem(icon: Icons.add, title: '추가'),
-                TabItem(icon: Icons.notifications, title: '알림'),
-                TabItem(icon: Icons.person, title: '프로필'),
               ],
-              //initialActiveIndex: 0, //optional, default as 0
-              onTap: (int i) {
-                setState(() {
-                  selectedPage = i;
-                });
-              },
-            )*/
-=======
+            ),
+
+            //study
+            Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.only(bottom: 8),
+                ),
+                Container(
+                  child: Expanded(
+                    child: getStudy(),
+                  ),
+                ),
+              ],
+            ),
+
             //hobby
             Column(
               children: [
@@ -365,7 +330,6 @@ class _HomeState extends State<Home> {
             ),
           ],
         ),
->>>>>>> a3b325299db91c8c7dc4478facd879a6f1666873
       ),
     );
   }

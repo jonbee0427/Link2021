@@ -97,7 +97,6 @@ class _ChatState extends State<Chat> {
                       ),
                     ),
                   ),
-
                 ]),
               );
             }
@@ -152,10 +151,6 @@ class _ChatState extends State<Chat> {
   }
 
   Widget getGroupMembers(String groupId) {
-<<<<<<< HEAD
-    print('_getRecentStream : ' + groupId + '  -----');
-=======
->>>>>>> a3b325299db91c8c7dc4478facd879a6f1666873
     _getRecentStream(groupId);
     return StreamBuilder(
       stream: recent,
@@ -356,36 +351,6 @@ class _ChatState extends State<Chat> {
         ],
       ),
       body: groupsList(),
-<<<<<<< HEAD
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _popupDialog(context);
-        },
-        child: Icon(Icons.add, color: Colors.white, size: 30.0),
-        backgroundColor: Colors.grey[700],
-        elevation: 0.0,
-      ),
-      /*
-      bottomNavigationBar: ConvexAppBar(
-        backgroundColor: const Color.fromARGB(250, 247, 162, 144),
-        items: [
-          TabItem(
-            icon: Icons.home,
-            title: '홈',
-          ),
-          TabItem(icon: Icons.textsms, title: '채팅'),
-          TabItem(icon: Icons.add, title: '추가'),
-          TabItem(icon: Icons.notifications, title: '알림'),
-          TabItem(icon: Icons.person, title: '프로필'),
-        ],
-        //initialActiveIndex: 0, //optional, default as 0
-        onTap: (int i) {
-          setState(() {
-            selectedPage = i;
-          });
-        },
-      ),*/
-=======
       // floatingActionButton: FloatingActionButton(
       //   onPressed: () {
       //     _popupDialog(context);
@@ -394,7 +359,6 @@ class _ChatState extends State<Chat> {
       //   backgroundColor: Colors.grey[700],
       //   elevation: 0.0,
       // ),
->>>>>>> a3b325299db91c8c7dc4478facd879a6f1666873
     );
   }
 }
