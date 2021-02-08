@@ -352,7 +352,7 @@ class _BoardPageState extends State<BoardPage> {
           imageList.length != 0
               ? Container(
             margin: EdgeInsets.only(left: 25),
-                  height: 200,
+                  height: 150,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: imageList.length,
