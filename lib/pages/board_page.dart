@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_swiper/flutter_swiper.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -339,40 +338,22 @@ class _BoardPageState extends State<BoardPage> {
                                   },
                                   itemCount: imageList.length,
                                   autoplayDisableOnInteraction: true,
-                                  pagination: SwiperPagination(),
-                                  control: SwiperControl(),
+                                  scrollDirection: Axis.horizontal,
+                                  pagination: new SwiperPagination(
+                                    alignment: Alignment.bottomCenter,
+                                    builder: new DotSwiperPaginationBuilder(
+                                        color: Colors.grey,
+                                        activeColor: priority),
+                                  ),
+                                  control: new SwiperControl(
+                                    color: priority,
+                                  ),
                                 )
                               : null,
                         )
                       : null,
                 )
               : Container(),
-          /*
-          imageList.length != 0
-              ? SizedBox(
-                  height: 100,
-                  width: 100,
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(imageList[0]),
-                        backgroundColor: Colors.white,
-                      ),
-                      
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(imageList[1]),
-                        backgroundColor: Colors.white,
-                      ),
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(imageList[2]),
-                        backgroundColor: Colors.white,
-                      ),
-                      
-                    ],
-                  ),
-                )
-              : Container(),
-              */
           SizedBox(
             height: 20,
           ),

@@ -61,6 +61,8 @@ int maxpicture = 0;
 bool usingtimepicker = false;
 bool timeiscorrect = false;
 
+Color priority = Color.fromARGB(250, 247, 162, 144);
+
 class _EditPage extends State<EditPage> {
   @override
   void initState() {
@@ -298,8 +300,7 @@ class _EditPage extends State<EditPage> {
                           height: 50.0,
                           child: RaisedButton(
                               elevation: 0.0,
-                              color: Colors.blueAccent[200],
-                              // Color.fromARGB(300, 247, 162, 144),
+                              color: Color.fromARGB(250, 247, 162, 144),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0)),
                               child: Text('이미지 업로드',
@@ -329,8 +330,16 @@ class _EditPage extends State<EditPage> {
                                           },
                                           itemCount: images.length,
                                           autoplayDisableOnInteraction: true,
-                                          pagination: SwiperPagination(),
-                                          control: SwiperControl(),
+                                          pagination: new SwiperPagination(
+                                            alignment: Alignment.bottomCenter,
+                                            builder:
+                                                new DotSwiperPaginationBuilder(
+                                                    color: Colors.grey,
+                                                    activeColor: priority),
+                                          ),
+                                          control: new SwiperControl(
+                                            color: priority,
+                                          ),
                                         )
                                       : null,
                                 )
@@ -347,8 +356,7 @@ class _EditPage extends State<EditPage> {
                                 height: 50.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
-                                    // Color.fromARGB(300, 247, 162, 144),
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),
@@ -371,8 +379,7 @@ class _EditPage extends State<EditPage> {
                                 height: 50.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
-                                    // Color.fromARGB(300, 247, 162, 144),
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),
