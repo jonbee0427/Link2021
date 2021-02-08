@@ -31,7 +31,7 @@ String _userName = '';
 String _email = '';
 Stream _groups;
 bool timeiscorrect = false;
-bool usingtimepicker = false;
+bool usingtimepicker = true;
 CollectionReference chats;
 int maxpicture = 0;
 
@@ -43,6 +43,7 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
     maxpicture = 0;
     images = [];
     path = [];
+    usingtimepicker = true;
   }
 
   final _formKey = GlobalKey<FormState>();
@@ -357,8 +358,9 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                                           .millisecondsSinceEpoch;
                                       var create_time_s = new Timestamp.now();
                                       if (_formKey.currentState.validate()) {
-                                        if (usingtimepicker =
-                                            true || timeiscorrect == true) {
+                                        print(usingtimepicker.toString());
+                                        if (usingtimepicker == false ||
+                                            timeiscorrect == true) {
                                           if (_category != null) {
                                             if (datetime == null) {
                                               datetime = '시간 없음';
@@ -401,7 +403,6 @@ class _PostHobbyTogether extends State<PostHobbyTogether> {
                                               context,
                                               duration: Toast.LENGTH_LONG,
                                               gravity: Toast.BOTTOM);
-                                          usingtimepicker = false;
                                         }
                                       }
                                     }),
