@@ -55,6 +55,8 @@ class _PostStudyTogether extends State<PostStudyTogether> {
   String category = '스터디';
   final AuthService _auth = AuthService();
 
+  Color priority = Color.fromARGB(250, 247, 162, 144);
+
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
     PickedFile image = await imagePicker.getImage(source: ImageSource.gallery);
@@ -304,8 +306,16 @@ class _PostStudyTogether extends State<PostStudyTogether> {
                                           },
                                           itemCount: images.length,
                                           autoplayDisableOnInteraction: true,
-                                          pagination: SwiperPagination(),
-                                          control: SwiperControl(),
+                                          pagination: new SwiperPagination(
+                                            alignment: Alignment.bottomCenter,
+                                            builder:
+                                                new DotSwiperPaginationBuilder(
+                                                    color: Colors.grey,
+                                                    activeColor: priority),
+                                          ),
+                                          control: new SwiperControl(
+                                            color: priority,
+                                          ),
                                         )
                                       : null,
                                 )

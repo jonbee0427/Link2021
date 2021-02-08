@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-// import 'package:fluttertoast/fluttertoast.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -18,6 +18,7 @@ import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:toast/toast.dart';
 
 import 'EditPage.dart';
+import 'fullImageScreen.dart';
 
 class BoardPage extends StatefulWidget {
   final String title;
@@ -61,22 +62,52 @@ class BoardPage extends StatefulWidget {
 }
 
 class _BoardPageState extends State<BoardPage> {
+  List<dynamic> imageName;
+  User user;
   Color priority = Color.fromARGB(250, 247, 162, 144);
+  var downloadUrl;
+  Stream _postPic;
+  String postPic;
+  CollectionReference myUsers =
+      FirebaseFirestore.instance.collection('MyUsers');
+  List<dynamic> imageList = new List();
+  @override
+  initState() {
+    super.initState();
+    initalizeUser();
+    initialize();
+    getImageFromStore();
+    //fileDownload(widget.groupName, widget.admin);
+  }
+
+  getImageFromStore() async {
+    String path = widget.groupId + '/board/';
+    Reference storage = FirebaseStorage.instance.ref().child(path);
+    print('Current Group : ' + path);
+    storage.listAll().then((value) async {
+      int index = 0;
+      value.items.forEach((element) async {
+        //print('in foreach!!!!!');
+        await element.getDownloadURL().then((value) {
+          print('Current value  : ' + value);
+          setState(() {
+            imageList.add(value);
+          });
+        });
+      });
+    });
+    //print('과연 지금 길이는....' + imageList.length.toString());
+  }
+
+  initalizeUser() async {
+    user = await FirebaseAuth.instance.currentUser;
+  }
+
   DocumentReference myDoc;
+  DocumentReference postRef;
   List<dynamic> myGroup;
   String inEnteringTime;
 
-  // void print_test() {
-  //   print('title : ' + widget.title);
-  //   print('category : ' + widget.category);
-  //   print('time limit : ' + widget.time_limit);
-  //   print('body : ' + widget.body);
-  //   //print('create time : ' + widget.create_time);
-  //   print('max person : ' + widget.max_person.toString());
-  //   print('group id : ' + widget.groupId);
-  //   print('group name : ' + widget.groupName);
-  //   print('user name : ' + widget.userName);
-  // }
   String _destructureId(String res) {
     // print(res.substring(0, res.indexOf('_')));
     return res.substring(0, res.indexOf('_'));
@@ -97,13 +128,6 @@ class _BoardPageState extends State<BoardPage> {
     return DateTime.parse(strDate);
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    initialize();
-  }
-
   initialize() async {
     myDoc =
         await FirebaseFirestore.instance.collection('MyUsers').doc(widget.uid);
@@ -117,7 +141,41 @@ class _BoardPageState extends State<BoardPage> {
         print('Entering TIme : ' + inEnteringTime);
       }
     });
+
+/*
+    //_postPic = FirebaseFirestore.instance.collection('MyUsers').snapshots();
+    await myUsers.doc(widget.uid).get().then((value) async {
+      postPic = await value.data()['postPic'];
+      print('post pic is : ' + postPic);
+    });
+    */
   }
+
+  /*
+
+  await myUsers.doc(widget.uid).get().then((value) async {
+      admin = await value.data()['admin'];
+    });
+
+
+    postRef = await FirebaseFirestore.instance
+        .collection('MyUsers')
+        .doc(widget.uid)
+        .get()
+        .then((DocumentSnapshot ds) => postPic = ds.data["postPic"]);
+  Widget getPostPic() {
+    return StreamBuilder(
+        stream: _postPic,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            postPic = snapshot.data['postPic'];
+            print('getting post picture : ' + postPic);
+          } else {
+            return Text('error');
+          }
+        });
+  }
+  */
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +204,7 @@ class _BoardPageState extends State<BoardPage> {
     print(widget.deletePermit);
 
     // print_test();
+    //getPostPic();
     return Scaffold(
       appBar: AppBar(
         title: Text('게시글 상세 정보'),
@@ -274,7 +333,7 @@ class _BoardPageState extends State<BoardPage> {
                   Radius.circular(40),
                 ),
               ),
-              child: Flexible(
+              child: Container(
                 //mainAxisAlignment: MainAxisAlignment.start,
                 child: Text(
                   '내용 : ' + widget.body,
@@ -288,7 +347,60 @@ class _BoardPageState extends State<BoardPage> {
             ),
           ]),
           SizedBox(
-            height: 10,
+            height: 20,
+          ),
+          imageList.length != 0
+              ? SizedBox(
+                  height: 200,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: imageList.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => FullScreenPage(
+                                        Url: imageList[index],
+                                      )));
+                        },
+                        child: Container(
+                          height: 200,
+                          width: 200,
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black),
+                              image: DecorationImage(
+                                  image: NetworkImage(imageList[index]))),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              // ? SizedBox(
+              //     child: imageList.length != 0
+              //         ? Container(
+              //             width: 400,
+              //             height: 350,
+              //             child: imageList.length != 0
+              //                 ? Swiper(
+              //                     key: UniqueKey(),
+              //                     itemBuilder:
+              //                         (BuildContext context, int index) {
+              //                       return Image.network(imageList[index]);
+              //                     },
+              //                     itemCount: imageList.length,
+              //                     autoplayDisableOnInteraction: true,
+              //                     pagination: SwiperPagination(),
+              //                     control: SwiperControl(),
+              //                   )
+              //                 : null,
+              //           )
+              //         : null,
+              //   )
+              : Container(),
+          SizedBox(
+            height: 20,
           ),
           widget.admin == widget.userName
               ? Row(
@@ -300,8 +412,7 @@ class _BoardPageState extends State<BoardPage> {
                       height: 50.0,
                       child: RaisedButton(
                           elevation: 0.0,
-                          color: Colors.pink[300],
-                          // Color.fromARGB(300, 247, 162, 144),
+                          color: Color.fromARGB(250, 247, 162, 144),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0)),
                           child: Text('게시글 수정',
@@ -333,7 +444,7 @@ class _BoardPageState extends State<BoardPage> {
                             height: 50.0,
                             child: RaisedButton(
                                 elevation: 0.0,
-                                color: Colors.pink[300],
+                                color: Color.fromARGB(250, 247, 162, 144),
                                 // Color.fromARGB(300, 247, 162, 144),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30.0)),
@@ -386,6 +497,9 @@ class _BoardPageState extends State<BoardPage> {
                   ],
                 )
               : Row(),
+          SizedBox(
+            height: 30,
+          ),
         ],
       ),
       bottomNavigationBar: null,

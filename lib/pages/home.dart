@@ -1,3 +1,4 @@
+import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -27,6 +28,7 @@ class _HomeState extends State<Home> {
   Color priority = Color.fromARGB(250, 247, 162, 144);
   CollectionReference chats;
   Stream recent;
+  int selectedPage = 0;
 
   // initState
   @override

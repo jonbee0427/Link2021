@@ -91,7 +91,7 @@ class BoardTile extends StatelessWidget {
                         Container(
                           child: title == null || title == ""
                               ? Text(
-                                  'Nothing',
+                                  '제목 없음',
                                   style: TextStyle(fontSize: 14),
                                   overflow: TextOverflow.ellipsis,
                                 )
@@ -112,7 +112,7 @@ class BoardTile extends StatelessWidget {
                         Container(
                           child: body == null || body == ""
                               ? Text(
-                                  'Nothing',
+                                  '내용 없음',
                                   style: TextStyle(fontSize: 14),
                                   overflow: TextOverflow.ellipsis,
                                 )

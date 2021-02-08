@@ -56,6 +56,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   final AuthService _auth = AuthService();
   String groupId;
 
+  Color priority = Color.fromARGB(250, 247, 162, 144);
+
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
     PickedFile image = await imagePicker.getImage(source: ImageSource.gallery);
@@ -74,6 +76,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
     }
   }
 
+/*
   Future uploadFile(String path, String groupname, int createtime) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference reference = FirebaseStorage.instance
@@ -90,7 +93,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     });
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     DateTime _selectedDateTime = DateTime.now();
@@ -326,8 +329,16 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                           },
                                           itemCount: images.length,
                                           autoplayDisableOnInteraction: true,
-                                          pagination: SwiperPagination(),
-                                          control: SwiperControl(),
+                                          pagination: new SwiperPagination(
+                                            alignment: Alignment.bottomCenter,
+                                            builder:
+                                                new DotSwiperPaginationBuilder(
+                                                    color: Colors.grey,
+                                                    activeColor: priority),
+                                          ),
+                                          control: new SwiperControl(
+                                            color: priority,
+                                          ),
                                         )
                                       : null,
                                 )
@@ -405,11 +416,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                 path,
                                               );
                                             });
-                                            for (String p in path) {
-                                              uploadFile(
-                                                  p, _groupName, create_time);
-                                              print(p);
-                                            }
+
                                             Navigator.of(context).pop();
 
                                             // } else {

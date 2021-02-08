@@ -20,6 +20,7 @@ class ProfileMain extends StatefulWidget {
 class _ProfileMainState extends State<ProfileMain> {
   bool enabled = true;
   final AuthService _auth = AuthService();
+  Color priority = Color.fromARGB(250, 247, 162, 144);
 
   @override
   Widget build(BuildContext context) {
@@ -44,14 +45,15 @@ class _ProfileMainState extends State<ProfileMain> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text('내가 쓴 글'),
-                  Icon(Icons.arrow_forward_ios),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: priority,
+                  ),
                 ],
               ),
               onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => myBoard()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => myBoard()));
               },
             ),
             SizedBox(height: 30),
@@ -64,7 +66,10 @@ class _ProfileMainState extends State<ProfileMain> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text('비밀번호 재설정'),
-                  Icon(Icons.arrow_forward_ios),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: priority,
+                  ),
                 ],
               ),
               onTap: () {
@@ -107,7 +112,10 @@ class _ProfileMainState extends State<ProfileMain> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text('문의하기'),
-                  Icon(Icons.arrow_forward_ios),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: priority,
+                  ),
                 ],
               ),
               onTap: () {
@@ -146,7 +154,10 @@ class _ProfileMainState extends State<ProfileMain> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   Text('로그아웃'),
-                  Icon(Icons.arrow_forward_ios),
+                  Icon(
+                    Icons.arrow_forward_ios,
+                    color: priority,
+                  ),
                 ],
               ),
               onTap: () async {
