@@ -100,8 +100,8 @@ class _SignInPageState extends State<SignInPage> {
         ? Loading()
         : Scaffold(
             appBar: AppBar(
-              backgroundColor: Color.fromARGB(250, 247, 162, 144),
-              elevation: 10,
+              backgroundColor: Colors.white,
+              elevation: 0,
             ),
             body: Form(
               key: _formKey,
