@@ -31,7 +31,7 @@ String _userName = '';
 String _email = '';
 Stream _groups;
 bool timeiscorrect = false;
-bool usingtimepicker = true;
+bool usingtimepicker = false;
 CollectionReference chats;
 int maxpicture = 0;
 
@@ -50,8 +50,8 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   String title;
   String body, datetime;
   int max_person;
+  String _category;
   String category = '공동 구매';
-  String subcategory;
   final AuthService _auth = AuthService();
   String groupId;
 
@@ -105,7 +105,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
             body: Form(
               key: _formKey,
               child: Container(
-                color: Color.fromARGB(250, 247, 162, 144),
+                color: Colors.white,
                 child: ListView(
                   controller: new ScrollController(),
                   padding:
@@ -115,14 +115,6 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("게시글 작성",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 30.0,
-                                fontWeight: FontWeight.bold)),
-                        SizedBox(
-                          height: 10,
-                        ),
                         TextFormField(
                           cursorColor: Colors.black,
                           style: TextStyle(
@@ -143,36 +135,16 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                             });
                           },
                         ),
-                        Text("마감시간",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 15.0,
-                                fontWeight: FontWeight.bold)),
-                        SizedBox(
-                          height: 10,
-                        ),
+                        // Text("마감시간",
+                        //     style: TextStyle(
+                        //         color: Colors.black,
+                        //         fontSize: 15.0,
+                        //         fontWeight: FontWeight.bold)),
+                        // SizedBox(
+                        //   height: 10,
+                        // ),
                         Row(
                           children: [
-                            Checkbox(
-                              value: usingtimepicker, //처음엔 false
-                              onChanged: (value) {
-                                //value가 false -> 클릭하면 true로 변경됨(두개 중 하나니까)
-                                setState(() {
-                                  usingtimepicker = value; //true가 들어감.
-                                });
-                              },
-                            ),
-                            Text(
-                              '마감시간을 사용한다',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  letterSpacing: 1.0,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            SizedBox(
-                              width: 10,
-                            ),
                             Flexible(
                               flex: 2,
                               child: TextFormField(
@@ -191,6 +163,30 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 },
                               ),
                             ),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              '마감시간을 사용한다',
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  letterSpacing: 1.0,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            Checkbox(
+                              value: usingtimepicker, //처음엔 false
+                              activeColor: Color.fromARGB(250, 247, 162, 144),
+                              onChanged: (value) {
+                                //value가 false -> 클릭하면 true로 변경됨(두개 중 하나니까)
+                                setState(() {
+                                  usingtimepicker = value; //true가 들어감.
+                                });
+                              },
+                            ),
+                            // SizedBox(
+                            //   width: 30,
+                            // ),
                           ],
                         ),
                         SizedBox(
@@ -224,8 +220,6 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                   if (val.compareTo(DateTime.now().toString()) >
                                       0) {
                                     timeiscorrect = true;
-                                    print(val
-                                        .compareTo(DateTime.now().toString()));
                                   } else
                                     timeiscorrect = false;
                                 },
@@ -236,16 +230,17 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                         ),
                         DropDownFormField(
                           titleText: '세부 카테고리',
-                          hintText: '선택하세요',
-                          value: subcategory,
+                          hintText: '선택하지 않아도 됩니다.',
+                          filled: false,
+                          value: _category,
                           onSaved: (value) {
                             setState(() {
-                              subcategory = value;
+                              _category = value;
                             });
                           },
                           onChanged: (value) {
                             setState(() {
-                              subcategory = value;
+                              _category = value;
                             });
                           },
                           dataSource: [
@@ -299,7 +294,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                           height: 50.0,
                           child: RaisedButton(
                               elevation: 0.0,
-                              color: Colors.blueAccent[200],
+                              color: Color.fromARGB(250, 247, 162, 144),
                               // Color.fromARGB(300, 247, 162, 144),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30.0)),
@@ -348,8 +343,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 height: 50.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
-                                    // Color.fromARGB(300, 247, 162, 144),
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),
@@ -372,8 +366,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                 height: 50.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
-                                    // Color.fromARGB(300, 247, 162, 144),
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),
@@ -387,39 +380,42 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                       var create_time_s = new Timestamp.now();
                                       if (_formKey.currentState.validate()) {
                                         if (usingtimepicker =
-                                            false || timeiscorrect == true) {
-                                          if (subcategory != null) {
-                                            if (datetime != null) {
-                                              //datetime = '없음';
-                                              await HelperFunctions
-                                                      .getUserNameSharedPreference()
-                                                  .then((val) async{
-                                              await DatabaseService(uid: _user.uid)
-                                                    .createGroup(
-                                                        val,
-                                                        _groupName,
-                                                        title,
-                                                        body,
-                                                        datetime,
-                                                        max_person,
-                                                        subcategory,
-                                                        category,
-                                                        create_time_s);
-
-
-                                              });
-                                              for (String p in path) {
-                                                uploadFile(
-                                                    p, _groupName, create_time);
-                                                print(p);
-                                              }
-                                              Navigator.of(context).pop();
-                                            } else {
-                                              Toast.show(
-                                                  '마감시간을 입력해주세요.', context,
-                                                  duration: Toast.LENGTH_LONG,
-                                                  gravity: Toast.BOTTOM);
+                                            true || timeiscorrect == true) {
+                                          if (_category != null) {
+                                            if (datetime == null) {
+                                              datetime = '시간 없음';
                                             }
+                                            print(datetime);
+                                            await HelperFunctions
+                                                    .getUserNameSharedPreference()
+                                                .then((val) {
+                                              DatabaseService(uid: _user.uid)
+                                                  .createGroup(
+                                                val,
+                                                _groupName,
+                                                title,
+                                                body,
+                                                datetime,
+                                                max_person,
+                                                _category,
+                                                category,
+                                                create_time_s,
+                                                path,
+                                              );
+                                            });
+                                            for (String p in path) {
+                                              uploadFile(
+                                                  p, _groupName, create_time);
+                                              print(p);
+                                            }
+                                            Navigator.of(context).pop();
+
+                                            // } else {
+                                            //   Toast.show(
+                                            //       '마감시간을 입력해주세요.', context,
+                                            //       duration: Toast.LENGTH_LONG,
+                                            //       gravity: Toast.BOTTOM);
+                                            // }
                                           } else {
                                             Toast.show(
                                                 '서브 카테고리를 입력해주세요.', context,
@@ -432,7 +428,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                               context,
                                               duration: Toast.LENGTH_LONG,
                                               gravity: Toast.BOTTOM);
-                                          usingtimepicker = true;
+                                          usingtimepicker = false;
                                         }
                                       }
                                     }),

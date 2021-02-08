@@ -101,12 +101,12 @@ class _SignInPageState extends State<SignInPage> {
         : Scaffold(
             appBar: AppBar(
               backgroundColor: Color.fromARGB(250, 247, 162, 144),
-              elevation: 0,
+              elevation: 10,
             ),
             body: Form(
               key: _formKey,
               child: Container(
-                color: Color.fromARGB(250, 247, 162, 144),
+                color: Colors.white,
                 child: ListView(
                   padding:
                       EdgeInsets.symmetric(horizontal: 30.0, vertical: 30.0),
@@ -117,13 +117,14 @@ class _SignInPageState extends State<SignInPage> {
                       children: <Widget>[
                         Text("H-Link",
                             style: TextStyle(
-                                color: Colors.white,
+                                color: Color.fromARGB(250, 247, 162, 144),
                                 fontSize: 40.0,
                                 fontWeight: FontWeight.bold)),
                         SizedBox(height: 30.0),
                         Text("Sign In",
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 25.0)),
+                            style: TextStyle(
+                                color: Color.fromARGB(250, 247, 162, 144),
+                                fontSize: 25.0)),
                         SizedBox(height: 50.0),
                         Row(
                           children: [
@@ -132,7 +133,7 @@ class _SignInPageState extends State<SignInPage> {
                               child: Column(
                                 children: [
                                   TextFormField(
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.black),
                                     decoration: textInputDecoration.copyWith(
                                         labelText: 'Student ID'),
                                     // validator: (val) {
@@ -146,7 +147,7 @@ class _SignInPageState extends State<SignInPage> {
                                   ),
                                   SizedBox(height: 15.0),
                                   TextFormField(
-                                    style: TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.black),
                                     decoration: textInputDecoration.copyWith(
                                         labelText: 'Password'),
                                     validator: (val) => val.length < 6
@@ -170,7 +171,7 @@ class _SignInPageState extends State<SignInPage> {
                                 height: 100.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     // Color.fromARGB(300, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
@@ -196,7 +197,7 @@ class _SignInPageState extends State<SignInPage> {
                                 height: 50.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),
@@ -220,7 +221,7 @@ class _SignInPageState extends State<SignInPage> {
                                 height: 50.0,
                                 child: RaisedButton(
                                     elevation: 0.0,
-                                    color: Colors.pink[300],
+                                    color: Color.fromARGB(250, 247, 162, 144),
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(30.0)),

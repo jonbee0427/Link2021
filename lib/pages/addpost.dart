@@ -68,21 +68,15 @@ class _PostState extends State<Post> {
                           width: double.infinity,
                           height: 150.0,
                           child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Color.fromARGB(250, 247, 162, 144),
-                                  width: 3),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(40),
-                              ),
-                            ),
                             child: RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(
+                                      color: Color.fromARGB(250, 247, 162, 144),
+                                      width: 3),
+                                ),
                                 elevation: 0.0,
                                 color: Colors.white,
-                                // Color.fromARGB(300, 247, 162, 144),
-                                // shape: RoundedRectangleBorder(
-                                //   borderRadius: BorderRadius.circular(30.0),
-                                // ),
                                 child: Text('공동 구매',
                                     style: TextStyle(
                                         color: Colors.black, fontSize: 30.0)),
@@ -103,13 +97,17 @@ class _PostState extends State<Post> {
                           height: 150.0,
                           child: RaisedButton(
                               elevation: 0.0,
-                              color: Colors.blue[200],
+                              color: Colors.white,
                               // Color.fromARGB(300, 247, 162, 144),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                    color: Color.fromARGB(250, 247, 162, 144),
+                                    width: 3),
+                              ),
                               child: Text('스터디',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 30.0)),
+                                      color: Colors.black, fontSize: 30.0)),
                               onPressed: () {
                                 print('study');
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -136,13 +134,18 @@ class _PostState extends State<Post> {
                           height: 150.0,
                           child: RaisedButton(
                               elevation: 0.0,
-                              color: Colors.blue[200],
+                              color: Colors.white,
+
                               // Color.fromARGB(300, 247, 162, 144),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                    color: Color.fromARGB(250, 247, 162, 144),
+                                    width: 3),
+                              ),
                               child: Text('취미 생활',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 30.0)),
+                                      color: Colors.black, fontSize: 30.0)),
                               onPressed: () {
                                 print('Hobby');
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -151,60 +154,25 @@ class _PostState extends State<Post> {
                         ),
                       ),
                       SizedBox(
-                        width: 10,
+                        width: 20,
                       ),
-                      /*
-                      Flexible(
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 50.0,
-                          child: RaisedButton(
-                              elevation: 0.0,
-                              color: Colors.pink[300],
-                              // Color.fromARGB(300, 247, 162, 144),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
-                              child: Text('작성 완료',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16.0)),
-                              onPressed: () {
-                                DateTime create_time = new DateTime.now();
-                                if (_formKey.currentState.validate()) {
-                                  writing
-                                      .add(
-                                        {
-                                          'title': title,
-                                          'body': body,
-                                          'time_limit': datetime,
-                                          'max_person': max_person,
-                                          'create_time': create_time
-                                        },
-                                      )
-                                      .then((value) => print('writing added'))
-                                      .catchError(
-                                          (value) => print('failed to add'));
-                                }
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => HomePage()));
-                              }),
-                        ),
-                      ),
-                      */
                       Flexible(
                         child: SizedBox(
                           width: double.infinity,
                           height: 150.0,
                           child: RaisedButton(
                               elevation: 0.0,
-                              color: Colors.blue[200],
+                              color: Colors.white,
                               // Color.fromARGB(300, 247, 162, 144),
                               shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30.0)),
+                                borderRadius: BorderRadius.circular(18.0),
+                                side: BorderSide(
+                                    color: Color.fromARGB(250, 247, 162, 144),
+                                    width: 3),
+                              ),
                               child: Text('준비중',
                                   style: TextStyle(
-                                      color: Colors.white, fontSize: 30.0)),
+                                      color: Colors.black, fontSize: 30.0)),
                               onPressed: () {
                                 print('준비중');
                                 Toast.show('준비중입니다.', context,

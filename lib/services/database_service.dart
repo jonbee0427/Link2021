@@ -1,3 +1,5 @@
+import 'dart:io';
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -23,36 +25,54 @@ class DatabaseService {
       'account': ''
     });
   }
+
   String _destructureName(String res) {
     // print(res.substring(res.indexOf('_') + 1));
     // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
-    return res.substring(res.indexOf('_') + 1,res.indexOf('`'));
+    return res.substring(res.indexOf('_') + 1, res.indexOf('`'));
     //return res.substring(res.indexOf('_') + 1);
-
   }
+
   String _destructureEnteringTime(String res) {
     // print(res.substring(res.indexOf('_') + 1));
     // print('이름 으랴랴랴' + res.substring(res.indexOf('_') + 1));
     return res.substring(res.indexOf('`') + 1);
   }
+
   Future updateGroupName(
-      String uid,
-      String newGroupName,
-      String groupId,
-      )async{
-    DocumentReference membersDocRec = await FirebaseFirestore.instance.collection('MyUsers').doc(uid);
+    String uid,
+    String newGroupName,
+    String groupId,
+  ) async {
+    DocumentReference membersDocRec =
+        await FirebaseFirestore.instance.collection('MyUsers').doc(uid);
     DocumentSnapshot memberDocSnapshot = await membersDocRec.get();
     List<dynamic> groups = await memberDocSnapshot.data()['groups'];
     int index = 0;
     groups.forEach((element) {
-      if(element.contains(groupId)){
+      if (element.contains(groupId)) {
         String enteringTime = _destructureEnteringTime(element);
-        groups[index] = groupId+'_'+newGroupName+'`'+enteringTime;
+        groups[index] = groupId + '_' + newGroupName + '`' + enteringTime;
       }
       index++;
     });
-    membersDocRec.update({
-      'groups' : groups
+    membersDocRec.update({'groups': groups});
+  }
+
+  Future uploadFile(String path, String groupDocRefid) async {
+    String fileName = DateTime.now().millisecondsSinceEpoch.toString();
+    Reference reference = FirebaseStorage.instance
+        .ref()
+        .child('${groupDocRefid}/' + 'board/' + fileName);
+    UploadTask uploadTask = reference.putFile(File(path));
+    TaskSnapshot taskSnapshot = await uploadTask;
+    taskSnapshot.ref.getDownloadURL().then((downloadURL) {
+      // setState(() {
+      //   //_sendMessage('image', path: downloadURL);
+      // });
+    }, onError: (err) {
+      // Toast.show('the file is not a image.', context,
+      //     duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     });
   }
 
@@ -66,7 +86,8 @@ class DatabaseService {
       int max_person,
       String subcategory,
       String category,
-      Timestamp create_time) async {
+      Timestamp create_time,
+      List<String> path) async {
     DocumentReference groupDocRef = await groupCollection.add({
       'groupName': groupName,
       'groupIcon': '',
@@ -90,12 +111,17 @@ class DatabaseService {
 
     await groupDocRef.update({
       'members': FieldValue.arrayUnion([uid + '_' + userName]),
-      'groupId': groupDocRef.id
+      'groupId': groupDocRef.id,
     });
+    for (String p in path) {
+      print(groupDocRef.id);
+      uploadFile(p, groupDocRef.id);
+    }
 
     DocumentReference userDocRef = userCollection.doc(uid);
     return await userDocRef.update({
-      'groups': FieldValue.arrayUnion([groupDocRef.id + '_' + groupName+'`'+DateTime.now().toString()])
+      'groups': FieldValue.arrayUnion(
+          [groupDocRef.id + '_' + groupName + '`' + DateTime.now().toString()])
     });
   }
 
@@ -117,16 +143,18 @@ class DatabaseService {
     try {
       print('Hello');
       List<dynamic> groups = await userDocSnapshot.data()['groups'];
-      groups.forEach(( element) async {
+      groups.forEach((element) async {
         if (element.contains(groupId + '_' + groupName)) {
           isInit = true;
-        }});
+        }
+      });
 
-      if(isInit == true){
+      if (isInit == true) {
         Fluttertoast.showToast(msg: '이미 들어가있습니다');
-      }else{
+      } else {
         await userDocRef.update({
-          'groups': FieldValue.arrayUnion([groupId + '_' + groupName+ '`' +now])
+          'groups':
+              FieldValue.arrayUnion([groupId + '_' + groupName + '`' + now])
         });
 
         await groupDocRef.update({
@@ -134,11 +162,10 @@ class DatabaseService {
           'membersNum': FieldValue.increment(1)
         });
       }
-
     } catch (e) {
       print('Error Here');
       await userDocRef.update({
-        'groups': FieldValue.arrayUnion([groupId + '_' + groupName+'`'+now])
+        'groups': FieldValue.arrayUnion([groupId + '_' + groupName + '`' + now])
       });
 
       print(e.toString());
@@ -150,12 +177,14 @@ class DatabaseService {
   }
 
   // toggling the user group join
-  Future OutChat(String groupId, String groupName, String userName, String enteringTime, {bool isAdmin}) async {
+  Future OutChat(
+      String groupId, String groupName, String userName, String enteringTime,
+      {bool isAdmin}) async {
     print('isAdmin : ' + isAdmin.toString());
 
     print('OutChat 정보');
     print(uid + "_" + userName);
-    print(groupId + ' ' + groupName + ' '+ enteringTime);
+    print(groupId + ' ' + groupName + ' ' + enteringTime);
 
     DocumentReference userDocRef = userCollection.doc(uid);
     DocumentSnapshot userDocSnapshot = await userDocRef.get();
@@ -167,20 +196,19 @@ class DatabaseService {
     int membersNum = await groupDocSnapshot.data()['membersNum'];
     List<dynamic> groups = await userDocSnapshot.data()['groups'];
     List<dynamic> groupsMembers = await groupDocSnapshot.data()['members'];
-    if(enteringTime == ""){//BoardPage에서 호출되는 OutChat.
-    int index = 0;
-    for(int i = 0; i < groups.length; i++){
-      if(groups[i].contains(groupId+'_'+groupName)){
-        groups.removeAt(i);
+    if (enteringTime == "") {
+      //BoardPage에서 호출되는 OutChat.
+      int index = 0;
+      for (int i = 0; i < groups.length; i++) {
+        if (groups[i].contains(groupId + '_' + groupName)) {
+          groups.removeAt(i);
+        }
       }
-    }
 
-    print("after");
-    print(groups);
+      print("after");
+      print(groups);
 
-      await userDocRef.update({
-        'groups': groups
-      });
+      await userDocRef.update({'groups': groups});
 
       await groupDocRef.update({
         'members': FieldValue.arrayRemove([uid + '_' + userName]),
@@ -199,8 +227,10 @@ class DatabaseService {
           }
         });
         await groupDocRef.delete();
-      }}else{//ChatPage에서 호출되는 OutChat.
-      if (groups.contains(groupId + '_' + groupName+'`'+enteringTime)) {
+      }
+    } else {
+      //ChatPage에서 호출되는 OutChat.
+      if (groups.contains(groupId + '_' + groupName + '`' + enteringTime)) {
         if (membersNum <= 1) {
           desertRef.ref().child(groupId + '/').listAll().then((value) {
             value.items.forEach((element) {
@@ -215,35 +245,37 @@ class DatabaseService {
           await groupDocRef.delete();
 
           await userDocRef.update({
-            'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
+            'groups': FieldValue.arrayRemove(
+                [groupId + '_' + groupName + '`' + enteringTime])
           });
 
           await groupDocRef.update({
             'members': FieldValue.arrayRemove([uid + '_' + userName]),
             'membersNum': FieldValue.increment(-1)
           });
-        }
-        else{
-          if(isAdmin == true){
+        } else {
+          if (isAdmin == true) {
             print('이부분이 맞긴 한데...? ');
             print('현재 uid : ' + uid + 'name : ' + userName);
             groupsMembers.removeAt(0);
             print('지금부터 멤버 출력');
             print(groupsMembers);
             await userDocRef.update({
-              'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
+              'groups': FieldValue.arrayRemove(
+                  [groupId + '_' + groupName + '`' + enteringTime])
             });
 
             await groupDocRef.update({
               'members': FieldValue.arrayRemove([uid + '_' + userName]),
               'membersNum': FieldValue.increment(-1),
-              'admin' : groupsMembers[0].substring(groupsMembers[0].indexOf('_') + 1)
+              'admin':
+                  groupsMembers[0].substring(groupsMembers[0].indexOf('_') + 1)
             });
             print('currentNum: ' + membersNum.toString());
-          }
-          else{
+          } else {
             await userDocRef.update({
-              'groups': FieldValue.arrayRemove([groupId + '_' + groupName+'`'+enteringTime])
+              'groups': FieldValue.arrayRemove(
+                  [groupId + '_' + groupName + '`' + enteringTime])
             });
 
             await groupDocRef.update({
@@ -252,14 +284,11 @@ class DatabaseService {
             });
             print('currentNum: ' + membersNum.toString());
           }
-
         }
-      }else{
+      } else {
         Fluttertoast.showToast(msg: '속해있는 채팅방이 아닙니다!');
       }
-
     }
-
   }
 
   Future DeleteChat(String groupId, String groupName, String userName) async {
@@ -270,6 +299,11 @@ class DatabaseService {
     DocumentSnapshot groupDocSnapshot = await groupDocRef.get();
     FirebaseStorage desertRef = FirebaseStorage.instance;
     desertRef.ref().child(groupId + '/').listAll().then((value) {
+      value.items.forEach((element) {
+        element.delete();
+      });
+    });
+    desertRef.ref().child(groupId + '/board/').listAll().then((value) {
       value.items.forEach((element) {
         element.delete();
       });
@@ -337,7 +371,7 @@ class DatabaseService {
         .collection('groups')
         .doc(groupId)
         .collection('messages')
-        .where('time',isGreaterThan: enteringTime)
+        .where('time', isGreaterThan: enteringTime)
         .orderBy('time', descending: true)
         .snapshots();
   }

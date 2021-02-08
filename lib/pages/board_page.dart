@@ -3,7 +3,7 @@ import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+// import 'package:fluttertoast/fluttertoast.dart';
 import 'package:link_ver1/widgets/boardTile.dart';
 import 'package:link_ver1/services/database_service.dart';
 import 'package:link_ver1/helper/helper_functions.dart';
@@ -141,6 +141,9 @@ class _BoardPageState extends State<BoardPage> {
     // print(widget.admin +
     //     "  " +
     //     widget.enteringTime.toString()); //enteringTime null
+    print(context);
+    print(widget.current_person);
+    print(widget.deletePermit);
 
     // print_test();
     return Scaffold(
@@ -153,23 +156,29 @@ class _BoardPageState extends State<BoardPage> {
           IconButton(
             icon: Icon(Icons.near_me_outlined),
             onPressed: () async {
-              await DatabaseService(uid: widget.uid)
-                  .JoinChat(widget.groupId, widget.groupName, widget.userName);
-              await initialize();
+              if (widget.max_person != widget.current_person) {
+                await DatabaseService(uid: widget.uid).JoinChat(
+                    widget.groupId, widget.groupName, widget.userName);
+                await initialize();
 
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChatPage(
-                            groupId: widget.groupId,
-                            userName: widget.userName,
-                            groupName: widget.groupName,
-                            groupMembers: widget.groupMembers,
-                            profilePic: widget.profilePic,
-                            enteringTime: convertDateFromString(inEnteringTime),
-                        admin: widget.admin,
-                        category: widget.category,
-                          )));
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ChatPage(
+                              groupId: widget.groupId,
+                              userName: widget.userName,
+                              groupName: widget.groupName,
+                              groupMembers: widget.groupMembers,
+                              profilePic: widget.profilePic,
+                              enteringTime:
+                                  convertDateFromString(inEnteringTime),
+                              admin: widget.admin,
+                              category: widget.category,
+                            )));
+              } else {
+                Toast.show('최대 인원이 되어 더 이상 입장할 수 없습니다.', context,
+                    duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
+              }
             },
           )
         ],
@@ -369,8 +378,9 @@ class _BoardPageState extends State<BoardPage> {
                                     style: TextStyle(
                                         color: Colors.white, fontSize: 16.0)),
                                 onPressed: () {
-                                  Fluttertoast.showToast(
-                                      msg: '거래가 완료되지 않았습니다!');
+                                  Toast.show('거래가 완료되지 않았습니다.', context,
+                                      duration: Toast.LENGTH_LONG,
+                                      gravity: Toast.BOTTOM);
                                 }),
                           ),
                   ],
