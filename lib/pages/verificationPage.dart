@@ -45,8 +45,11 @@ class _VerificationPageState extends State<VerificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(250, 247, 162, 144),
+        backgroundColor: Colors.white,
         elevation: 0,
+        iconTheme: IconThemeData(
+          color: Color.fromARGB(250, 247, 162, 144),
+        ),
       ),
       body: Form(
           child: Container(

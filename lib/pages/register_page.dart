@@ -82,8 +82,11 @@ class _RegisterPageState extends State<RegisterPage> {
         ? Loading()
         : Scaffold(
             appBar: AppBar(
-              backgroundColor: Color.fromARGB(250, 247, 162, 144),
+              backgroundColor: Colors.white,
               elevation: 0,
+              iconTheme: IconThemeData(
+                color: Color.fromARGB(250, 247, 162, 144),
+              ),
             ),
             body: Form(
                 key: _formKey,
@@ -97,15 +100,15 @@ class _RegisterPageState extends State<RegisterPage> {
                         // mainAxisAlignment: MainAxisAlignment.center,
                         // crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          Text("H-links",
+                          Text("한동모아",
                               style: TextStyle(
-                                  color: Colors.black,
+                                  color: Color.fromARGB(250, 247, 162, 144),
                                   fontSize: 45.0,
                                   fontWeight: FontWeight.bold)),
                           SizedBox(height: 30.0),
                           Text("Register",
                               style: TextStyle(
-                                  color: Colors.black, fontSize: 25.0)),
+                                  color: Color.fromARGB(250, 247, 162, 144), fontSize: 25.0)),
                           SizedBox(height: 50.0),
 
                           // TextFormField(
