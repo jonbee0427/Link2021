@@ -73,6 +73,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
     }
   }
 
+/*
   Future uploadFile(String path, String groupname, int createtime) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference reference = FirebaseStorage.instance
@@ -89,7 +90,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     });
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     DateTime _selectedDateTime = DateTime.now();
@@ -403,11 +404,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                 path,
                                               );
                                             });
-                                            for (String p in path) {
-                                              uploadFile(
-                                                  p, _groupName, create_time);
-                                              print(p);
-                                            }
+
                                             Navigator.of(context).pop();
 
                                             // } else {
