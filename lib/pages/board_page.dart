@@ -215,25 +215,10 @@ class _BoardPageState extends State<BoardPage> {
           IconButton(
             icon: Icon(Icons.near_me_outlined),
             onPressed: () async {
-<<<<<<< HEAD
-              await DatabaseService(uid: widget.uid)
-                  .JoinChat(widget.groupId, widget.groupName, widget.userName);
-              await DatabaseService(uid: widget.uid).sendMessage(widget.groupId, widget.userName+' 님이 입장하셨습니다', 'system_in');
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChatPage(
-                            groupId: widget.groupId,
-                            userName: widget.userName,
-                            groupName: widget.groupName,
-                            groupMembers: widget.groupMembers,
-                            profilePic: widget.profilePic,
-=======
               if (widget.max_person != widget.current_person) {
                 await DatabaseService(uid: widget.uid).JoinChat(
                     widget.groupId, widget.groupName, widget.userName);
                 await initialize();
->>>>>>> JW
 
                 Navigator.push(
                     context,

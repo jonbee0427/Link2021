@@ -132,27 +132,6 @@ class _PostState extends State<Post> {
                         child: SizedBox(
                           width: double.infinity,
                           height: 150.0,
-<<<<<<< HEAD
-                          child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Color.fromARGB(250,247 , 162, 144)),
-                              borderRadius: BorderRadius.circular(30.0)
-                            ),
-                            child: RaisedButton(
-                                elevation: 0.0,
-                                color:  Colors.white,
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(30.0)),
-                                child: Text('취미 생활',
-                                    style: TextStyle(
-                                        color: Colors.black, fontSize: 30.0)),
-                                onPressed: () {
-                                  print('Hobby');
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (context) => PostHobbyTogether()));
-                                }),
-                          ),
-=======
                           child: RaisedButton(
                               elevation: 0.0,
                               color: Colors.white,
@@ -172,7 +151,6 @@ class _PostState extends State<Post> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => PostHobbyTogether()));
                               }),
->>>>>>> JW
                         ),
                       ),
                       SizedBox(
