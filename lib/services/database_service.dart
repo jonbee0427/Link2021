@@ -159,7 +159,7 @@ class DatabaseService {
 
         await groupDocRef.update({
           'members': FieldValue.arrayUnion(
-              [uid + '_' + userName + '`' + DateTime.now().toString()]),
+              [uid + '_' + userName ]),
           'membersNum': FieldValue.increment(1)
         });
       }
