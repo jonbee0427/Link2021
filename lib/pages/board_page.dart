@@ -17,6 +17,7 @@ import 'package:link_ver1/helper/helper_functions.dart';
 import 'package:toast/toast.dart';
 
 import 'EditPage.dart';
+import 'fullImageScreen.dart';
 
 class BoardPage extends StatefulWidget {
   final String title;
@@ -88,7 +89,7 @@ class _BoardPageState extends State<BoardPage> {
         //print('in foreach!!!!!');
         await element.getDownloadURL().then((value) {
           print('Current value  : ' + value);
-          setState(() {
+          setState((){
             imageList.add(value);
           });
         });
@@ -324,28 +325,59 @@ class _BoardPageState extends State<BoardPage> {
           SizedBox(
             height: 20,
           ),
-          imageList.length != 0
-              ? SizedBox(
-                  child: imageList.length != 0
-                      ? Container(
-                          width: 400,
-                          height: 350,
-                          child: imageList.length != 0
-                              ? Swiper(
-                                  key: UniqueKey(),
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Image.network(imageList[index]);
-                                  },
-                                  itemCount: imageList.length,
-                                  autoplayDisableOnInteraction: true,
-                                  pagination: SwiperPagination(),
-                                  control: SwiperControl(),
-                                )
-                              : null,
-                        )
-                      : null,
-                )
+          imageList.length != 0 ?
+              SizedBox(
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: imageList.length,
+                  itemBuilder: (BuildContext context, int index){
+                    return
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>FullScreenPage(
+                          Url: imageList[index],
+                        )));
+                      },
+                      child:  Container(
+                        height: 200,
+                        width: 200,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.black
+                          ),
+                            image: DecorationImage(
+                                image: NetworkImage(imageList[index])
+                            )
+                        ),
+
+                      ),
+                    );
+
+                  },
+                ),
+              )
+              // ? SizedBox(
+              //     child: imageList.length != 0
+              //         ? Container(
+              //             width: 400,
+              //             height: 350,
+              //             child: imageList.length != 0
+              //                 ? Swiper(
+              //                     key: UniqueKey(),
+              //                     itemBuilder:
+              //                         (BuildContext context, int index) {
+              //                       return Image.network(imageList[index]);
+              //                     },
+              //                     itemCount: imageList.length,
+              //                     autoplayDisableOnInteraction: true,
+              //                     pagination: SwiperPagination(),
+              //                     control: SwiperControl(),
+              //                   )
+              //                 : null,
+              //           )
+              //         : null,
+              //   )
               : Container(),
           /*
           imageList.length != 0
