@@ -50,10 +50,9 @@ class _PostBuyTogether extends State<PostBuyTogether> {
   String title;
   String body, datetime;
   int max_person;
-  String subcategory;
+  String _category;
   String category = '공동 구매';
   final AuthService _auth = AuthService();
-  String imageUrl = '';
 
   Future getImage() async {
     ImagePicker imagePicker = ImagePicker();
@@ -73,36 +72,24 @@ class _PostBuyTogether extends State<PostBuyTogether> {
     }
   }
 
-  Future uploadFile(String path, String groupname) async {
+/*
+  Future uploadFile(String path, String groupname, int createtime) async {
     String fileName = DateTime.now().millisecondsSinceEpoch.toString();
     Reference reference = FirebaseStorage.instance
         .ref()
-        .child('$groupname$_userName/' + fileName);
+        .child('$groupname$createtime/' + fileName);
     UploadTask uploadTask = reference.putFile(File(path));
     TaskSnapshot taskSnapshot = await uploadTask;
-    var downloadUrl = await taskSnapshot.ref.getDownloadURL();
     taskSnapshot.ref.getDownloadURL().then((downloadURL) {
       setState(() {
-        //_sendMessage('image', path: downloadURL)
+        //_sendMessage('image', path: downloadURL);
       });
     }, onError: (err) {
       Toast.show('the file is not a image.', context,
           duration: Toast.LENGTH_LONG, gravity: Toast.BOTTOM);
     });
-
-    imageUrl = downloadUrl;
-    var firebaseUser = await FirebaseAuth.instance.currentUser;
-    //firebaseUser.updateProfile(photoURL: imageUrl);
-    FirebaseFirestore.instance
-        .collection("MyUsers")
-        .doc(firebaseUser.uid)
-        .update({
-      "postPic": imageUrl.toString(),
-    }).then((_) {
-      print("field (postPic) updated success!");
-    });
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     DateTime _selectedDateTime = DateTime.now();
@@ -245,15 +232,15 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                           titleText: '세부 카테고리',
                           hintText: '선택하지 않아도 됩니다.',
                           filled: false,
-                          value: subcategory,
+                          value: _category,
                           onSaved: (value) {
                             setState(() {
-                              subcategory = value;
+                              _category = value;
                             });
                           },
                           onChanged: (value) {
                             setState(() {
-                              subcategory = value;
+                              _category = value;
                             });
                           },
                           dataSource: [
@@ -394,7 +381,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                       if (_formKey.currentState.validate()) {
                                         if (usingtimepicker =
                                             true || timeiscorrect == true) {
-                                          if (subcategory != null) {
+                                          if (_category != null) {
                                             if (datetime == null) {
                                               datetime = '시간 없음';
                                             }
@@ -410,16 +397,13 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                                                 body,
                                                 datetime,
                                                 max_person,
-                                                subcategory,
+                                                _category,
                                                 category,
                                                 create_time_s,
                                                 path,
                                               );
                                             });
-                                            for (String p in path) {
-                                              uploadFile(p, _groupName);
-                                              print(p);
-                                            }
+
                                             Navigator.of(context).pop();
 
                                             // } else {

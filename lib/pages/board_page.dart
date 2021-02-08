@@ -319,27 +319,33 @@ class _BoardPageState extends State<BoardPage> {
               ),
             ),
           ]),
-          /*
           SizedBox(
-            child: maxpicture != 0
-                ? Container(
-                    width: 400,
-                    height: 350,
-                    child: maxpicture != 0
-                        ? Swiper(
-                            key: UniqueKey(),
-                            itemBuilder: (BuildContext context, int index) {
-                              return Image.network(imageList[0]);
-                            },
-                            itemCount: imageList.length,
-                            autoplayDisableOnInteraction: true,
-                            pagination: SwiperPagination(),
-                            control: SwiperControl(),
-                          )
-                        : null,
-                  )
-                : null,
-          ),*/
+            height: 20,
+          ),
+          imageList.length != 0
+              ? SizedBox(
+                  child: imageList.length != 0
+                      ? Container(
+                          width: 400,
+                          height: 350,
+                          child: imageList.length != 0
+                              ? Swiper(
+                                  key: UniqueKey(),
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Image.network(imageList[index]);
+                                  },
+                                  itemCount: imageList.length,
+                                  autoplayDisableOnInteraction: true,
+                                  pagination: SwiperPagination(),
+                                  control: SwiperControl(),
+                                )
+                              : null,
+                        )
+                      : null,
+                )
+              : Container(),
+          /*
           imageList.length != 0
               ? SizedBox(
                   height: 100,
@@ -350,6 +356,7 @@ class _BoardPageState extends State<BoardPage> {
                         backgroundImage: NetworkImage(imageList[0]),
                         backgroundColor: Colors.white,
                       ),
+                      
                       CircleAvatar(
                         backgroundImage: NetworkImage(imageList[1]),
                         backgroundColor: Colors.white,
@@ -358,10 +365,15 @@ class _BoardPageState extends State<BoardPage> {
                         backgroundImage: NetworkImage(imageList[2]),
                         backgroundColor: Colors.white,
                       ),
+                      
                     ],
                   ),
                 )
               : Container(),
+              */
+          SizedBox(
+            height: 20,
+          ),
           widget.admin == widget.userName
               ? Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -372,8 +384,7 @@ class _BoardPageState extends State<BoardPage> {
                       height: 50.0,
                       child: RaisedButton(
                           elevation: 0.0,
-                          color: Colors.pink[300],
-                          // Color.fromARGB(300, 247, 162, 144),
+                          color: Color.fromARGB(250, 247, 162, 144),
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0)),
                           child: Text('게시글 수정',
@@ -404,7 +415,7 @@ class _BoardPageState extends State<BoardPage> {
                             height: 50.0,
                             child: RaisedButton(
                                 elevation: 0.0,
-                                color: Colors.pink[300],
+                                color: Color.fromARGB(250, 247, 162, 144),
                                 // Color.fromARGB(300, 247, 162, 144),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30.0)),
@@ -457,6 +468,9 @@ class _BoardPageState extends State<BoardPage> {
                   ],
                 )
               : Row(),
+          SizedBox(
+            height: 30,
+          ),
         ],
       ),
     );
