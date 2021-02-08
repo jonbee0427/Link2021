@@ -234,7 +234,7 @@ class _PostBuyTogether extends State<PostBuyTogether> {
                         ),
                         DropDownFormField(
                           titleText: '세부 카테고리',
-                          hintText: '선택하지 않아도 됩니다.',
+                          hintText: '선택해주세요.',
                           filled: false,
                           value: _category,
                           onSaved: (value) {
