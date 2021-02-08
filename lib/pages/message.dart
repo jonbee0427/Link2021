@@ -12,6 +12,9 @@ import 'package:link_ver1/widgets/group_tile.dart';
 import 'package:async/async.dart';
 import 'package:intl/intl.dart';
 
+//RecentMessageTime이 enteringTime보다 빠를 경우에는 null. 그렇지 않다면 recentMessage 전달.
+
+
 class Chat extends StatefulWidget {
   @override
   _ChatState createState() => _ChatState();
@@ -42,20 +45,21 @@ class _ChatState extends State<Chat> {
 
   Widget noGroupWidget() {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 25.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            GestureDetector(
-                onTap: () {
-                  _popupDialog(context);
-                },
-                child: Icon(Icons.add_circle,
-                    color: Colors.grey[700], size: 75.0)),
-            SizedBox(height: 20.0),
-            Text(
-                "You've not joined any group, tap on the 'add' icon to create a group or search for groups by tapping on the search button below."),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                    "사람들과 함께 새로운 활동을 해보세요! :)",
+                style: TextStyle(
+                  fontSize: 15
+                ),
+                ),
+              ],
+            )
+
           ],
         ));
   }
@@ -114,36 +118,56 @@ class _ChatState extends State<Chat> {
               );
             }
           } catch (e) {
-            return Text('nothing');
+            return Text(' ');
           }
         }
-        return Text('nothing');
+        return Text('');
       },
     );
   }
 
-
+// Future<Timestamp>getEnteringTime(String groupId) async{
+//   String enteringTime;
+//   DateTime enteringTimeDate;
+//   Timestamp enteringTimeDateStamp;
+//   await FirebaseFirestore.instance.collection('MyUsers').doc(_user.uid).get().then((value) async {
+//     List<dynamic> myGroup =await value.data()['groups'];
+//     myGroup.forEach((element) async {
+//       if(element.contains(groupId)){
+//         enteringTime = await _destructureEnteringTime(element);
+//         enteringTimeDate = await convertDateFromString(enteringTime);
+//         enteringTimeDateStamp = await Timestamp.fromDate(enteringTimeDate);
+//         print('DateTime to Timestamp' + enteringTimeDateStamp.toString());
+//       }
+//     });
+//   });
+//   return enteringTimeDateStamp;
+// }
   Widget getRecentTime(String groupId) {
     _getRecentStream(groupId);
+    Timestamp enteringTimeDateStamp;
     final form = new DateFormat('Md').add_Hm();
     return StreamBuilder(
       stream: recent,
-      builder: (context, snapshot) {
+      builder: (context, snapshot)  {
         if (snapshot.hasData) {
           try {
             Timestamp recentTime = snapshot.data['recentMessageTime'];
-            return Text(form.format(recentTime.toDate()));
+            // getEnteringTime(groupId).then((value){
+            //   enteringTimeDateStamp =  value;
+            // });
+                return Text(form.format(recentTime.toDate()));
           } catch (e) {
-            return Text(' ');
+            print(e.toString());
+            return Text('');
           }
         }
-        return Text('nothing');
+        return Text(' ');
       },
     );
   }
 
   Widget getGroupMembers(String groupId) {
-    print('_getRecentStream : ' +groupId + '  -----');
     _getRecentStream(groupId);
     return StreamBuilder(
       stream: recent,
@@ -176,7 +200,6 @@ class _ChatState extends State<Chat> {
   }
 
   _getRecentStream(String groupId) async {
-    print('_getRecentStream : ' + groupId);
     recent = chats.doc(groupId).snapshots();
   }
 
@@ -274,7 +297,6 @@ class _ChatState extends State<Chat> {
 
   DateTime convertDateFromString(String strDate){
    return DateTime.parse(strDate);
-
   }
 
   //사라질 기능
@@ -343,14 +365,14 @@ class _ChatState extends State<Chat> {
         ],
       ),
       body: groupsList(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _popupDialog(context);
-        },
-        child: Icon(Icons.add, color: Colors.white, size: 30.0),
-        backgroundColor: Colors.grey[700],
-        elevation: 0.0,
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     _popupDialog(context);
+      //   },
+      //   child: Icon(Icons.add, color: Colors.white, size: 30.0),
+      //   backgroundColor: Colors.grey[700],
+      //   elevation: 0.0,
+      // ),
     );
   }
 }

@@ -98,10 +98,10 @@ class _BoardPageState extends State<BoardPage> {
   }
 
   @override
-  void initState()  {
+  void initState() {
     // TODO: implement initState
     super.initState();
-     initialize();
+    initialize();
   }
 
   initialize() async {
@@ -111,15 +111,9 @@ class _BoardPageState extends State<BoardPage> {
       myGroup = value.get('groups');
     });
 
-<<<<<<< HEAD
     myGroup.forEach((element) async {
-      if(element.contains(widget.groupId)){
-        inEnteringTime =  _destructureEnteringTime(element);
-=======
-    myGroup.forEach((element) {
       if (element.contains(widget.groupId)) {
         inEnteringTime = _destructureEnteringTime(element);
->>>>>>> JH
         print('Entering TIme : ' + inEnteringTime);
       }
     });
@@ -127,18 +121,27 @@ class _BoardPageState extends State<BoardPage> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.title + "  "  +   widget.category + "  " + widget.subcategory);
-    print(widget.time_limit + "  "  +   widget.body + "  " + widget.create_time.toString());//create_time null
-    print(widget.max_person.toString() + "  "  +   widget.current_person.toString() + "  " + widget.userName);
-    print(widget.userName + "  "  +   widget.groupId + "  " + widget.groupName);
-    print(widget.uid + "  "  +   widget.profilePic + "  " + widget.deletePermit.toString());
-    print(widget.admin + "  "  +   widget.enteringTime.toString() );//enteringTime null
+    // print(widget.title + "  " + widget.category + "  " + widget.subcategory);
+    // print(widget.time_limit +
+    //     "  " +
+    //     widget.body +
+    //     "  " +
+    //     widget.create_time.toString()); //create_time null
+    // print(widget.max_person.toString() +
+    //     "  " +
+    //     widget.current_person.toString() +
+    //     "  " +
+    //     widget.userName);
+    // print(widget.userName + "  " + widget.groupId + "  " + widget.groupName);
+    // print(widget.uid +
+    //     "  " +
+    //     widget.profilePic +
+    //     "  " +
+    //     widget.deletePermit.toString());
+    // print(widget.admin +
+    //     "  " +
+    //     widget.enteringTime.toString()); //enteringTime null
 
-<<<<<<< HEAD
-  //  print('Entering TIme : ' + convertDateFromString(widget.enteringTime.toString()).toString());
-
-=======
->>>>>>> JH
     // print_test();
     return Scaffold(
       appBar: AppBar(
@@ -163,7 +166,9 @@ class _BoardPageState extends State<BoardPage> {
                             groupName: widget.groupName,
                             groupMembers: widget.groupMembers,
                             profilePic: widget.profilePic,
-                            enteringTime:  convertDateFromString(inEnteringTime),
+                            enteringTime: convertDateFromString(inEnteringTime),
+                        admin: widget.admin,
+                        category: widget.category,
                           )));
             },
           )
@@ -312,7 +317,8 @@ class _BoardPageState extends State<BoardPage> {
                     SizedBox(
                       width: 20,
                     ),
-                    widget.current_person - 1 == widget.deletePermit || widget.category != '공동 구매'
+                    widget.current_person - 1 == widget.deletePermit ||
+                            widget.category != '공동 구매'
                         ? SizedBox(
                             //width: double.infinity,
                             height: 50.0,
@@ -340,11 +346,8 @@ class _BoardPageState extends State<BoardPage> {
                                       await initialize();
                                       print('삭제예정 ID : ' + userId);
                                       await DatabaseService(uid: userId)
-                                          .OutChat(
-                                              widget.groupId,
-                                              widget.groupName,
-                                              userName,
-                                              "");
+                                          .OutChat(widget.groupId,
+                                              widget.groupName, userName, "");
                                     });
                                   });
                                   DatabaseService(uid: widget.uid).DeleteChat(
@@ -352,7 +355,6 @@ class _BoardPageState extends State<BoardPage> {
                                       widget.groupName,
                                       widget.userName);
                                   Navigator.pop(context);
-
                                 }),
                           )
                         : SizedBox(

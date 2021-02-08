@@ -23,6 +23,8 @@ class ChatPage extends StatefulWidget {
   final Widget groupMembers;
   final String profilePic;
   final DateTime enteringTime;
+  final String admin;
+  final String category;
 
   ChatPage(
       {this.groupId,
@@ -31,6 +33,8 @@ class ChatPage extends StatefulWidget {
       this.groupMembers,
       this.profilePic,
       this.enteringTime,
+        this.admin,
+        this.category
       });
 
   @override
@@ -216,6 +220,18 @@ class _ChatPageState extends State<ChatPage> {
     });
     _getCurrentUserNameAndUid();
     _getCategory();
+    if(admin == null) {
+      print('entering');
+      //print('Checking admin : ' + admin);
+      admin = widget.admin;
+      category = widget.category;
+    print(admin);
+    }
+    //print('admin : ' + admin);
+    //print( ' UserName : ' + _userName );
+    print( ' category : ' + category);
+    print('CurrentCondition : ' + admin == _userName || category != '공동 구매');
+
   }
 
   _getCategory()async{
@@ -223,7 +239,6 @@ class _ChatPageState extends State<ChatPage> {
       category = value.data()['category'];
     });
 
-    print("groups Category : " + category);
   }
   _getCurrentUserNameAndUid() async {
     await HelperFunctions.getUserNameSharedPreference().then((value) {
@@ -249,6 +264,8 @@ class _ChatPageState extends State<ChatPage> {
           }
         }
     );
+
+
   }
 
   _joinValueInGroup(
@@ -263,6 +280,7 @@ class _ChatPageState extends State<ChatPage> {
   //채팅방 화면 빌드
   @override
   Widget build(BuildContext context) {
+
 
     Color basic = Color.fromARGB(250, 247, 162, 144);
     return Scaffold(
