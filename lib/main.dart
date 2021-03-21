@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'LINK',
+      title: '한동모아',
       theme: ThemeData(
         appBarTheme: AppBarTheme(
           color: Color.fromARGB(250, 247, 162, 144),

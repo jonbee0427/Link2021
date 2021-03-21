@@ -249,7 +249,7 @@ class _HomeState extends State<Home> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
-          title: Text("LINK"),
+          title: Text("한동모아"),
           centerTitle: true,
           backgroundColor: const Color.fromARGB(250, 247, 162, 144),
           elevation: 10.0,

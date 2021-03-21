@@ -9,7 +9,7 @@ class Profile extends StatelessWidget {
     return Scaffold(
         backgroundColor: Colors.blue,
         appBar: AppBar(
-          title: Text("LINK"),
+          title: Text("한동모아"),
           centerTitle: true,
           //backgroundColor: const Color.fromARGB(250, 247, 162, 144),
           elevation: 10.0,
